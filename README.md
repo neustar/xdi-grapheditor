@@ -10,13 +10,13 @@ for more details).
 
 Project Setup
 -------------
-This project relies on the D3 javascript library ([2]). This library will be
+This project relies on the D3 javascript library ([2][]). This library will be
 automatically retrieved upon launch of the editor.
 
 The tool also leverages an XDI javascript library (xdi.js). this library is
-included in the tool archive (see [6] for more details).
+included in the tool archive (see [6][] for more details).
 
-Finally, the tool uses JQuery ([4]). This library will also be automatically
+Finally, the tool uses JQuery ([4][]). This library will also be automatically
 retrieved upon launch of the editor.
 
 
@@ -44,17 +44,17 @@ tracker available on GitHub.
 Acknowledgements
 ----------------
 The graph editing functionality of this tool is largely based on the D3
-directed graph editor (see [3]) although it has been greatly modified since then.
+directed graph editor (see [3][]) although it has been greatly modified since then.
 
 
 License
 -------
-This tool is made available under the MIT license (see [5] for details).
+This tool is made available under the MIT license (see [5][] for details).
 
 
-[1] https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xdi
-[2] http://d3js.org/d3.v3.min.js
-[3] http://bl.ocks.org/rkirsling/5001347
-[4] http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
-[5] http://opensource.org/licenses/MIT
-[6] https://github.com/projectdanube/xdi-js
+[1]: https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xdi
+[2]: http://d3js.org/d3.v3.min.js
+[3]: http://bl.ocks.org/rkirsling/5001347
+[4]: http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
+[5]: http://opensource.org/licenses/MIT
+[6]: https://github.com/projectdanube/xdi-js
