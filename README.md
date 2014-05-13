@@ -1,5 +1,5 @@
 Project Description
-===================
+-------------------
 
 The XDI graph editor project is, as the name implies, a graphic editor for
 visualizing and manipulating XDI graphs. XDI is an OASIS Technical committee
@@ -9,7 +9,7 @@ for more details).
 
 
 Project Setup
-=============
+-------------
 This project relies on the D3 javascript library ([2]). This library will be
 automatically retrieved upon launch of the editor.
 
@@ -21,13 +21,13 @@ retrieved upon launch of the editor.
 
 
 Deploying
-=========
+---------
 Once the file archive file has been downloaded and unziped, simply load the
 index.html file in your browser.
 
 
 Troubleshooting & Useful Tools
-==============================
+------------------------------
 Both a manual and a tutorial are available within the tool: click on the Help
 button on the top right corner of the browser window.
 
@@ -36,19 +36,19 @@ manipulate your own XDI graphs.
 
 
 Contributors
-============
+------------
 If you find a bug or would like to suggest improvements, please use the issue
 tracker available on GitHub.
 
 
 Acknowledgements
-================
+----------------
 The graph editing functionality of this tool is largely based on the D3
 directed graph editor (see [3]) although it has been greatly modified since then.
 
 
 License
-=======
+-------
 This tool is made available under the MIT license (see [5] for details).
 
 
