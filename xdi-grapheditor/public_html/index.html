@@ -1,0 +1,85 @@
+<!DOCTYPE html> 
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2014 Neustar Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="XDI_graph_editor.css"/>
+        <link rel="stylesheet" href="js/libs/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"/>
+        <style>
+            //label, textarea { display:block; }
+            textarea.text { margin-bottom:12px; width:95%; padding: .4em; }
+            .validateTips { border: 1px solid transparent; padding: 0.3em; }
+            fieldset { padding:0; border:0; margin-top:25px; }
+            .ui-dialog .ui-state-error { padding: .3em; }
+        </style>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+        <script type="text/javascript" src="js/libs/xdi-js/xdi.js"></script>
+        <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <button id="XDIinputButton" class="button" onclick="importXDI()" type="button">Import XDI</button>
+        <button id="exportButton" class="button" onclick="exportGraph()" type="button">Export to XDI</button>
+        <button id="clearButton" class="button" onclick="clearGraph()">Clear Graph</button>
+        <button id="fileButton" class="button" onclick="saveGraph()">Store Graph</button>
+        <button id="fileButton" class="button" onclick="loadGraph()">Load Graph</button>
+        <button id="clearGraphs" class="button" onclick="DeleteStoredGraphs()">Delete Stored Graphs</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="helpButton" class="button" onclick="help()">Help</button>
+        <p></p>
+        <div id="XDIinput"></div><div id="XDIinputform"></div>
+        <div id="SimParamsDlg" style="border:1px solid black;">
+            <form oninput="output1.value=linkdistslider.value">
+                Nodes distance: 0<input type="range" name="linkdistslider" min="0" max="100" value="50"/>
+                <output name="output1" for="linkdistslider">100</output>
+            </form>
+            <form oninput="output1.value=chargeslider.value">
+                Nodes attraction -2000<input type="range" name="chargeslider" min="-2000" max="2000"/>
+                <output name="output1" for="chargeslider">2000</output>
+            </form>
+            <form oninput="output1.value=gravityslider.value">
+                Attraction to center<input type="range" name="gravityslider" min="0" max="10"/>
+                <output name="output1" for="gravityslider">10</output>
+            </form>
+            <form>
+                Freeze Graph <input type="checkbox" name="freezecheckbox" value="check" onclick="freezeSim(this);"/>
+            </form>
+        </div>
+        <br>
+        <div id="drawing" style="border:1px solid black;"></div>
+        
+        <div id="dialog-form" title="Define a new graph using JSON">
+            <p class="validateTips">Please, make sure your XDI is valid!</p>
+            
+            <form>
+            <fieldset>
+                    <label for="name">Type your XDI statements (Display Single Line) below:</label>
+                    <textarea cols="68" rows="17" name="XDIsource" id="XDIsource" class="textarea ui-widget-content ui-corner-all"></textarea>
+            </fieldset>
+            </form>
+        </div>
+        <script type="text/javascript" src="js/XDI_graph_editor.js"></script>
+    </body>
+</html>
