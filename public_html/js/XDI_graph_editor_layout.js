@@ -27,11 +27,16 @@ function initializeLayout(nodes,links) {
 	var numberOflinks = links.length;
 
 	nodes.forEach(function (item) {
-		item.fixed = item.isRoot;
-	})
+		item.fixed = isFrozen
+        ||item.isRoot //if a node is root
+        ||item._fixed             //or is intenionally set to fixed from other ways
+        || ((item.parents == null || item.parents.length == 0) &&(item.children == null || item.children.length == 0));
+
+	})                             //or has no other links
+
 
 	force
-	.gravity(0)
+	.gravity(0.01)
 	.linkDistance(function(d) { 
             return 40*d.source.children.length;
         })

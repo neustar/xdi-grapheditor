@@ -116,7 +116,7 @@ body{
   padding:0.3em;
   
   
-  background: rgba(100,100,100,0.5);
+  background: rgba(100,100,100,0.7);
   color:#333;
   
   cursor:pointer;
@@ -142,7 +142,7 @@ body{
 }
 
 .toggleButton{
-  background: rgba(100,100,100,0.5);
+  background: rgba(100,100,100,0.7);
    padding: 0.6em;
    border-radius: 00px;
    

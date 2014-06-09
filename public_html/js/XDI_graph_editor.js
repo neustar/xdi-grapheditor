@@ -102,11 +102,11 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    // initializeGraphWithXDI(testData)
+    initializeGraphWithXDI(testData)
     // initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -292,10 +292,16 @@ function restart(startForce,getNewData) {
 
 
 
-    if(isFrozen)
-        node.each(function(d){d._fixed = d.fixed; d.fixed = true;})
-    else
-        node.each(function(d){if(d._fixed!=null)d.fixed=d._fixed;})
+    // if(isFrozen)
+    //     node.each(function(d){d._fixed = d.fixed; d.fixed = true;})
+    // else
+    //     node.each(function(d){
+    //         if(d._fixed!=null)
+    //         {
+    //             d.fixed=d._fixed;
+    //             d._fixed = null;
+    //         }
+    //     })
 
     if(startForce)
     {
@@ -422,7 +428,7 @@ function toggleFreeze (newValue) {
     else
         isFrozen = ! isFrozen;
 
-    restart(!isFrozen,false);
+    restart(true,false);
 
     d3.select('#freezeButton')
     .classed('off', !isFrozen)
