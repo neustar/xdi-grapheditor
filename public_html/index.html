@@ -77,7 +77,7 @@ THE SOFTWARE.
             <br> -->
         </div>
         <div id="drawing">
-            <svg id="mainCanvas" class="hide_node_label hide_link_label hide_rel_link">
+            <svg id="mainCanvas">
                 <defs>
                     <marker id="end-arrow" viewBox="0 -5 10 10" refX="6" markerWidth="3" markerHeight="3" orient="auto">
                         <path d="M0,-5L10,0L0,5" fill="#999"></path>
@@ -118,9 +118,9 @@ THE SOFTWARE.
                     <!-- <div class="legend" name="node" onclick="toggleVisibility(this)">Node</div> -->
                     <!-- <div class="legend" name="link" onclick="toggleVisibility(this)">Link</div> -->
                     <div class="legend" name="literal" onclick="toggleVisibility(this)">Literal</div>
-                    <div class="legend off" name="node_label" onclick="toggleVisibility(this)">Node Label</div>
-                    <div class="legend off" name="link_label" onclick="toggleVisibility(this)">Link Label</div>
-                    <div class="legend off" name="rel_link" onclick="toggleVisibility(this)">Relationship Link</div>
+                    <div class="legend" name="node_label" onclick="toggleVisibility(this)">Node Label</div>
+                    <div class="legend" name="link_label" onclick="toggleVisibility(this)">Link Label</div>
+                    <div class="legend" name="rel_link" onclick="toggleVisibility(this)">Relationship Link</div>
                     <div class="legend" name="rel_label" onclick="toggleVisibility(this)">Relationship Label</div>
             </div>
             <div class="searchContainer hidden">
@@ -161,12 +161,12 @@ THE SOFTWARE.
             </div>
         </div>
         <div class="instruction">
-            Del/Backspace: <b>Remove</b> a node or link. 
-            Press and hold option/alt: Drag to <b>pan</b>; Scroll mouse wheel to <b>scale</b>.
-            R: Set node as <b>Root</b>; Set link as <b>Relationship</b>.  
-            B: Set link as <b>double direction</b>.
-            L: <b>Invert</b> link; Set node as <b>Literal</b>.
-            Enter: <b>Rename</b> a node or link. 
+            <b>Del/Backspace</b>: Remove a node or link. 
+            <b>Press and hold option/alt</b>: Drag to pan; Scroll mouse wheel to scale.
+            <b>R</b>: Set node as Root; Set link as Relationship.  
+            <b>B</b>: Set link as double direction.
+            <b>L</b>: Invert link; Set node as Literal.
+            <b>Enter</b>: Rename a node or link. 
         </div>
         
         
