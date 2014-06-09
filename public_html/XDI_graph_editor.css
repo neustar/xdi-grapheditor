@@ -112,8 +112,9 @@ body{
 }
 
 .legend{
-  margin: 0.1em;
+  margin: 0.2em 0;
   padding:0.3em;
+  
   
   background: rgba(100,100,100,0.5);
   color:#333;
@@ -134,6 +135,47 @@ body{
 
 .legend:hover{
   background: rgba(103,145,122,0.8);
+}
+
+#freezeButtonsContainer{
+  margin: 0.5em 0;
+}
+
+.toggleButton{
+  background: rgba(100,100,100,0.5);
+   padding: 0.6em;
+   border-radius: 00px;
+   
+   color: #333;
+   font-size: 1em;
+   font-family: "Helvetica Neue";
+   font-weight:200;
+   letter-spacing:1px;
+   
+   cursor: pointer;
+
+   -webkit-transition:background 0.2s, opacity 0.2s;
+}
+
+.toggleButton:focus {
+  outline: 0px;
+}
+
+.toggleButton:hover{
+  background: rgba(103,145,122,0.8);
+}
+.toggleButton.off{
+  opacity: 0.5;
+}
+
+#freezeButtonsContainer .toggleButton:first-of-type{
+  border-top-left-radius:10px;
+  border-bottom-left-radius:10px;
+}
+
+#freezeButtonsContainer .toggleButton:last-of-type{
+  border-top-right-radius:10px;
+  border-bottom-right-radius:10px;
 }
 
 
@@ -301,6 +343,8 @@ body{
 .instruction b{
   color:#444;
 }
+
+
 
 /****************** Graph Components ******************/
 

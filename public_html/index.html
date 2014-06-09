@@ -52,7 +52,6 @@ THE SOFTWARE.
                 <button id="clearGraphs" class="button" onclick="DeleteStoredGraphs()">Delete Stored Graphs</button>
                 
                 <button id="resetZoomButton" class="button" onclick="resetZoom()">Reset Zoom</button>
-                <button id="freezeButton" class="button off" onclick="toggleFreeze()">Freeze</button>
                 
                 <button id="helpButton" class="button" onclick="help()">Help</button>
                 
@@ -115,6 +114,10 @@ THE SOFTWARE.
             </svg>
             <div id="zoomText">1.0x</div>
             <div class="legendContainer">
+                    <div id="freezeButtonsContainer">
+                        <button id="unfreezeButton" class="toggleButton" onclick="toggleFreeze(false)">Moving</button>
+                        <button id="freezeButton" class="toggleButton off" onclick="toggleFreeze(true)">Frozen</button>
+                    </div>
                     <!-- <div class="legend" name="node" onclick="toggleVisibility(this)">Node</div> -->
                     <!-- <div class="legend" name="link" onclick="toggleVisibility(this)">Link</div> -->
                     <div class="legend" name="literal" onclick="toggleVisibility(this)">Literal</div>
@@ -123,6 +126,7 @@ THE SOFTWARE.
                     <div class="legend" name="rel_link" onclick="toggleVisibility(this)">Relationship Link</div>
                     <div class="legend" name="rel_label" onclick="toggleVisibility(this)">Relationship Label</div>
             </div>
+            
             <div class="searchContainer hidden">
                 <div class="searchControlContainer">
                     <input type="search" placeholder="Search" results="10" autocomplete="on" onkeyup="searchTextChanged();" id="searchText" >

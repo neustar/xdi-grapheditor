@@ -416,14 +416,19 @@ function trimString(string,length){
     return str;
 }
 
-function toggleFreeze () {
-    isFrozen = ! isFrozen;
-    restart(false,false);
+function toggleFreeze (newValue) {
+    if(newValue != null)
+        isFrozen = newValue;
+    else
+        isFrozen = ! isFrozen;
+
+    restart(!isFrozen,false);
 
     d3.select('#freezeButton')
     .classed('off', !isFrozen)
-
     
+    d3.select('#unfreezeButton')
+    .classed('off', isFrozen)    
 }
 
 
