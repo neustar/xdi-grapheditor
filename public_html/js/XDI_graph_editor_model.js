@@ -33,18 +33,22 @@ function initializeGraphWithXDI(data) {
     });
     var graph = xdi.graph();
     $.each(lines, function(i, d) {
+        console.log(i)
         try {
             var statement = xdi.parser.parseStatement(d);
+            graph.statement(d);
         } catch (err) {
             console.log("Invalid XDI: " + err);
             console.log(d);
             return;
         }
-        graph.statement(d);
+        
     });
+    
     xdistatements = xdi.io.write(graph);
     lines = xdistatements.split(/\r\n|\r|\n/g);
     $.each(lines, function(i,d) {
+
         if (d.length > 0) {
             var xdistmt = xdi.parser.parseStatement(d);
             if (xdistmt.isContextNodeStatement()) {

@@ -36,7 +36,7 @@ function initializeLayout(nodes,links) {
 
 
 	force
-	.gravity(0.01)
+	.gravity(0)
 	.linkDistance(function(d) { 
             return 40*d.source.children.length;
         })

@@ -31,21 +31,22 @@ THE SOFTWARE.
 html{
   height: 100%;
   width:100%;
+
 }
 body{
   font-family: "Helvetica Neue","Helvetica";
-  height:96%;
-  width:98%;
-  margin:1%;
+  height:100%;
+  width:99%;
+  margin:0% 0.5%;
 }
 
 .controlContainer{
-  height: 10%;
+  height: 6%;
   width: 100%;
 }
 
 .buttonContaiter{
-  padding:1% 0;
+  padding:0% 0;
 }
 .parameterContainer{
   padding:1% 0;
@@ -54,10 +55,14 @@ body{
 #drawing{
   position: relative;
   overflow: hidden;
-  height: 85%;
+  height: 90%;
   width: 100%;
 
-  border:2px solid #999;
+  border:1px solid #ccc;
+  
+  box-shadow:0px 0px 30px 3px rgba(0,0,0,0.3);
+
+  -webkit-user-select:none;
 }
 #mainCanvas {    
     cursor: default;
@@ -68,11 +73,11 @@ body{
 /********* HTML Components *********/
 
 .button {
-   background: rgba(120,120,120,1);//#67917A;
-   padding: 0.6em 1em;
+   background: rgba(39,134,88,1);//#67917A;
+   padding: 0.6em 1.5em;
    border-radius: 0px;
-   margin: 0 0.5em;
-   box-shadow: 0 0 0px 4px rgba(0,0,0,0.2);
+   margin: 0;
+/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.2); */
    
    color: white;
    font-size: 1em;
@@ -87,8 +92,8 @@ body{
 }
    
 .button:hover {
-   background: rgba(103,145,122,1);
-   box-shadow: 0 0 0px 4px rgba(0,0,0,0.3);
+   background: rgba(106,172,78,1);
+/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.3); */
 }
    
 .button:active {
@@ -116,8 +121,9 @@ body{
   padding:0.3em;
   
   
-  background: rgba(100,100,100,0.7);
+  background: rgba(100,100,100,0.3);;//rgba(39,134,88,0.2)
   color:#333;
+  border: 1px solid rgba(100,100,100,0.3);
   
   cursor:pointer;
   
@@ -130,11 +136,12 @@ body{
 
 .legend.off{
   opacity: 0.5;
+  background: rgba(39,134,88,0);
 }
 
 
 .legend:hover{
-  background: rgba(103,145,122,0.8);
+  background: rgba(39,134,88,0.8);
 }
 
 #freezeButtonsContainer{
@@ -142,11 +149,16 @@ body{
 }
 
 .toggleButton{
-  background: rgba(100,100,100,0.7);
-   padding: 0.6em;
-   border-radius: 00px;
+  width:48%;
+  
+   padding: 0.6em 0;
+   border-radius: 0px;
    
-   color: #333;
+   
+   background: rgba(100,100,100,0.3);;//rgba(39,134,88,0.2)
+   color:#333;
+   border: 1px solid rgba(100,100,100,0.3);
+   
    font-size: 1em;
    font-family: "Helvetica Neue";
    font-weight:200;
@@ -161,21 +173,23 @@ body{
   outline: 0px;
 }
 
-.toggleButton:hover{
-  background: rgba(103,145,122,0.8);
-}
+
 .toggleButton.off{
   opacity: 0.5;
+  background: rgba(39,134,88,0);
+}
+.toggleButton:hover{
+  background: rgba(39,134,88,0.8);
 }
 
 #freezeButtonsContainer .toggleButton:first-of-type{
-  border-top-left-radius:10px;
-  border-bottom-left-radius:10px;
+  border-top-left-radius:5px;
+  border-bottom-left-radius:5px;
 }
 
 #freezeButtonsContainer .toggleButton:last-of-type{
-  border-top-right-radius:10px;
-  border-bottom-right-radius:10px;
+  border-top-right-radius:5px;
+  border-bottom-right-radius:5px;
 }
 
 
@@ -349,7 +363,7 @@ body{
 /****************** Graph Components ******************/
 
 #statusIndicator{
-    stroke-width: 3px;
+    stroke-width: 2px;
     pointer-events: none;
 }
 
@@ -358,7 +372,7 @@ body{
 }
 
 #statusIndicator.ok {
-    fill: lawngreen;    
+    fill: rgba(168,219,168,1);    
 }
 
 #statusIndicator.browse{

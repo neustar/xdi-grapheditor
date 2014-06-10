@@ -103,7 +103,7 @@ $(function() {
 
     //Only For Debug purpose
     // initializeGraphWithXDI(testData)
-    // initializeGraphWithXDI(attributeSingletons)
+    initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
