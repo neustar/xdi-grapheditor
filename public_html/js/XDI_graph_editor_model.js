@@ -82,7 +82,7 @@ function getDrawData2(root){
    return {nodes:jsonnodes,links:jsonlinks};
 }
 function getDrawData(root){
-   if(jsonnodes==null||jsonnodes.length == 0)
+    if(jsonnodes==null||jsonnodes.length == 0)
         return {nodes:[],links:[]};
 
     console.log("getDrawData")
@@ -97,66 +97,82 @@ function getDrawData(root){
             if(isRootToCheck(d))
                 rootsToCheck.push(d);
         })
-    } 
+    }
+    if(rootsToCheck.length == 0 && jsonnodes!= null && jsonnodes.length>0)
+        rootsToCheck = [jsonnodes[0]];//Every node has parent.
     
     var resNodes = [];
     var resLinks = [];
     var relationLinks = [];
+    var resMap = {};
     
+    function checkCollection (node,collection,isParent) {
+        if(collection == null)
+            return;
+        for (var i = collection.length - 1; i >= 0; i--) {
+            var adjnode = collection[i]
+            var link = isParent? findLinkinMap(adjnode,node):findLinkinMap(node,adjnode);
+            if(!isParent&&link!=null && !link.isAdded)    
+            {   
+                if(link.isRel)
+                    relationLinks.push(link);
+                else
+                    resLinks.push(link);
+                link.isAdded = true;
+            }
+            if(!adjnode.isAdded&&!link.isRel)
+            {
+                resNodes.push(adjnode);
+                
+                adjnode.isAdded = true;
+                recurse(adjnode);
+            }
+        }
+    }
+
     function recurse(node)
     {
-        if(node.isFolded||node.isAdded||node.children==null)
+        // console.log("id: " + node.id);
+        if(node.isFolded)
             return;
-        for (var i = node.children.length - 1; i >= 0; i--) {
-            var child = node.children[i]
-            var link = findLinkinMap(node,child);
-            if(link!=null && !link.isAdded)    
-            {
-                if(link.isRel)
-                    relationLinks.push(link)
-                else
-                {
-                    resLinks.push(link);
-                    link.isAdded = true;
-                }
-            }
-            if(!child.isAdded&&!link.isRel)
-            {
-                resNodes.push(child);
-                recurse(child);
-                child.isAdded = true;
-            }
-        };
+        checkCollection(node,node.children, false);
+        checkCollection(node,node.parents, true);
     }
 
     rootsToCheck.forEach(function(d){
         if(!d.isAdded)
         {
             resNodes.push(d);
-            recurse(d);
             d.isAdded = true;
+            recurse(d);
+            
         }
     })
-    
+
     relationLinks.forEach(function(item){
+        item.isAdded = false;
         if(item.source.isAdded && item.target.isAdded)
             resLinks.push(item);
     })
-
-    resNodes.sort(function(a,b){return a.id-b.id})
-    resLinks.sort(function(a,b){
-        if(a.source.id!=b.source.id)
-            return a.source.id-b.source.id;
-        return a.target.id-b.target.id
-    })
-
+    
     resNodes.forEach(function(item){item.isAdded = false;})
-    resLinks.forEach(function(item){item.isAdded = false;})
+    resLinks.forEach(function(item){item.isAdded = false;
+        resMap[item.source.id + '-' + item.target.id] = item;
+    })
     
-    
-    // resNodes.forEach(function(item){console.log("id: "+item.id+"\t size: "+item.size+"\tisHidden: "+item.isHidden)})
+    // resNodes.sort(function(a,b){return a.id-b.id})
+    // resLinks.sort(function(a,b){
+    //     if(a.source.id!=b.source.id)
+    //         return a.source.id-b.source.id;
+    //     return a.target.id-b.target.id
+    // })
+
+    // resNodes.forEach(function(item){console.log("id: "+item.id+"\t size: "+item.size+"\tisFolded: "+item.isFolded)})
     // resLinks.forEach(function(item){console.log(item.source.id+'-'+item.target.id)})
-    return {nodes:resNodes,links:resLinks};
+    // console.log(resNodes.length + " Nodes")
+    // console.log(resLinks.length + " Links")
+    
+    return {nodes:resNodes,links:resLinks,map:resMap};
 }
 
 function toggleFoldNode(node){

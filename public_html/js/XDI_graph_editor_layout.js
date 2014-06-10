@@ -27,8 +27,8 @@ function initializeLayout(nodes,links) {
 	var numberOflinks = links.length;
 
 	nodes.forEach(function (item) {
-		item.fixed = isFrozen
-        ||item.isRoot //if a node is root
+		item.fixed = isFrozen     //if overall is frozen
+        ||item.isRoot             //if a node is root
         ||item._fixed             //or is intenionally set to fixed from other ways
         || ((item.parents == null || item.parents.length == 0) &&(item.children == null || item.children.length == 0));
 

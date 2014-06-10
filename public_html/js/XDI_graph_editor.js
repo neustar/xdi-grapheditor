@@ -102,7 +102,7 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(testData)
+    // initializeGraphWithXDI(testData)
     // initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
@@ -171,7 +171,9 @@ function getLinkPathD(d){
     var valence1 = d.source.id + "-" + d.target.id;
     var valence2 = d.target.id + "-" + d.source.id;
 
-    if ((valence1 in nodeslinkmap) && (valence2 in nodeslinkmap)) {
+    var tmpMap = lastDrawData ? lastDrawData.map : nodeslinkmap; //Use the lastest map that only has the visible links
+
+    if ((valence1 in tmpMap) && (valence2 in tmpMap)) {
         return 'M' + x(sourceX) + ',' + y(sourceY) + 'A' + (dist) * getScaleRatio()+ ',' + (dist)* getScaleRatio() + ' 0 0,1 ' + x(targetX) + ',' + y(targetY);
     }
     else {
