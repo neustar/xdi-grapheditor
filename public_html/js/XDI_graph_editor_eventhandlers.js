@@ -366,4 +366,5 @@ function toggleNodeFixed (node) {
 function setNodeFixed (node, newValue) {
     node._fixed = newValue; //Record the fixed is set intentionally
     node.fixed =newValue;
+    restart(false,false)
 }

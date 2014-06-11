@@ -33,7 +33,6 @@ function initializeGraphWithXDI(data) {
     });
     var graph = xdi.graph();
     $.each(lines, function(i, d) {
-        console.log(i)
         try {
             var statement = xdi.parser.parseStatement(d);
             graph.statement(d);

@@ -434,6 +434,8 @@ body{
   opacity: 0;
   pointer-events:none;
 }
+
+.node.fixed:hover,
 .node.matched:hover,
 .node:hover{
   fill:#79BD9A;
@@ -445,7 +447,7 @@ body{
 }
 
 .node.fixed {
-    fill: #f00;
+    fill: #777;
 }
 
 .node.root {

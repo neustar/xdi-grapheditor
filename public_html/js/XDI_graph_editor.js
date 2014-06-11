@@ -216,9 +216,12 @@ function restart(startForce,getNewData) {
         lastDrawData = getDrawData();
     }
     drawData = lastDrawData;
+
     //
-    // links
+    // Links
     //
+
+    //// Add new elements
     var linkCanvas = d3.select('#linkCanvas');
     link = linkCanvas.selectAll(".link")
         .data(drawData.links, function(d) { return d.id; });
@@ -230,7 +233,6 @@ function restart(startForce,getNewData) {
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
         .on('mouseleave',mouseleaveOnLinkHandler)
-
     
     newLinkGs.append("svg:path")
         .append("title")
@@ -242,18 +244,18 @@ function restart(startForce,getNewData) {
             return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);
         });  
 
-    
+    //// Adjust Classes
     link.classed('selected', function(d) {return d === selected_link;})
         .classed('relation', function(d) {return d.isRel === true;})
         .classed('literal', function(d) {return d.target.type === "literal";})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
 
-
     //
-    // nodes
+    // Nodes
     //
 
+    //// Add new elements
     var nodeCanvas = d3.select('#nodeCanvas');
     node = nodeCanvas.selectAll(".node")
         .data(drawData.nodes, function(d) {return d.id;});
@@ -274,43 +276,29 @@ function restart(startForce,getNewData) {
         .append("title")
         .text(function(d){return d.name});
         
-
     newNodes.append("svg:text")
         .attr('class', "textLabel")
         .attr("dx", 12)
         .attr("dy", ".35em")
 
-
+    //// Adjust Classes    
     node.classed("selected", function(d) { return (d === selected_node); })
         .classed("root", function(d) {return d.isRoot;})
         .classed("literal", function(d) {return (d.type === "literal");})
         .classed("folded",function(d){return d.isFolded;})
-    
+        .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
+
     node.select("text")
-        .text(function(d){
-            return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);
-        });
+        .text(function(d){return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);});
 
-
-
-
-    // if(isFrozen)
-    //     node.each(function(d){d._fixed = d.fixed; d.fixed = true;})
-    // else
-    //     node.each(function(d){
-    //         if(d._fixed!=null)
-    //         {
-    //             d.fixed=d._fixed;
-    //             d._fixed = null;
-    //         }
-    //     })
-
+    //
+    // Layout
+    //
     if(startForce)
     {
         initializeLayout(drawData.nodes, drawData.links);
-
         startDrag();
-    }
+    }    
 }
 
 function updateStatus(statusMessage, isOK,isEditing){
@@ -438,26 +426,4 @@ function toggleFreeze (newValue) {
     d3.select('#unfreezeButton')
     .classed('off', isFrozen)    
 }
-
-
-// function updateSim(linkdist, charge, gravity) {
-//     if (linkdist)
-//         force.linkDistance(linkdist);
-//     if (charge)
-//         force.charge(charge);
-//     if (gravity)
-//         force.gravity(gravity);
-//     restart(true,false);
-// }
-
-// function freezeSim(checkboxval) {
-//     if (checkboxval.checked) {
-//         isFrozen = true;
-//     } else {
-//         isFrozen = false;
-//     }
-//     restart(false,false);
-// }
-
-
 
