@@ -36,8 +36,8 @@ html{
 body{
   font-family: "Helvetica Neue","Helvetica";
   height:100%;
-  width:99%;
-  margin:0% 0.5%;
+  width:98%;
+  margin:0% 1%;
 }
 
 .controlContainer{
@@ -73,7 +73,7 @@ body{
 /********* HTML Components *********/
 
 .button {
-   background: rgba(39,134,88,1);//#67917A;
+   background: rgba(66,124,102,1);//#67917A;
    padding: 0.6em 1.5em;
    border-radius: 0px;
    margin: 0;
@@ -121,7 +121,7 @@ body{
   padding:0.3em;
   
   
-  background: rgba(100,100,100,0.3);;//rgba(39,134,88,0.2)
+  background: rgba(100,100,100,0.3);
   color:#333;
   border: 1px solid rgba(100,100,100,0.3);
   
@@ -141,7 +141,7 @@ body{
 
 
 .legend:hover{
-  background: rgba(39,134,88,0.8);
+  background: rgba(103,145,122,0.8);
 }
 
 #freezeButtonsContainer{
@@ -155,7 +155,7 @@ body{
    border-radius: 0px;
    
    
-   background: rgba(100,100,100,0.3);;//rgba(39,134,88,0.2)
+   background: rgba(100,100,100,0.3);
    color:#333;
    border: 1px solid rgba(100,100,100,0.3);
    
@@ -175,11 +175,11 @@ body{
 
 
 .toggleButton.off{
-  opacity: 0.5;
-  background: rgba(39,134,88,0);
+  opacity: 0.7;
+  background: rgba(100,100,100,0.1);
 }
 .toggleButton:hover{
-  background: rgba(39,134,88,0.8);
+  background: rgba(103,145,122,0.8);
 }
 
 #freezeButtonsContainer .toggleButton:first-of-type{
@@ -197,14 +197,20 @@ body{
   position: absolute;
   top: 0%;
   right: 0%;
-  background:rgba(0,0,0,0.5);
-  padding:0.5em;
-  margin:0px;
-  text-align:left;
+  
   width:20%;
   min-width:300px;
   height:450px;
-  -webkit-transition:height 0.5s, right 0.5s, top 0.5s;
+  padding:0.5em;
+  margin:0px;
+  
+  background:rgba(220,220,220,0.85);
+  border:1px solid rgba(0,0,0,0.3);
+/*   border-left:5px solid rgba(0,207,129,0.4); */
+  
+  text-align:left;
+  
+  -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
 }
 
 .searchContainer.hidden{
@@ -236,7 +242,7 @@ body{
 
 
 .searchHeader{
-  border-bottom: 1px solid rgba(255,255,255,0.5);
+  border-bottom: 2px solid rgba(39,134,88,0.6);
   margin: 0;
   padding:0px;
   width:100%;
@@ -247,8 +253,8 @@ body{
   width:49%;
   margin:0;
   font-size:1.5em;
-  color:rgba(255,255,255,0.5);
-  font-weight:100;
+  color:rgba(0,0,0,0.5);
+  font-weight:200;
 }
 
 .searchHeader .itemcount{
@@ -258,15 +264,15 @@ body{
   margin:0;
   padding:0;
   font-size:1em;
-  color:rgba(255,255,255,0.5);
-  font-weight:100;
+  color:rgba(0,0,0,0.5);
+  font-weight:200;
 }
 .searchItem{
   padding:0.5em 0.5em 0.5em 0.2em;
  
-  font-weight:200;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.8);
+  font-weight:400;
+  border-bottom: 1px solid rgba(39,134,88,0.5);
+  color:rgba(0,0,0,0.5);
   background: rgba(0,0,0,0);
 
   cursor: pointer;
@@ -275,11 +281,11 @@ body{
 }
 
 .searchItem.literal{
-  color:rgba(168,219,168,0.8);
+  color:rgba(125,154,100,0.8);
 }
 
 .searchItem.relation{
-  color:rgba(252,157,154,0.8);
+  color:rgba(192,41,66,0.8);
 }
 
 
@@ -300,9 +306,9 @@ body{
   width:75%;
   padding:2px 5px;
   border-radius:15px;
-  background: rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.9);
-  
+  background: rgba(255,255,255,0.4);
+  color:rgba(0,0,0,0.5);
+  border: 1px solid rgba(100,100,100,0.3);
 /*   border: 1px inset black; */
 }
 
@@ -311,22 +317,23 @@ body{
 }
 #searchText::-webkit-input-placeholder 
 {
-  color:rgba(255,255,255,0.6);
+  color:rgba(100,100,100,0.6);
 }
 
 #searchText::-webkit-search-cancel-button
 {
-  color:rgba(255,255,255,0.6);
+  color:rgba(0,0,0,0.9);
 }
 
 .searchDoneButton{
 /*   border: 1px solid rgba(255,255,255,0.6); */
   border-radius:15px;
-  margin:0 5px;
+  margin:0 4px;
   padding:2px 10px;
 
-  background: rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.4);
+  color:rgba(0,0,0,0.5);
+  border: 1px solid rgba(100,100,100,0.3);
   
   font-size: 14px;
   cursor:pointer;
@@ -352,7 +359,7 @@ body{
 .instruction{
   color:#666;
   font-weight:200;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .instruction b{
@@ -407,14 +414,14 @@ body{
 }
 
 #navSVG #svgRect{
-  fill:rgba(0,0,0,0.5);
+  fill:rgba(100,100,100,0.5);
   stroke:none;
 }
 
 #navSVG #viewRect{
   fill:none;
-  stroke:#333;
-  stroke-width:3;
+  stroke:rgba(100,100,100,0.8);
+  stroke-width:2;
 }
 
 /****************** Inside SVG ******************/
@@ -470,7 +477,7 @@ body{
 
 .node.matched{
   /*stroke:#556270;*/
-  fill:#4ECDC4;
+  fill:rgba(23,178,119,1);
 }
 
 .hide_node_label .node text{
@@ -572,7 +579,7 @@ body{
 
 
 .link.matched{
-  stroke:#4ECDC4;
+  stroke:rgba(23,178,119,1);
   opacity: 1;
 }
 
