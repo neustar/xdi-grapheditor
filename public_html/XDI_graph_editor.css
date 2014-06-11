@@ -41,7 +41,7 @@ body{
 }
 
 .controlContainer{
-  height: 6%;
+  height: 5%;
   width: 100%;
 }
 
@@ -352,6 +352,7 @@ body{
 .instruction{
   color:#666;
   font-weight:200;
+  opacity: 0.8;
 }
 
 .instruction b{
