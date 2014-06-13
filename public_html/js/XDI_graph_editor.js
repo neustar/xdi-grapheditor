@@ -148,6 +148,7 @@ function initializeGraph()
     labels = d3.select("#labelsCanvas").selectAll(".label");
 
     initializeZoom();
+    initializeDragSelect();
 
     restart();
 }

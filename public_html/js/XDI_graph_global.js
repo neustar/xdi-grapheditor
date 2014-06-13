@@ -88,3 +88,6 @@ var lastQuery = null;
 //Select
 var selected_nodes = null, // a collection of all the selected nodes
     selected_links = null;
+
+//Drag Select
+var dragSelectBrush = null;

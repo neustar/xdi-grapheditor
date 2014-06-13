@@ -46,6 +46,12 @@ function hasSelections (selectionSet) {
 }
 
 
+function setSelectedNodes (nodeSet) {
+	selected_nodes = nodeSet;
+}
+function setSelectedLinks (linkSet) {
+	selected_links = linkSet;
+}
 //Interfaces for global use
 
 function initializeSelection () {
@@ -74,9 +80,9 @@ function clearSelectedLinks () {
 }
 
 function hasSelectedNodes () {
-	return hasSeletions(selected_nodes);
+	return hasSelections(selected_nodes);
 }
 
 function hasSelectedLinks () {
-	return hasSeletions(selected_links);
+	return hasSelections(selected_links);
 }
