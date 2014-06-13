@@ -56,12 +56,10 @@ function mousedownOnSVG() {
     if(d3.event.srcElement == svg.node())
     {
         if(d3.event.shiftKey)
+        {
             createNodeByClick();
-        // else
-        // {
-        //     clearAllSelection();
-        //     restart(false,false);
-        // }
+            setDragSelectAbility(true); //The window will not trigger shift key up events to enable drag select
+        }
     }
 }
 
@@ -115,6 +113,10 @@ function keydownOnSVG() {
             
         case 16://shift
             updateStatus(null,null,true);
+            setDragSelectAbility(false);
+            break;
+        case 18://opt/alt
+            setDragSelectAbility(false);
             break;
 
         case 66: // B
@@ -148,6 +150,10 @@ function keyupOnSVG() {
         case 16:
             startDrag();
             updateStatus(null,null,false);
+            setDragSelectAbility(true);
+            break;
+        case 18://opt/alt
+            setDragSelectAbility(true);
             break;
     }
 }
