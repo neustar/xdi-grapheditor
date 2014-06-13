@@ -23,6 +23,7 @@ THE SOFTWARE.
 */
 
 // Initializing the graph with XDI statements.
+
 function initializeGraphWithXDI(data) {
     clearGraph();
     var lines = data.split(/\r\n|\r|\n/g);
