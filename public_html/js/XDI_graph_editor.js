@@ -103,10 +103,10 @@ $(function() {
 
     //Only For Debug purpose
     // initializeGraphWithXDI(testData)
-    // initializeGraphWithXDI(attributeSingletons)
+    initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -171,7 +171,9 @@ function getLinkPathD(d){
     var valence1 = d.source.id + "-" + d.target.id;
     var valence2 = d.target.id + "-" + d.source.id;
 
-    if ((valence1 in nodeslinkmap) && (valence2 in nodeslinkmap)) {
+    var tmpMap = lastDrawData ? lastDrawData.map : nodeslinkmap; //Use the lastest map that only has the visible links
+
+    if ((valence1 in tmpMap) && (valence2 in tmpMap)) {
         return 'M' + x(sourceX) + ',' + y(sourceY) + 'A' + (dist) * getScaleRatio()+ ',' + (dist)* getScaleRatio() + ' 0 0,1 ' + x(targetX) + ',' + y(targetY);
     }
     else {
@@ -214,9 +216,12 @@ function restart(startForce,getNewData) {
         lastDrawData = getDrawData();
     }
     drawData = lastDrawData;
+
     //
-    // links
+    // Links
     //
+
+    //// Add new elements
     var linkCanvas = d3.select('#linkCanvas');
     link = linkCanvas.selectAll(".link")
         .data(drawData.links, function(d) { return d.id; });
@@ -228,7 +233,6 @@ function restart(startForce,getNewData) {
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
         .on('mouseleave',mouseleaveOnLinkHandler)
-
     
     newLinkGs.append("svg:path")
         .append("title")
@@ -240,18 +244,18 @@ function restart(startForce,getNewData) {
             return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);
         });  
 
-    
+    //// Adjust Classes
     link.classed('selected', function(d) {return d === selected_link;})
         .classed('relation', function(d) {return d.isRel === true;})
         .classed('literal', function(d) {return d.target.type === "literal";})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
 
-
     //
-    // nodes
+    // Nodes
     //
 
+    //// Add new elements
     var nodeCanvas = d3.select('#nodeCanvas');
     node = nodeCanvas.selectAll(".node")
         .data(drawData.nodes, function(d) {return d.id;});
@@ -272,37 +276,29 @@ function restart(startForce,getNewData) {
         .append("title")
         .text(function(d){return d.name});
         
-
     newNodes.append("svg:text")
         .attr('class', "textLabel")
         .attr("dx", 12)
         .attr("dy", ".35em")
 
-
+    //// Adjust Classes    
     node.classed("selected", function(d) { return (d === selected_node); })
         .classed("root", function(d) {return d.isRoot;})
         .classed("literal", function(d) {return (d.type === "literal");})
         .classed("folded",function(d){return d.isFolded;})
-    
+        .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
+
     node.select("text")
-        .text(function(d){
-            return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);
-        });
+        .text(function(d){return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);});
 
-
-
-
-    if(isFrozen)
-        node.each(function(d){d._fixed = d.fixed; d.fixed = true;})
-    else
-        node.each(function(d){if(d._fixed!=null)d.fixed=d._fixed;})
-
+    //
+    // Layout
+    //
     if(startForce)
     {
         initializeLayout(drawData.nodes, drawData.links);
-
         startDrag();
-    }
+    }    
 }
 
 function updateStatus(statusMessage, isOK,isEditing){
@@ -416,35 +412,18 @@ function trimString(string,length){
     return str;
 }
 
-function toggleFreeze () {
-    isFrozen = ! isFrozen;
-    restart(false,false);
+function toggleFreeze (newValue) {
+    if(newValue != null)
+        isFrozen = newValue;
+    else
+        isFrozen = ! isFrozen;
+
+    restart(true,false);
 
     d3.select('#freezeButton')
     .classed('off', !isFrozen)
-
     
+    d3.select('#unfreezeButton')
+    .classed('off', isFrozen)    
 }
-
-
-// function updateSim(linkdist, charge, gravity) {
-//     if (linkdist)
-//         force.linkDistance(linkdist);
-//     if (charge)
-//         force.charge(charge);
-//     if (gravity)
-//         force.gravity(gravity);
-//     restart(true,false);
-// }
-
-// function freezeSim(checkboxval) {
-//     if (checkboxval.checked) {
-//         isFrozen = true;
-//     } else {
-//         isFrozen = false;
-//     }
-//     restart(false,false);
-// }
-
-
 

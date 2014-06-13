@@ -25,7 +25,7 @@ function initializeZoom () {
 	 zoom = d3.behavior.zoom()
     .x(x)
     .y(y)
-    .scaleExtent([0.1,3])
+    .scaleExtent([0.01,10])
     .on("zoom",zoomEventHandler)
 
     zoom(svg);
