@@ -51,9 +51,7 @@ var LINK_TEXT_MAX_LENGTH = 20;
 // mouse event vars
 var MOUSE_WHEEL_SCALE_DELTA = 0.02;
 
-var selected_node = null,
-    selected_link = null,
-    mousedown_link = null,
+var mousedown_link = null,
     mousedown_node = null,
     mouseup_node = null,
     lastMousePos = null, //mouse pos when mouse down
@@ -86,3 +84,7 @@ var lastTransition = null;
 
 //Search
 var lastQuery = null;
+
+//Select
+var selected_nodes = null, // a collection of all the selected nodes
+    selected_links = null;

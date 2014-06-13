@@ -102,11 +102,10 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    // initializeGraphWithXDI(testData)
-    initializeGraphWithXDI(attributeSingletons)
+    // initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -138,8 +137,8 @@ function initializeGraph()
 
     drag_line=svg.select("#drag_line")
 
-    selected_node = null;
-    selected_link = null;
+    initializeSelection();
+
     mousedown_link = null;
     mousedown_node = null;
     mouseup_node = null;
@@ -186,7 +185,7 @@ function tickEventHandler() {
     
     node = svg.selectAll(".node");
     node.attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
-            .classed("selected", function(d) { return (d === selected_node); });
+            .classed("selected", function(d) { return (d.isSelected); });
 
     linkPath = svg.selectAll(".link path");
     linkPath.attr('d', getLinkPathD);
@@ -245,7 +244,7 @@ function restart(startForce,getNewData) {
         });  
 
     //// Adjust Classes
-    link.classed('selected', function(d) {return d === selected_link;})
+    link.classed('selected', function(d) {return d.isSelected;})
         .classed('relation', function(d) {return d.isRel === true;})
         .classed('literal', function(d) {return d.target.type === "literal";})
         .classed('left',function(d){return d.left})
@@ -282,7 +281,7 @@ function restart(startForce,getNewData) {
         .attr("dy", ".35em")
 
     //// Adjust Classes    
-    node.classed("selected", function(d) { return (d === selected_node); })
+    node.classed("selected", function(d) { return (d.isSelected); })
         .classed("root", function(d) {return d.isRoot;})
         .classed("literal", function(d) {return (d.type === "literal");})
         .classed("folded",function(d){return d.isFolded;})
