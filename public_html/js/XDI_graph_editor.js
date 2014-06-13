@@ -299,6 +299,7 @@ function restart(startForce,getNewData) {
         initializeLayout(drawData.nodes, drawData.links);
         startDrag();
     }    
+
 }
 
 function updateStatus(statusMessage, isOK,isEditing){

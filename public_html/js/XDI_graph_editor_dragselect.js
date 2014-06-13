@@ -44,7 +44,9 @@ function brushstart (d) {
 function brushend (d) {
 	// console.log("brushend")
 	var selectedNodes = d3.selectAll('.node.selected').data();
+	clearSelectedLinks();
 	setSelectedNodes(selectedNodes);
+	restart(false,false);
 
 	dragSelectBrush.clear();
 	d3.select('#dragSelectCanvas').call(dragSelectBrush)
@@ -64,7 +66,10 @@ function brushmove (d) {
 		d.isSelected = res;
 		return res;
 	})
+}
 
-	
+function setDragSelectAbility (canSelect) {
+	d3.select(".brush")
+	.style("pointer-events",canSelect? "all":"none");
 }
 
