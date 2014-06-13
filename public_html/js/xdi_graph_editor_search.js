@@ -23,6 +23,7 @@ THE SOFTWARE.
 */
 
 //Atomic operation for search by string in a set
+
 function searchElement (targetString,elementSet) {
 	var res;
 	res = elementSet.filter(function (d) {
