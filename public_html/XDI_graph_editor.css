@@ -1,5 +1,3 @@
-
-
 /* 
 The MIT License (MIT)
 
@@ -23,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-//Test
 
 /****************** HTML Layout ******************/
 *{
@@ -34,21 +31,22 @@ THE SOFTWARE.
 html{
   height: 100%;
   width:100%;
+
 }
 body{
   font-family: "Helvetica Neue","Helvetica";
-  height:96%;
+  height:100%;
   width:98%;
-  margin:1%;
+  margin:0% 1%;
 }
 
 .controlContainer{
-  height: 10%;
+  height: 5%;
   width: 100%;
 }
 
 .buttonContaiter{
-  padding:1% 0;
+  padding:0% 0;
 }
 .parameterContainer{
   padding:1% 0;
@@ -57,10 +55,14 @@ body{
 #drawing{
   position: relative;
   overflow: hidden;
-  height: 85%;
+  height: 90%;
   width: 100%;
 
-  border:2px solid #999;
+  border:1px solid #ccc;
+  
+  box-shadow:0px 0px 30px 3px rgba(0,0,0,0.3);
+
+  -webkit-user-select:none;
 }
 #mainCanvas {    
     cursor: default;
@@ -71,11 +73,11 @@ body{
 /********* HTML Components *********/
 
 .button {
-   background: rgba(120,120,120,1);//#67917A;
-   padding: 0.6em 1em;
+   background: rgba(66,124,102,1);//#67917A;
+   padding: 0.6em 1.5em;
    border-radius: 0px;
-   margin: 0 0.5em;
-   box-shadow: 0 0 0px 4px rgba(0,0,0,0.2);
+   margin: 0;
+/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.2); */
    
    color: white;
    font-size: 1em;
@@ -90,8 +92,8 @@ body{
 }
    
 .button:hover {
-   background: rgba(103,145,122,1);
-   box-shadow: 0 0 0px 4px rgba(0,0,0,0.3);
+   background: rgba(106,172,78,1);
+/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.3); */
 }
    
 .button:active {
@@ -115,11 +117,13 @@ body{
 }
 
 .legend{
-  margin: 0.1em;
+  margin: 0.2em 0;
   padding:0.3em;
   
-  background: rgba(100,100,100,0.5);
+  
+  background: rgba(100,100,100,0.3);
   color:#333;
+  border: 1px solid rgba(100,100,100,0.3);
   
   cursor:pointer;
   
@@ -132,6 +136,7 @@ body{
 
 .legend.off{
   opacity: 0.5;
+  background: rgba(39,134,88,0);
 }
 
 
@@ -139,19 +144,73 @@ body{
   background: rgba(103,145,122,0.8);
 }
 
+#freezeButtonsContainer{
+  margin: 0.5em 0;
+}
+
+.toggleButton{
+  width:48%;
+  
+   padding: 0.6em 0;
+   border-radius: 0px;
+   
+   
+   background: rgba(100,100,100,0.3);
+   color:#333;
+   border: 1px solid rgba(100,100,100,0.3);
+   
+   font-size: 1em;
+   font-family: "Helvetica Neue";
+   font-weight:200;
+   letter-spacing:1px;
+   
+   cursor: pointer;
+
+   -webkit-transition:background 0.2s, opacity 0.2s;
+}
+
+.toggleButton:focus {
+  outline: 0px;
+}
+
+
+.toggleButton.off{
+  opacity: 0.7;
+  background: rgba(100,100,100,0.1);
+}
+.toggleButton:hover{
+  background: rgba(103,145,122,0.8);
+}
+
+#freezeButtonsContainer .toggleButton:first-of-type{
+  border-top-left-radius:5px;
+  border-bottom-left-radius:5px;
+}
+
+#freezeButtonsContainer .toggleButton:last-of-type{
+  border-top-right-radius:5px;
+  border-bottom-right-radius:5px;
+}
+
 
 .searchContainer{
   position: absolute;
   top: 0%;
   right: 0%;
-  background:rgba(0,0,0,0.5);
-  padding:0.5em;
-  margin:0px;
-  text-align:left;
+  
   width:20%;
   min-width:300px;
   height:450px;
-  -webkit-transition:height 0.5s, right 0.5s, top 0.5s;
+  padding:0.5em;
+  margin:0px;
+  
+  background:rgba(220,220,220,0.85);
+  border:1px solid rgba(0,0,0,0.3);
+/*   border-left:5px solid rgba(0,207,129,0.4); */
+  
+  text-align:left;
+  
+  -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
 }
 
 .searchContainer.hidden{
@@ -183,7 +242,7 @@ body{
 
 
 .searchHeader{
-  border-bottom: 1px solid rgba(255,255,255,0.5);
+  border-bottom: 2px solid rgba(39,134,88,0.6);
   margin: 0;
   padding:0px;
   width:100%;
@@ -194,8 +253,8 @@ body{
   width:49%;
   margin:0;
   font-size:1.5em;
-  color:rgba(255,255,255,0.5);
-  font-weight:100;
+  color:rgba(0,0,0,0.5);
+  font-weight:200;
 }
 
 .searchHeader .itemcount{
@@ -205,15 +264,15 @@ body{
   margin:0;
   padding:0;
   font-size:1em;
-  color:rgba(255,255,255,0.5);
-  font-weight:100;
+  color:rgba(0,0,0,0.5);
+  font-weight:200;
 }
 .searchItem{
   padding:0.5em 0.5em 0.5em 0.2em;
  
-  font-weight:200;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.8);
+  font-weight:400;
+  border-bottom: 1px solid rgba(39,134,88,0.5);
+  color:rgba(0,0,0,0.5);
   background: rgba(0,0,0,0);
 
   cursor: pointer;
@@ -222,11 +281,11 @@ body{
 }
 
 .searchItem.literal{
-  color:rgba(168,219,168,0.8);
+  color:rgba(125,154,100,0.8);
 }
 
 .searchItem.relation{
-  color:rgba(252,157,154,0.8);
+  color:rgba(192,41,66,0.8);
 }
 
 
@@ -247,9 +306,9 @@ body{
   width:75%;
   padding:2px 5px;
   border-radius:15px;
-  background: rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.9);
-  
+  background: rgba(255,255,255,0.4);
+  color:rgba(0,0,0,0.5);
+  border: 1px solid rgba(100,100,100,0.3);
 /*   border: 1px inset black; */
 }
 
@@ -258,22 +317,23 @@ body{
 }
 #searchText::-webkit-input-placeholder 
 {
-  color:rgba(255,255,255,0.6);
+  color:rgba(100,100,100,0.6);
 }
 
 #searchText::-webkit-search-cancel-button
 {
-  color:rgba(255,255,255,0.6);
+  color:rgba(0,0,0,0.9);
 }
 
 .searchDoneButton{
 /*   border: 1px solid rgba(255,255,255,0.6); */
   border-radius:15px;
-  margin:0 5px;
+  margin:0 4px;
   padding:2px 10px;
 
-  background: rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.4);
+  color:rgba(0,0,0,0.5);
+  border: 1px solid rgba(100,100,100,0.3);
   
   font-size: 14px;
   cursor:pointer;
@@ -299,16 +359,19 @@ body{
 .instruction{
   color:#666;
   font-weight:200;
+  opacity: 0.9;
 }
 
 .instruction b{
   color:#444;
 }
 
+
+
 /****************** Graph Components ******************/
 
 #statusIndicator{
-    stroke-width: 3px;
+    stroke-width: 2px;
     pointer-events: none;
 }
 
@@ -317,7 +380,7 @@ body{
 }
 
 #statusIndicator.ok {
-    fill: lawngreen;    
+    fill: rgba(168,219,168,1);    
 }
 
 #statusIndicator.browse{
@@ -351,14 +414,14 @@ body{
 }
 
 #navSVG #svgRect{
-  fill:rgba(0,0,0,0.5);
+  fill:rgba(100,100,100,0.5);
   stroke:none;
 }
 
 #navSVG #viewRect{
   fill:none;
-  stroke:#333;
-  stroke-width:3;
+  stroke:rgba(100,100,100,0.8);
+  stroke-width:2;
 }
 
 /****************** Inside SVG ******************/
@@ -378,6 +441,8 @@ body{
   opacity: 0;
   pointer-events:none;
 }
+
+.node.fixed:hover,
 .node.matched:hover,
 .node:hover{
   fill:#79BD9A;
@@ -389,7 +454,7 @@ body{
 }
 
 .node.fixed {
-    fill: #f00;
+    fill: #777;
 }
 
 .node.root {
@@ -412,7 +477,7 @@ body{
 
 .node.matched{
   /*stroke:#556270;*/
-  fill:#4ECDC4;
+  fill:rgba(23,178,119,1);
 }
 
 .hide_node_label .node text{
@@ -514,7 +579,7 @@ body{
 
 
 .link.matched{
-  stroke:#4ECDC4;
+  stroke:rgba(23,178,119,1);
   opacity: 1;
 }
 

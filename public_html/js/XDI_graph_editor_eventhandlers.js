@@ -105,16 +105,12 @@ function keydownOnSVG() {
     if (suspendkeylistening)
         return;
     
-    if (lastKeyDown !== -1)
-        return;
 
     if(d3.event.srcElement == d3.select("#searchText").node())
         return;
     
     lastKeyDown = d3.event.keyCode;
 
-    // if (!selected_node && !selected_link)
-    //     return;
 
     switch (d3.event.keyCode) {
         case 8: // backspace
@@ -191,11 +187,14 @@ function keydownOnSVG() {
             }
             
             break;
+        case 70: // F
+            if(selected_node)
+                toggleNodeFixed(selected_node);
+            break;
     }
 }
 
 function keyupOnSVG() {
-    lastKeyDown = -1;
 
     // shift
     switch(d3.event.keyCode){
@@ -213,9 +212,9 @@ function mousedownOnNodeHandler(d){
     // if (d3.event.shiftKey || d3.event.altKey)
     //     return;
     mousedown_node = d;
-    if (mousedown_node === selected_node)
-        selected_node = null;
-    else
+    // if (mousedown_node === selected_node)
+    //     selected_node = null;
+    // else
         selected_node = mousedown_node;
     selected_link = null;
 
@@ -311,7 +310,6 @@ function createNodeByClick () {
     var point = d3.mouse(svg.node());
     newnode.x = point[0];
     newnode.y = point[1];
-    
     restart();
 
 }
@@ -359,4 +357,14 @@ function showTrimmedName (HTMLElement) {
     d3.select(HTMLElement)
         .select("text")
         .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); })
+}
+
+function toggleNodeFixed (node) {
+    setNodeFixed(node,!node.fixed);
+}
+
+function setNodeFixed (node, newValue) {
+    node._fixed = newValue; //Record the fixed is set intentionally
+    node.fixed =newValue;
+    restart(false,false)
 }
