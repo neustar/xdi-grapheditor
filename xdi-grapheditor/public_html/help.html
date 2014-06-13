@@ -27,11 +27,11 @@ THE SOFTWARE.
         <title>Help</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="js/libs/xdi-js/css/style.css" TYPE="text/css" MEDIA="screen">
+        <!-- <link rel="stylesheet" href="js/libs/xdi-js/css/style.css" TYPE="text/css" MEDIA="screen"> -->
         <link rel="stylesheet" href="js/libs/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"/>
         <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-1.10.2.js"></script>
         <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
-        <script type="text/javascript" src="js/libs/xdi-js/js/lodash.compat.min.js"></script>
+        <!-- // <script type="text/javascript" src="js/libs/xdi-js/js/lodash.compat.min.js"></script> -->
         <script type="text/javascript">
             $(function() {
                 $( "#tabs" ).tabs();
@@ -48,17 +48,18 @@ THE SOFTWARE.
                 <h1>Mouse Functions</h1>
                 With your mouse, you can do the following:
                 <ol>
-                    <li><b>Left-click</b>: Add a new node.</li>
-                    <li><b>Shift + Click & Drag</b> a node: Move a node to fixed position.</li>
-                    <li><b>Double-click</b> a node: Free a fixed node from its position (i.e. allow it to float & position itself relatively to other nodes in the graph).</li>
-                    <li><b>Drag</b> one node towards another: Add a link between the 2 nodes. It is recommended to fix the nodes' locations (see above) before attempting to link them (otherwise you'll have to chase the node...)</li>
+                    <li><b>Left-click</b>: Select & Drag a new node.</li>
+                    <li><b>Shift + Click on Canvas</b>: Create a new node.</li>
+                    <li><b>Shift + Drag</b> from one node towards another: Add a link between the 2 nodes.</li>
+                    <li><b>Double-click</b> a node: Fold the subtree of the node.</li>
                 </ol>            
                 <h1>Node related keys</h1>
                 Once a node is selected (by clicking once on it), the following keys are enabled:
                 <ol>
                     <li><b>R</b>: Switch a node's type to <i>Root</i>. Note that <i>common</i> or <i>inner</i> roots are not distinguished. If the selected node was already of <i>Root</i> type, it will be changed back to <i>Context</i>.</li>
+                    <li><b>F</b>: Fix/Unfix the movement of a node.</li>
                     <li><b>Enter</b>: Rename the node.</li>
-                    <li><b>delete</b>: Delete the node along with all attached links.</li>
+                    <li><b>Delete/Backspace</b>: Delete the node along with all attached links.</li>
                 </ol>
                 <h1>Link related keys</h1>
                 Once a link is selected (by clicking once on it), the following keys are enabled:
@@ -66,8 +67,24 @@ THE SOFTWARE.
                     <li><b>R</b>: Switch a link's type to <i>Relationship</i>. If the selected link was already of <i>Relational</i> type, it will be changed back to <i>Context</i>.</li>
                     <li><b>L</b>: Inverse a link's direction.</li>
                     <li><b>Enter</b>: Rename the link.</li>
-                    <li><b>delete</b>: Delete the link.</li>
+                    <li><b>Delete/Backspace</b>: Delete the link.</li>
                 </ol>
+                <h1>Viewport Control</h1>
+                Press and hold option/alt key, you can do the following:
+                <ol>
+                    <li><b>Drag</b>: Pan the viewport.</li>
+                    <li><b>Scroll</b> Mouse wheel: Scale the viewport.</li>
+                </ol>
+                A navigator at the bottom right indicates the size and position of viewport.
+                <h1>Search</h1>
+                There is a search bar at the top right. You can perform keyword search on nodes and links:
+                <ol>
+                    <li><b>Make a query</b>: Click on the search bar and type your query. The results will be listed and updated as you are typing.</li>
+                    <li><b>Browse Results</b>: The names of matches are listed. The lists are scrollable. All matches are highlighted in the graph.</li>
+                    <li><b>See it in graph</b>: Click on an item and the view will pan and zoom to the node or link. </li>
+                    <li><b>Done</b>: Click on done to hide the list.</li>
+                </ol>
+
             </div>
             <div id="tabs-2">
                 <h1>Tutorial</h1>
