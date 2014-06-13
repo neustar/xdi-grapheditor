@@ -57,11 +57,11 @@ function mousedownOnSVG() {
     {
         if(d3.event.shiftKey)
             createNodeByClick();
-        else
-        {
-            clearAllSelection();
-            restart(false,false);
-        }
+        // else
+        // {
+        //     clearAllSelection();
+        //     restart(false,false);
+        // }
     }
 }
 
