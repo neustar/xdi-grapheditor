@@ -22,26 +22,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+
+//Atomic Operation for add a new selection (link or node)
+function addNewSelection (objToAdd, selectionSet) {
+	if(selectionSet!=null&&!objToAdd.isSelected)
+	{
+		selectionSet.push(objToAdd);
+		objToAdd.isSelected = true;
+	}
+}
+
+//Atomic Operation for clear selection set
+function clearSelectionSet (selectionSet) {
+	if(selectionSet!=null)
+		selectionSet.forEach(function(d) { d.isSelected=false; })
+	selectionSet = [];
+	return selectionSet;
+}
+
+//Atomic Operation for checking emptiness
+function hasSelections (selectionSet) {
+	return selectionSet != null && selectionSet.length > 0;
+}
+
+
+//Interfaces for global use
+
 function initializeSelection () {
-	clearSelectedNodes();
-    clearSelectedLinks();
+	clearAllSelection();
 }
 
 function addSeletedNode (nodeToAdd) {
-	if(selected_nodes!=null&&!nodeToAdd.isSelected)
-	{
-		selected_nodes.push(nodeToAdd);
-		nodeToAdd.isSelected = true;
-	}
-
+	addNewSelection(nodeToAdd,selected_nodes);
 }
 
 function addSeletedLink (linkToAdd) {
-	if(selected_links != null&&!linkToAdd.isSelected)
-	{
-		selected_links.push(linkToAdd);
-		linkToAdd.isSelected = true;
-	}
+	addNewSelection(linkToAdd,selected_links);
 }
 
 function clearAllSelection () {
@@ -50,21 +66,17 @@ function clearAllSelection () {
 }
 
 function clearSelectedNodes (){
-	if(selected_nodes!=null)
-		selected_nodes.forEach(function(d) { d.isSelected=false; })
-	selected_nodes = [];
+	selected_nodes = clearSelectionSet(selected_nodes);
 }
 
 function clearSelectedLinks () {
-	if(selected_links != null)
-		selected_links.forEach(function(d) { d.isSelected=false; })
-	selected_links = [];
+	selected_links = clearSelectionSet(selected_links);
 }
 
 function hasSelectedNodes () {
-	return selected_nodes != null && selected_nodes.length > 0;
+	return hasSeletions(selected_nodes);
 }
 
 function hasSelectedLinks () {
-	return selected_links != null && selected_links.length > 0;
+	return hasSeletions(selected_links);
 }
