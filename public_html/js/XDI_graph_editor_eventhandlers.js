@@ -53,9 +53,6 @@ function mousedownOnSVG() {
         return;
     }
 
-    // if (d3.event.shiftKey || mousedown_node || mousedown_link || isPanning || isDraggingLine)
-    //     return;
-
     if(d3.event.srcElement == svg.node())
     {
         if(d3.event.shiftKey)
@@ -75,7 +72,6 @@ function mouseupOnSVG() {
         endDragLine();
     else if (isPanning)
         endPanView();
-    
 
     resetMouseVars();
 }
@@ -114,22 +110,7 @@ function keydownOnSVG() {
         case 8: // backspace
         case 46: // delete
             d3.event.preventDefault(); //Otherwise will trigger "Back" in browser
-            if (hasSelectedNodes()) {
-                selected_nodes.forEach(function (d) {
-                    removeNode(d);
-                    removeLinksOfNode(d);
-                })
-                clearSelectedNodes();
-                restart();
-            }
-
-            if (hasSelectedLinks()) {
-                selected_links.forEach(function(d) {removeLink(d)});
-                clearSelectedLinks();
-                restart();
-            }
-
-            
+            deleteCommand();
             break;
             
         case 16://shift
@@ -137,84 +118,25 @@ function keydownOnSVG() {
             break;
 
         case 66: // B
-            if (hasSelectedLinks()) {
-                // set link direction to both left and right
-                selected_links.forEach(function(d) {
-                    d.left = true;
-                    d.right = true;
-                });
-                
-                restart();
-            }
-            
+            setDoubleArrowCommand();
             break;
             
         case 82: // R
-            // toggling a link relationship status on/off
-            if (hasSelectedLinks()) {
-                selected_links.forEach(function(d) {
-                    setLinkIsRel(d,!d.isRel);
-                });
-                restart();
-            }
-            if (hasSelectedNodes()) {
-            // or setting a node as root // updating graphics too.
-                selected_nodes.forEach(function (d) {
-                    setNodeIsRoot(d,!d.isRoot)
-                })
-                
-                restart();
-            }
+            setRelationCommand();
+            setRootNodeCommand();
             break;
             
         case 13: // Enter - update the labels of selected object
-            if (hasSelectedLinks()) {
-                selected_links.forEach(function(d) {
-                    var existinglabel = d.name;
-                    var labelval = prompt("Please enter a new value for this label", existinglabel);
-                    setLinkLabel(d,labelval);
-                });
-                restart(false,false);    
-            }
-            if (hasSelectedNodes()) {
-                selected_nodes.forEach(function(d) {
-                var existingname = d.name;
-                var nodename = prompt("Please enter a new name for this node", existingname);
-                setNodeLabel(d,nodename);
-                })
-                restart(false,false);
-            }
-            
-            
+            editNameCommand();
             break;
+
         case 76: // L
-            // Inversing the link direction
-            if (hasSelectedLinks()) {
-                selected_links.forEach(function(d) {
-                    inverseLinkDirection(d);
-                });
-                restart();
-            }
-            if (hasSelectedNodes()) {
-                // changing the Node type to literal or
-                // back to the default contextual 
-                selected_nodes.forEach(function(d) {
-                    var newType = "";
-                    if (d.type !== "literal") 
-                        newType = "literal";
-                    else
-                        newType = "context"
-                    d.type = newType;
-                })
-                
-                restart();
-            }
-            
+            invertLinkCommand();
+            setLiteralNodeCommand();
             break;
+
         case 70: // F
-            if(hasSelectedNodes())
-                selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
-                
+            fixNodeCommand();
             break;
     }
 }
@@ -291,100 +213,18 @@ function mouseleaveOnNodeHandler (d) {
     showTrimmedName(this);
 }
 
-
-
 function dblclickOnNodeHandler(d){
     toggleFoldNode(d);   
 }
 
 
 function mousedownOnLinkHandler(d) {
-    
     // select link
     mousedown_link = d;
-    
     if (!d3.event.shiftKey&&!d.isSelected)
         clearAllSelection();
 
     addSeletedLink(mousedown_link);
 
     restart(false,false);
-}
-
-
-
-
-function createNodeByClick () {
-    var nodename = prompt("Please enter the node's name", "");
-    if(nodename === null)
-        return;
-    
-    var ind = findNodeIndex(jsonnodes, nodename);
-    if (ind !== null) {
-        if (nodename !== "")
-        // Name already taken
-            alert("Node already exists!");
-        return;
-    }
-    var newnode = addNode(nodename,false,false);
-    var point = d3.mouse(svg.node());
-    newnode.x = point[0];
-    newnode.y = point[1];
-    restart();
-
-}
-
-function startDragLine(){
-    // reposition drag line
-    drag_line
-            .classed("hidden",false)
-            .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
-    isDraggingLine = true;
-    restart(true,false);
-}
-
-function updateDragLine(){
-
-    if(isDraggingLine && mousedown_node && curMousePos != null)
-    {
-        var startPos = {x:mousedown_node.x,y:mousedown_node.y};
-        var endPos = curMousePos;
-        drag_line.attr('d', 'M' + x(startPos.x) + ',' + y(startPos.y) + 'L' +
-                (endPos.x) + ',' + (endPos.y));
-    }   
-}
-
-
-function endDragLine(){
-    if (isDraggingLine) {
-        drag_line.classed("hidden",true)
-        isDraggingLine = false;
-    }
-}
-
-function startDrag(){
-    d3.selectAll('.node')
-    .call(nodeDrag);
-}
-
-function showShortName (HTMLElement) {
-    d3.select(HTMLElement)
-        .select("text")
-        .text(function(d) { return d.shortName; })
-}
-
-function showTrimmedName (HTMLElement) {
-    d3.select(HTMLElement)
-        .select("text")
-        .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); })
-}
-
-function toggleNodeFixed (node) {
-    setNodeFixed(node,!node.fixed);
-}
-
-function setNodeFixed (node, newValue) {
-    node._fixed = newValue; //Record the fixed is set intentionally
-    node.fixed =newValue;
-    restart(false,false)
 }
