@@ -39,6 +39,8 @@ function mousemoveOnSVG() {
 }
 
 function mousedownOnSVG() {
+    if(!d3.event.button == 0 ) //Only react to left click
+        return;
 
     lastMousePos = d3.mouse(svg.node());
 
@@ -54,23 +56,19 @@ function mousedownOnSVG() {
     // if (d3.event.shiftKey || mousedown_node || mousedown_link || isPanning || isDraggingLine)
     //     return;
 
-    if(d3.event.button == 0 && d3.event.shiftKey) // is left click with shift
-    {
-        createNodeByClick();
-        return;
-    }
-
     if(d3.event.srcElement == svg.node())
     {
-        clearAllSelection();
+        if(d3.event.shiftKey)
+            createNodeByClick();
+        else
+        {
+            clearAllSelection();
+            restart(false,false);
+        }
     }
 }
 
-function clearAllSelection () {
-    selected_node = null;
-    selected_link = null;
-    restart(false,false);
-}
+
 
 function mouseupOnSVG() {
     if(isDraggingLine)
@@ -116,16 +114,22 @@ function keydownOnSVG() {
         case 8: // backspace
         case 46: // delete
             d3.event.preventDefault(); //Otherwise will trigger "Back" in browser
-            if (selected_node) {
-                removeNode(selected_node);
-                removeLinksOfNode(selected_node);
-            } else if (selected_link) {                
-                removeLink(selected_link)
+            if (hasSelectedNodes()) {
+                selected_nodes.forEach(function (d) {
+                    removeNode(d);
+                    removeLinksOfNode(d);
+                })
+                clearSelectedNodes();
+                restart();
             }
-            selected_link = null;
-            selected_node = null;
 
-            restart();
+            if (hasSelectedLinks()) {
+                selected_links.forEach(function(d) {removeLink(d)});
+                clearSelectedLinks();
+                restart();
+            }
+
+            
             break;
             
         case 16://shift
@@ -133,10 +137,13 @@ function keydownOnSVG() {
             break;
 
         case 66: // B
-            if (selected_link) {
+            if (hasSelectedLinks()) {
                 // set link direction to both left and right
-                selected_link.left = true;
-                selected_link.right = true;
+                selected_links.forEach(function(d) {
+                    d.left = true;
+                    d.right = true;
+                });
+                
                 restart();
             }
             
@@ -144,26 +151,37 @@ function keydownOnSVG() {
             
         case 82: // R
             // toggling a link relationship status on/off
-            if (selected_link) {
-                setLinkIsRel(selected_link,!selected_link.isRel);
+            if (hasSelectedLinks()) {
+                selected_links.forEach(function(d) {
+                    setLinkIsRel(d,!d.isRel);
+                });
                 restart();
-            } else if (selected_node) {
+            }
+            if (hasSelectedNodes()) {
             // or setting a node as root // updating graphics too.
-                setNodeIsRoot(selected_node,!selected_node.isRoot)
+                selected_nodes.forEach(function (d) {
+                    setNodeIsRoot(d,!d.isRoot)
+                })
+                
                 restart();
             }
             break;
             
         case 13: // Enter - update the labels of selected object
-            if (selected_link) {
-                var existinglabel = selected_link.name;
-                var labelval = prompt("Please enter a new value for this label", existinglabel);
-                setLinkLabel(selected_link,labelval);
+            if (hasSelectedLinks()) {
+                selected_links.forEach(function(d) {
+                    var existinglabel = d.name;
+                    var labelval = prompt("Please enter a new value for this label", existinglabel);
+                    setLinkLabel(d,labelval);
+                });
                 restart(false,false);    
-            } else if (selected_node) {
-                var existingname = selected_node.name;
+            }
+            if (hasSelectedNodes()) {
+                selected_nodes.forEach(function(d) {
+                var existingname = d.name;
                 var nodename = prompt("Please enter a new name for this node", existingname);
-                setNodeLabel(selected_node,nodename);
+                setNodeLabel(d,nodename);
+                })
                 restart(false,false);
             }
             
@@ -171,25 +189,32 @@ function keydownOnSVG() {
             break;
         case 76: // L
             // Inversing the link direction
-            if (selected_link) {
-                inverseLinkDirection(selected_link);
+            if (hasSelectedLinks()) {
+                selected_links.forEach(function(d) {
+                    inverseLinkDirection(d);
+                });
                 restart();
-            } else if (selected_node) {
+            }
+            if (hasSelectedNodes()) {
                 // changing the Node type to literal or
-                // back to the default contextual  
-                var newType = "";
-                if (selected_node.type !== "literal") 
-                    newType = "literal";
-                else
-                    newType = "context"
-                selected_node.type = newType;
+                // back to the default contextual 
+                selected_nodes.forEach(function(d) {
+                    var newType = "";
+                    if (d.type !== "literal") 
+                        newType = "literal";
+                    else
+                        newType = "context"
+                    d.type = newType;
+                })
+                
                 restart();
             }
             
             break;
         case 70: // F
-            if(selected_node)
-                toggleNodeFixed(selected_node);
+            if(hasSelectedNodes())
+                selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
+                
             break;
     }
 }
@@ -208,15 +233,11 @@ function keyupOnSVG() {
 function mousedownOnNodeHandler(d){
     if (d3.event.altKey)
         return;
-
-    // if (d3.event.shiftKey || d3.event.altKey)
-    //     return;
     mousedown_node = d;
-    // if (mousedown_node === selected_node)
-    //     selected_node = null;
-    // else
-        selected_node = mousedown_node;
-    selected_link = null;
+    
+    if(!d3.event.shiftKey&&!d.isSelected) //If shift not press and the nodes is not part of the selection
+        clearAllSelection();
+    addSeletedNode(mousedown_node);
 
     restart(false,false);
 
@@ -248,8 +269,8 @@ function mouseupOnNodeHandler(d) {
         target = mouseup_node;
         var link = addLinkBetweenNodes(source,target,false,true);
         // select new link
-        selected_link = link;
-        selected_node = null;
+        clearAllSelection();
+        addSeletedLink(link);
         restart();
     }
 }
@@ -278,16 +299,15 @@ function dblclickOnNodeHandler(d){
 
 
 function mousedownOnLinkHandler(d) {
-    if (d3.event.shiftKey)
-        return;
-
+    
     // select link
     mousedown_link = d;
-    if (mousedown_link === selected_link)
-        selected_link = null;
-    else
-        selected_link = mousedown_link;
-    selected_node = null;
+    
+    if (!d3.event.shiftKey&&!d.isSelected)
+        clearAllSelection();
+
+    addSeletedLink(mousedown_link);
+
     restart(false,false);
 }
 
