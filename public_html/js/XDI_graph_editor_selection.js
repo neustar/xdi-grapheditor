@@ -28,7 +28,7 @@ function initializeSelection () {
 }
 
 function addSeletedNode (nodeToAdd) {
-	if(selected_nodes!=null)
+	if(selected_nodes!=null&&!nodeToAdd.isSelected)
 	{
 		selected_nodes.push(nodeToAdd);
 		nodeToAdd.isSelected = true;
@@ -37,7 +37,7 @@ function addSeletedNode (nodeToAdd) {
 }
 
 function addSeletedLink (linkToAdd) {
-	if(selected_links != null)
+	if(selected_links != null&&!linkToAdd.isSelected)
 	{
 		selected_links.push(linkToAdd);
 		linkToAdd.isSelected = true;
