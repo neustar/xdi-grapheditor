@@ -25,8 +25,8 @@ THE SOFTWARE.
 
 // Global D3/SVG vars
 //SVG Dimensions
-var totalWidth = 1400;
-var totalHeight = 600;
+var totalWidth = 1800;
+var totalHeight = 800;
 var svgMargin = {top:0,left:0,right:0,bottom:0}
 var svgWidth = totalWidth - svgMargin.left - svgMargin.right;
 var svgHeight = totalHeight - svgMargin.top - svgMargin.bottom;

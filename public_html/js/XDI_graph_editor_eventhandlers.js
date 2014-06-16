@@ -234,3 +234,8 @@ function mousedownOnLinkHandler(d) {
 
     restart(false,false);
 }
+
+function windowResizeHandler () {
+    svgWidth = window.innerWidth;
+    svgHeight = window.innerHeight;
+}

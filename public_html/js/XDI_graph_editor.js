@@ -56,27 +56,29 @@ $(function() {
         }
     });
     
-    //Define event handler for sliders
-    var $linkdistslider = $('input[name="linkdistslider"]');
-    var $chargeslider = $('input[name="chargeslider"]');
-    var $gravityslider = $('input[name="gravityslider"]');
+    // //Define event handler for sliders
+    // var $linkdistslider = $('input[name="linkdistslider"]');
+    // var $chargeslider = $('input[name="chargeslider"]');
+    // var $gravityslider = $('input[name="gravityslider"]');
     
-    $linkdistslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val());
-        updateSim(val, null, null);
-    });
-    $chargeslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val());
-        updateSim(null, val, null);
-    });
-    $gravityslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val())/10;
-        updateSim(null, null , val);
-    });
+    // $linkdistslider.bind('change', function(e) {
+    //     e.preventDefault();
+    //     var val = parseInt($(this).val());
+    //     updateSim(val, null, null);
+    // });
+    // $chargeslider.bind('change', function(e) {
+    //     e.preventDefault();
+    //     var val = parseInt($(this).val());
+    //     updateSim(null, val, null);
+    // });
+    // $gravityslider.bind('change', function(e) {
+    //     e.preventDefault();
+    //     var val = parseInt($(this).val())/10;
+    //     updateSim(null, null , val);
+    // });
 
+
+    
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")
         // .attr("width", "100%")//totalWidth)
@@ -91,10 +93,15 @@ $(function() {
         .on("keydown", keydownOnSVG)
         .on('keyup', keyupOnSVG);
 
+    d3.select(window)
+        .on('resize',windowResizeHandler)
 
     //Initialize SVG Components
-    x = d3.scale.linear().domain([0,svgWidth]).range([0,svgWidth]);
-    y = d3.scale.linear().domain([0,svgHeight]).range([0,svgHeight]);
+
+    //Set the range to the size of user's screen resolution.
+    //Otherwise the drag select, using x and y will have boudary for dragging
+    x = d3.scale.linear().domain([0,window.screen.availWidth]).range([0,window.screen.availWidth]);
+    y = d3.scale.linear().domain([0,window.screen.availHeight]).range([0,window.screen.availHeight]);
 
 
     // initializeGraphWithString("{\"treeData\":{},\"relData\":{}}");
@@ -102,10 +109,10 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    // initializeGraphWithXDI(attributeSingletons)
+    initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
