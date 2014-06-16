@@ -208,10 +208,7 @@ function addStatement(subject, predicate, object, isrel, statement) {
 function addNode(name,isLiteral, isRoot, shortName){
     if(shortName == null)
         shortName = name;
-    var newNode = {id: ++lastNodeId, parents:[], children:[]};
-    newNode.type = isLiteral ? "literal":"context";
-    newNode.name = name;
-    newNode.shortName = shortName;
+    var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? "literal":"context");
     setNodeIsRoot(newNode,isRoot);
     jsonnodes.push(newNode);
     return newNode;
@@ -227,10 +224,10 @@ function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRel,shortName){
     if(linkObject)//if link not added, then link exists, no need to add new link.
         return;
 
-    var newlink = {name: linkName, shortName:shortName, id:++lastLinkId, source: sourceNode, target: targetNode, left: isLeft, right: isRight};    
+    var newlink = new XDILink(++lastLinkId,linkName,shortName,isLeft, isRight, sourceNode, targetNode);
     if (isRel)
         newlink.isRel = true;
-    //TODO: defines the parent and children for XDI graph
+    
     sourceNode.children.push(targetNode)
     targetNode.parents.push(sourceNode);
     
