@@ -80,7 +80,7 @@ function editNameCommand(){
             var labelval = prompt("Please enter a new value for this label", existinglabel);
             setLinkLabel(d,labelval);
         });
-        restart(false,false);    
+        restart(false,false);
     }
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function(d) {

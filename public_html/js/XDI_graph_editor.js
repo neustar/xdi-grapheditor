@@ -236,7 +236,7 @@ function restart(startForce,getNewData) {
     link.exit().remove();
    
     var newLinkGs = link.enter().append("g")
-        .attr("class", "link namable")
+        .attr("class", "link selectable")
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
         .on('mouseleave',mouseleaveOnLinkHandler)
@@ -270,7 +270,7 @@ function restart(startForce,getNewData) {
     node.exit().remove();
 
     var newNodes = node.enter().append("svg:g")
-            .attr("class", "node namable")
+            .attr("class", "node selectable")
             .on('mouseenter',mouseenterOnNodeHandler)
             .on('mouseleave',mouseleaveOnNodeHandler)
 

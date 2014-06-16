@@ -46,7 +46,7 @@ function brushend (d) {
 	var selectedNodes = d3.selectAll('.node.selected').data();
 	clearSelectedLinks();
 	setSelectedNodes(selectedNodes);
-	restart(false,false);
+	updateSelectionClass();
 
 	dragSelectBrush.clear();
 	d3.select('#dragSelectCanvas').call(dragSelectBrush)
@@ -57,16 +57,20 @@ function brushmove (d) {
 	var extent = dragSelectBrush.extent();
 	
 	d3.selectAll('.node')
-	.classed('selected',function(d) { 
-		var Rx = x.invert(NODE_RADIUS) - x.invert(0);
-		var Ry = y.invert(NODE_RADIUS) - y.invert(0);
-		var res = extent[0][0] - Rx  <= d.x && d.x < extent[1][0] + Rx
+	.classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);})
+
+	// updateSelectionClass("node");
+}
+
+function isInExtent (d,extent) {
+	var Rx = x.invert(NODE_RADIUS) - x.invert(0);
+	var Ry = y.invert(NODE_RADIUS) - y.invert(0);
+	return extent[0][0] - Rx  <= d.x && d.x < extent[1][0] + Rx
 		&& extent[0][1] - Ry <= d.y && d.y < extent[1][1] + Ry; 
 
-		d.isSelected = res;
-		return res;
-	})
 }
+
+
 
 function setDragSelectAbility (canSelect) {
 	d3.select(".brush")

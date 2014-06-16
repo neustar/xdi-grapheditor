@@ -86,3 +86,12 @@ function hasSelectedNodes () {
 function hasSelectedLinks () {
 	return hasSelections(selected_links);
 }
+
+function updateSelectionClass (className) {
+	if(className != null)
+		className = "." + className;
+	else
+		className = "";
+	d3.selectAll(".selectable"+className)
+	.classed("selected",function(d) { return d.isSelected; })
+}

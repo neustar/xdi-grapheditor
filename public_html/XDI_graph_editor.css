@@ -449,7 +449,7 @@ body{
 }
 
 .node.selected {
-    stroke: #3B8686;
+    stroke: rgba(23,178,119,1);//#3B8686;
     stroke-width: 4px;
 }
 
@@ -463,6 +463,11 @@ body{
 
 .node.literal {
     stroke: #7D9A64;    
+}
+
+.node.selected {
+    stroke: rgba(23,178,119,1);//#3B8686;
+    stroke-width: 4px;
 }
 
 .hide_literal .node.literal{
@@ -531,7 +536,7 @@ body{
 
 .link.selected {
     /*stroke-dasharray: 10,2;*/
-    stroke: #3B8686 !important; //Find a better way without !important
+    stroke: rgba(23,178,119,1) !important; //Find a better way without !important
 }
 
 .link.relation {
