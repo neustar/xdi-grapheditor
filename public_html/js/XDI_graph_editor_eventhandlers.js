@@ -167,7 +167,7 @@ function mousedownOnNodeHandler(d){
         clearAllSelection();
     addSeletedNode(mousedown_node);
 
-    restart(false,false);
+    updateSelectionClass();
 
     if(d3.event.shiftKey)
         startDragLine();
@@ -232,7 +232,7 @@ function mousedownOnLinkHandler(d) {
 
     addSeletedLink(mousedown_link);
 
-    restart(false,false);
+    updateSelectionClass();
 }
 
 function windowResizeHandler () {
