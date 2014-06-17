@@ -25,6 +25,7 @@ THE SOFTWARE.
 // Initializing the graph with XDI statements.
 function initializeGraphWithXDI(data) {
     clearGraph();
+
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
     $.each(lines, function(i,d) {
@@ -82,7 +83,7 @@ function isRootToCheck(d)
 }
 
 function getDrawData2(root){
-   return {nodes:jsonnodes,links:jsonlinks};
+   return {nodes:jsonnodes,links:jsonlinks,map:nodeslinkmap};
 }
 function getDrawData(root){
     if(jsonnodes==null||jsonnodes.length == 0)
@@ -189,14 +190,14 @@ function addStatement(subject, predicate, object, isrel, statement) {
     if (predicate === null)
         predicate = "&";
     var searchres = findNodeIndex(jsonnodes, subject);
-    if (searchres === null) {
+    if (searchres == null) {
         var isRoot = subject === "";
         subjectnode = addNode(subject,false,isRoot);
     } else
         subjectnode = jsonnodes[searchres];
     
     searchres = findNodeIndex(jsonnodes, object);
-    if (searchres === null) {
+    if (searchres == null) {
         objectnode = addNode(object,isLiteral,false, statement.object()._string);
     } else
         objectnode = jsonnodes[searchres];

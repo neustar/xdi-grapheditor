@@ -49,7 +49,6 @@ $(function() {
         },
         close: function() {
             if ((importedXDI !== undefined) && (importedXDI !== "")) {
-                clearGraph();
                 suspendkeylistening = false;
                 initializeGraphWithXDI(importedXDI);
             }
@@ -93,8 +92,8 @@ $(function() {
         .on("keydown", keydownOnSVG)
         .on('keyup', keyupOnSVG);
 
-    d3.select(window)
-        .on('resize',windowResizeHandler)
+    // d3.select(window)
+    //     .on('resize',windowResizeHandler)
 
     //Initialize SVG Components
 
@@ -109,10 +108,11 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons)
+    // initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
+    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")

@@ -235,7 +235,7 @@ function mousedownOnLinkHandler(d) {
     updateSelectionClass();
 }
 
-function windowResizeHandler () {
-    svgWidth = window.innerWidth;
-    svgHeight = window.innerHeight;
-}
+// function windowResizeHandler () {
+//     svgWidth = window.innerWidth;
+//     svgHeight = window.innerHeight;
+// }

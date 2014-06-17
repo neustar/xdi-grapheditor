@@ -77,6 +77,8 @@ var nodeslinkmap = {};
 var jsonnodes, jsonlinks;
 var lastDrawData = null;
 
+var currentGraphID = 1, lastGraphId = 0;
+
 //Zoom
 var navScale = 0.2;
 var navX,navY; //axis for navigator svg
