@@ -49,7 +49,6 @@ $(function() {
         },
         close: function() {
             if ((importedXDI !== undefined) && (importedXDI !== "")) {
-                clearGraph();
                 suspendkeylistening = false;
                 initializeGraphWithXDI(importedXDI);
             }
@@ -93,10 +92,15 @@ $(function() {
         .on("keydown", keydownOnSVG)
         .on('keyup', keyupOnSVG);
 
+    // d3.select(window)
+    //     .on('resize',windowResizeHandler)
 
     //Initialize SVG Components
-    x = d3.scale.linear().domain([0,svgWidth]).range([0,svgWidth]);
-    y = d3.scale.linear().domain([0,svgHeight]).range([0,svgHeight]);
+
+    //Set the range to the size of user's screen resolution.
+    //Otherwise the drag select, using x and y will have boudary for dragging
+    x = d3.scale.linear().domain([0,window.screen.availWidth]).range([0,window.screen.availWidth]);
+    y = d3.scale.linear().domain([0,window.screen.availHeight]).range([0,window.screen.availHeight]);
 
 
     // initializeGraphWithString("{\"treeData\":{},\"relData\":{}}");
@@ -104,11 +108,11 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    // initializeGraphWithXDI(testData)
-    initializeGraphWithXDI(attributeSingletons)
+    // initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
+    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -136,8 +140,8 @@ function initializeGraph()
 
     drag_line=svg.select("#drag_line")
 
-    selected_node = null;
-    selected_link = null;
+    initializeSelection();
+
     mousedown_link = null;
     mousedown_node = null;
     mouseup_node = null;
@@ -147,6 +151,7 @@ function initializeGraph()
     labels = d3.select("#labelsCanvas").selectAll(".label");
 
     initializeZoom();
+    initializeDragSelect();
 
     restart();
 }
@@ -185,7 +190,7 @@ function tickEventHandler() {
     
     node = svg.selectAll(".node");
     node.attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
-            .classed("selected", function(d) { return (d === selected_node); });
+            .classed("selected", function(d) { return (d.isSelected); });
 
     linkPath = svg.selectAll(".link path");
     linkPath.attr('d', getLinkPathD);
@@ -228,7 +233,7 @@ function restart(startForce,getNewData) {
     link.exit().remove();
    
     var newLinkGs = link.enter().append("g")
-        .attr("class", "link namable")
+        .attr("class", "link selectable")
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
         .on('mouseleave',mouseleaveOnLinkHandler)
@@ -244,7 +249,7 @@ function restart(startForce,getNewData) {
         });  
 
     //// Adjust Classes
-    link.classed('selected', function(d) {return d === selected_link;})
+    link.classed('selected', function(d) {return d.isSelected;})
         .classed('relation', function(d) {return d.isRel === true;})
         .classed('literal', function(d) {return d.target.type === "literal";})
         .classed('left',function(d){return d.left})
@@ -262,7 +267,7 @@ function restart(startForce,getNewData) {
     node.exit().remove();
 
     var newNodes = node.enter().append("svg:g")
-            .attr("class", "node namable")
+            .attr("class", "node selectable")
             .on('mouseenter',mouseenterOnNodeHandler)
             .on('mouseleave',mouseleaveOnNodeHandler)
 
@@ -281,7 +286,7 @@ function restart(startForce,getNewData) {
         .attr("dy", ".35em")
 
     //// Adjust Classes    
-    node.classed("selected", function(d) { return (d === selected_node); })
+    node.classed("selected", function(d) { return (d.isSelected); })
         .classed("root", function(d) {return d.isRoot;})
         .classed("literal", function(d) {return (d.type === "literal");})
         .classed("folded",function(d){return d.isFolded;})
@@ -298,6 +303,7 @@ function restart(startForce,getNewData) {
         initializeLayout(drawData.nodes, drawData.links);
         startDrag();
     }    
+
 }
 
 function updateStatus(statusMessage, isOK,isEditing){

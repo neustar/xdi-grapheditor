@@ -25,8 +25,8 @@ THE SOFTWARE.
 
 // Global D3/SVG vars
 //SVG Dimensions
-var totalWidth = 1400;
-var totalHeight = 600;
+var totalWidth = 1800;
+var totalHeight = 800;
 var svgMargin = {top:0,left:0,right:0,bottom:0}
 var svgWidth = totalWidth - svgMargin.left - svgMargin.right;
 var svgHeight = totalHeight - svgMargin.top - svgMargin.bottom;
@@ -51,9 +51,7 @@ var LINK_TEXT_MAX_LENGTH = 20;
 // mouse event vars
 var MOUSE_WHEEL_SCALE_DELTA = 0.02;
 
-var selected_node = null,
-    selected_link = null,
-    mousedown_link = null,
+var mousedown_link = null,
     mousedown_node = null,
     mouseup_node = null,
     lastMousePos = null, //mouse pos when mouse down
@@ -79,6 +77,8 @@ var nodeslinkmap = {};
 var jsonnodes, jsonlinks;
 var lastDrawData = null;
 
+var currentGraphID = 1, lastGraphId = 0;
+
 //Zoom
 var navScale = 0.2;
 var navX,navY; //axis for navigator svg
@@ -86,3 +86,10 @@ var lastTransition = null;
 
 //Search
 var lastQuery = null;
+
+//Select
+var selected_nodes = null, // a collection of all the selected nodes
+    selected_links = null;
+
+//Drag Select
+var dragSelectBrush = null;

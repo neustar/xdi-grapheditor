@@ -36,8 +36,10 @@ THE SOFTWARE.
             .ui-dialog .ui-state-error { padding: .3em; }
         </style>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
         <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
         <script type="text/javascript" src="js/libs/xdi-js/xdi.js"></script>
+        <script type="text/javascript" src="js/libs/underscore/underscore-min.js"></script>
         <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     </head>
     <body>
@@ -99,6 +101,7 @@ THE SOFTWARE.
                 </defs>
                 
                 <path class="drag_line hidden" id="drag_line" d="M0,0L0,0"></path>
+                <g id="dragSelectCanvas"></g>
                 <g id="nodeCanvas"></g>
                 <g id="linkCanvas"></g>
                 
@@ -188,11 +191,15 @@ THE SOFTWARE.
         <script src="js/data.js"></script>
         <script type="text/javascript" src="js/XDI_graph_global.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_objects.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_model.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_eventhandlers.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_zoom.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_drag.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_layout.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_search.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_selection.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_commands.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_dragselect.js"></script>
     </body>
 </html>

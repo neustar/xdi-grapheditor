@@ -25,6 +25,7 @@ THE SOFTWARE.
 // Initializing the graph with XDI statements.
 function initializeGraphWithXDI(data) {
     clearGraph();
+
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
     $.each(lines, function(i,d) {
@@ -82,7 +83,7 @@ function isRootToCheck(d)
 }
 
 function getDrawData2(root){
-   return {nodes:jsonnodes,links:jsonlinks};
+   return {nodes:jsonnodes,links:jsonlinks,map:nodeslinkmap};
 }
 function getDrawData(root){
     if(jsonnodes==null||jsonnodes.length == 0)
@@ -189,14 +190,14 @@ function addStatement(subject, predicate, object, isrel, statement) {
     if (predicate === null)
         predicate = "&";
     var searchres = findNodeIndex(jsonnodes, subject);
-    if (searchres === null) {
+    if (searchres == null) {
         var isRoot = subject === "";
         subjectnode = addNode(subject,false,isRoot);
     } else
         subjectnode = jsonnodes[searchres];
     
     searchres = findNodeIndex(jsonnodes, object);
-    if (searchres === null) {
+    if (searchres == null) {
         objectnode = addNode(object,isLiteral,false, statement.object()._string);
     } else
         objectnode = jsonnodes[searchres];
@@ -208,10 +209,7 @@ function addStatement(subject, predicate, object, isrel, statement) {
 function addNode(name,isLiteral, isRoot, shortName){
     if(shortName == null)
         shortName = name;
-    var newNode = {id: ++lastNodeId, parents:[], children:[]};
-    newNode.type = isLiteral ? "literal":"context";
-    newNode.name = name;
-    newNode.shortName = shortName;
+    var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? "literal":"context");
     setNodeIsRoot(newNode,isRoot);
     jsonnodes.push(newNode);
     return newNode;
@@ -227,10 +225,10 @@ function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRel,shortName){
     if(linkObject)//if link not added, then link exists, no need to add new link.
         return;
 
-    var newlink = {name: linkName, shortName:shortName, id:++lastLinkId, source: sourceNode, target: targetNode, left: isLeft, right: isRight};    
+    var newlink = new XDILink(++lastLinkId,linkName,shortName,isLeft, isRight, sourceNode, targetNode);
     if (isRel)
         newlink.isRel = true;
-    //TODO: defines the parent and children for XDI graph
+    
     sourceNode.children.push(targetNode)
     targetNode.parents.push(sourceNode);
     
