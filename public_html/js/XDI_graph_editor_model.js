@@ -405,7 +405,7 @@ function removeLink(linkToRemove){
     delLinkfromMap(source, target);
 }
 
-//Recurvise remove all linkes of a node.
+//Recursively remove all links of a node.
 function removeLinksOfNode(victim) {
     var searchres = findFirstLinkIndex(jsonlinks, victim.name);
     if (searchres !== null) {

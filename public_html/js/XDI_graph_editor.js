@@ -56,6 +56,7 @@ $(function() {
         }
     });
     
+/*
     //Define event handler for sliders
     var $linkdistslider = $('input[name="linkdistslider"]');
     var $chargeslider = $('input[name="chargeslider"]');
@@ -76,6 +77,7 @@ $(function() {
         var val = parseInt($(this).val())/10;
         updateSim(null, null , val);
     });
+*/
 
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")
@@ -120,10 +122,6 @@ $(function() {
 //
 
 
-
-
-
-
 function initializeGraph() 
 {
     jsonnodes=[];
@@ -152,6 +150,7 @@ function initializeGraph()
 
     restart();
 }
+
 function getLinkPathD(d){
     var deltaX = d.target.x - d.source.x,
         deltaY = d.target.y - d.source.y,
@@ -362,7 +361,6 @@ function clearGraph() {
     restart();
 }
 
-
 function help() {
     var helpWindow = window.open("help.html","Help","width=600,height=600");
 }
@@ -391,7 +389,6 @@ function toggleLinkLabelsVisibility(){
     setLinkLabelsVisibility(!value)
     d3.select('#toggleLinkButton').classed("off",!value);
 }
-
 
 function toggleVisibility (button) {
     var name = d3.select(button).attr("name");
