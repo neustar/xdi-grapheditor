@@ -55,29 +55,29 @@ $(function() {
         }
     });
     
-    // //Define event handler for sliders
-    // var $linkdistslider = $('input[name="linkdistslider"]');
-    // var $chargeslider = $('input[name="chargeslider"]');
-    // var $gravityslider = $('input[name="gravityslider"]');
+/*
+    //Define event handler for sliders
+    var $linkdistslider = $('input[name="linkdistslider"]');
+    var $chargeslider = $('input[name="chargeslider"]');
+    var $gravityslider = $('input[name="gravityslider"]');
     
-    // $linkdistslider.bind('change', function(e) {
-    //     e.preventDefault();
-    //     var val = parseInt($(this).val());
-    //     updateSim(val, null, null);
-    // });
-    // $chargeslider.bind('change', function(e) {
-    //     e.preventDefault();
-    //     var val = parseInt($(this).val());
-    //     updateSim(null, val, null);
-    // });
-    // $gravityslider.bind('change', function(e) {
-    //     e.preventDefault();
-    //     var val = parseInt($(this).val())/10;
-    //     updateSim(null, null , val);
-    // });
+    $linkdistslider.bind('change', function(e) {
+        e.preventDefault();
+        var val = parseInt($(this).val());
+        updateSim(val, null, null);
+    });
+    $chargeslider.bind('change', function(e) {
+        e.preventDefault();
+        var val = parseInt($(this).val());
+        updateSim(null, val, null);
+    });
+    $gravityslider.bind('change', function(e) {
+        e.preventDefault();
+        var val = parseInt($(this).val())/10;
+        updateSim(null, null , val);
+    });
+*/
 
-
-    
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")
         // .attr("width", "100%")//totalWidth)
