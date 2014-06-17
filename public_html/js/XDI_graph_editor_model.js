@@ -189,18 +189,18 @@ function addStatement(subject, predicate, object, isrel, statement) {
     var isLiteral = (predicate === null) ? true : false;
     if (predicate === null)
         predicate = "&";
-    var searchres = findNodeIndex(jsonnodes, subject);
-    if (searchres == null) {
+    var nodeFound = findNode(jsonnodes, subject);
+    if (nodeFound == null) {
         var isRoot = subject === "";
         subjectnode = addNode(subject,false,isRoot);
     } else
-        subjectnode = jsonnodes[searchres];
+        subjectnode = nodeFound;
     
-    searchres = findNodeIndex(jsonnodes, object);
-    if (searchres == null) {
+    nodeFound = findNode(jsonnodes, object);
+    if (nodeFound == null) {
         objectnode = addNode(object,isLiteral,false, statement.object()._string);
     } else
-        objectnode = jsonnodes[searchres];
+        objectnode = nodeFound;
 
     addLink(subjectnode,objectnode,predicate,false,true,isrel);
 }
@@ -249,7 +249,7 @@ function findLink(sourceNode,targetNode){
 
 //Add link between any two selected nodes. May be against XDI rules
 function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
-    var link = findLink(sourceNode,targetNode);
+    var link = findLinkinMap(sourceNode,targetNode);
     if(link != null){ //if link exists, set direction, return;
         link.left=isLeft;
         link.right=isRight
@@ -405,9 +405,9 @@ function removeLink(linkToRemove){
 
 //Recursively remove all links of a node.
 function removeLinksOfNode(victim) {
-    var searchres = findFirstLinkIndex(jsonlinks, victim.name);
-    if (searchres !== null) {
-        var gone = jsonlinks.splice(searchres, 1);
+    var linkFound = findLinkToNode(jsonlinks, victim.name);
+    if (linkFound) {
+        var gone = jsonlinks.splice(linkFound, 1);
         delLinkfromMap(gone[0].source, gone[0].target);
         removeLinksOfNode(victim);
     }
@@ -461,26 +461,13 @@ function inverseLinkDirection(linkToSet){
 }
 
 // Returns the position/index in node collection of the node with name value name
-function findNodeIndex(coll, name) {
-    if (coll === null)
-        return null;
-    for (var i=0; i<coll.length; i++) {
-        if (coll[i].name === name) {
-            return i;
-        }
-    }
-    return null;
+function findNode(nodeCollection, name) {
+    return _.find(nodeCollection,function(d) { return d.name==name; })
 }
 
 // Returns the position/index of the first link matching the provided node name
-function findFirstLinkIndex(coll, name) {
-    if (coll === null)
-        return null;
-    for (var i=0; i<coll.length; i++) {
-        if ((coll[i].source.name === name) || (coll[i].target.name === name))
-            return i;
-    }
-    return null;
+function findLinkToNode(linkCollection, nodeName) {
+    return _.find(linkCollection,function(d) { return d.source.name==name || d.target.name == name; })
 }
 
 

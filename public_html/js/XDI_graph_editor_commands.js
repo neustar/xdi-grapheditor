@@ -130,8 +130,8 @@ function createNodeByClick () {
     if(nodename === null)
         return;
     
-    var ind = findNodeIndex(jsonnodes, nodename);
-    if (ind) {
+    var nodeFound = findNode(jsonnodes, nodename);
+    if (nodeFound) {
         if (nodename !== "")
         // Name already taken
             alert("Node already exists!");
