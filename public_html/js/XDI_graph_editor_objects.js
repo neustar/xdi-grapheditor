@@ -26,6 +26,7 @@ THE SOFTWARE.
 function XDIElement () {
 	this.id = -1;
 	this.isAdded = false;
+	this.isSelected = false;
 	this.name = "";
 	this.shortName = "";
 }
