@@ -77,7 +77,7 @@ var nodeslinkmap = {};
 var jsonnodes, jsonlinks;
 var lastDrawData = null;
 
-var lastGraphId = 0;
+var lastGraphId = -1;
 
 //Zoom
 var navScale = 0.2;

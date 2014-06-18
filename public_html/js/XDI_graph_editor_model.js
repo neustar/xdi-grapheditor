@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 // Initializing the graph with XDI statements.
-function initializeGraphWithXDI(data,willClearGraph) {
+function initializeGraphWithXDI(data,willClearGraph,willJoinGraph) {
     if(willClearGraph == null)
         willClearGraph = true;
     
@@ -31,7 +31,8 @@ function initializeGraphWithXDI(data,willClearGraph) {
     {
         clearGraph();
     }
-    lastGraphId ++;
+    if(!willJoinGraph)
+        lastGraphId ++;
 
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
@@ -59,10 +60,10 @@ function initializeGraphWithXDI(data,willClearGraph) {
         if (d.length > 0) {
             var xdistmt = xdi.parser.parseStatement(d);
             if (xdistmt.isContextNodeStatement()) {
-                addStatement(xdistmt.subject()._string, xdistmt.object()._string, xdistmt.subject()._string + xdistmt.object()._string, false,xdistmt);
+                addStatement(xdistmt.subject()._string, xdistmt.object()._string, xdistmt.subject()._string + xdistmt.object()._string, false,xdistmt, willJoinGraph);
             }
             else if (xdistmt.isRelationStatement()) {
-                addStatement(xdistmt.subject()._string, xdistmt.predicate()._string, xdistmt.object()._string, true,xdistmt);
+                addStatement(xdistmt.subject()._string, xdistmt.predicate()._string, xdistmt.object()._string, true,xdistmt, willJoinGraph);
             }
             else if (xdistmt.isLiteralStatement()) {
                 var obj = xdistmt._string.replace(xdistmt.subject()._string, "");
@@ -191,19 +192,20 @@ function toggleFoldNode(node){
     restart();
 }
 
-function addStatement(subject, predicate, object, isrel, statement) {
+function addStatement(subject, predicate, object, isrel, statement, willJoinGraph) {
     var subjectnode, objectnode;
+    var targetGraphId = willJoinGraph? null:lastGraphId;
     var isLiteral = (predicate === null) ? true : false;
     if (predicate === null)
         predicate = "&";
-    var nodeFound = findNode(jsonnodes, subject,lastGraphId);
+    var nodeFound = findNode(jsonnodes, subject, targetGraphId);
     if (nodeFound == null) {
         var isRoot = subject === "";
         subjectnode = addNode(subject,false,isRoot,null, lastGraphId);
     } else
         subjectnode = nodeFound;
     
-    nodeFound = findNode(jsonnodes, object,lastGraphId);
+    nodeFound = findNode(jsonnodes, object, targetGraphId);
     if (nodeFound == null) {
         objectnode = addNode(object,isLiteral,false, statement.object()._string, lastGraphId);
     } else
@@ -294,7 +296,13 @@ function findLink(source,target){
 
 // Returns the position/index in node collection of the node with name value name
 function findNode(nodeCollection, name, graphID) {
-    return _.find(nodeCollection,function(d) { return d.name==name && d.graphID==graphID; })
+    return _.find(nodeCollection,function(d) { 
+        if(graphID!=null)
+            return d.name==name 
+            && d.graphID==graphID; 
+        else
+            return d.name==name;
+    })
 }
 
 // Returns the position/index of the first link matching the provided node name

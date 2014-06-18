@@ -41,10 +41,11 @@ $(function() {
             "Graph it!": function() {
                 var importedXDI = $('#XDIsource').val();
                 var willClearGraph = $('#clearGraphCheckBox').prop('checked');
+                var willJoinGraph = $('#joinGraphCheckBox').prop('checked');
                 $(this).dialog('close')
                 isDialogVisible = false;
                 if(!_.isEmpty(importedXDI))
-                    initializeGraphWithXDI(importedXDI,willClearGraph);
+                    initializeGraphWithXDI(importedXDI,willClearGraph,willJoinGraph);
             },
             Cancel: function() {
                 $(this).dialog('close')
