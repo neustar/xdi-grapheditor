@@ -25,7 +25,7 @@ function deleteCommand () {
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function (d) {
             removeNode(d);
-            removeLinksOfNode(d);
+            // removeLinksOfNode(d);
         })
         clearSelectedNodes();
         restart();
@@ -130,14 +130,14 @@ function createNodeByClick () {
     if(nodename === null)
         return;
     
-    var nodeFound = findNode(jsonnodes, nodename);
+    var nodeFound = findNode(jsonnodes, nodename, lastGraphId);
     if (nodeFound) {
         if (nodename !== "")
         // Name already taken
             alert("Node already exists!");
         return;
     }
-    var newnode = addNode(nodename,false,false);
+    var newnode = addNode(nodename,false,false,null, lastGraphId);
     var point = d3.mouse(svg.node());
     newnode.x = point[0];
     newnode.y = point[1];

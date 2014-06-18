@@ -63,7 +63,7 @@ var isDraggingLine = false;
 
 
 // suspending key listener when dialog box is displayed
-var suspendkeylistening = false;
+var isDialogVisible= false;
 
 var lastKeyDown = -1;
 var isFrozen = false;
@@ -77,7 +77,7 @@ var nodeslinkmap = {};
 var jsonnodes, jsonlinks;
 var lastDrawData = null;
 
-var currentGraphID = 1, lastGraphId = 0;
+var lastGraphId = 0;
 
 //Zoom
 var navScale = 0.2;

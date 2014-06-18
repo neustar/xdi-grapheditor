@@ -94,7 +94,7 @@ function mousewheelOnSVG () {
 function keydownOnSVG() {
     
     // Ignore if dialog box is displayed.
-    if (suspendkeylistening)
+    if (isDialogVisible)
         return;
     
 

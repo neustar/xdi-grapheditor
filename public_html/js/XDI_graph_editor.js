@@ -27,10 +27,10 @@ THE SOFTWARE.
 
 // some UI management...
 var dlg;
-var importedXDI;
+
 
 $(function() {
-    var XDIsource = $('#XDIsource');
+    
     //Define the dialog for Import XDI
     dlg = $('#dialog-form').dialog({
         autoOpen: false,
@@ -39,20 +39,19 @@ $(function() {
         modal: true,
         buttons: {
             "Graph it!": function() {
-                importedXDI = XDIsource.val();
-                $(this).dialog("close");
+                var importedXDI = $('#XDIsource').val();
+                var willClearGraph = $('#clearGraphCheckBox').prop('checked');
+                $(this).dialog('close')
+                isDialogVisible = false;
+                if(!_.isEmpty(importedXDI))
+                    initializeGraphWithXDI(importedXDI,willClearGraph);
             },
             Cancel: function() {
-                suspendkeylistening = false;
-                $(this).dialog("close");
+                $(this).dialog('close')
+                isDialogVisible = false;
+                
             }
         },
-        close: function() {
-            if ((importedXDI !== undefined) && (importedXDI !== "")) {
-                suspendkeylistening = false;
-                initializeGraphWithXDI(importedXDI);
-            }
-        }
     });
     
 /*
@@ -108,11 +107,11 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    // initializeGraphWithXDI(attributeSingletons)
+    initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -357,11 +356,18 @@ function exportGraph() {
 
 function clearGraph() {
     // todo - add disappearance effect here...
-    while(jsonnodes.length !== 0) {
-        var vic = jsonnodes[0];
-        removeNode(vic);
-        removeLinksOfNode(vic);
-    }
+    // while(jsonnodes.length !== 0) {
+    //     var vic = jsonnodes[0];
+    //     removeNode(vic);
+    //     // removeLinksOfNode(vic);
+    // }
+
+    jsonnodes = [];
+    jsonlinks = [];
+    nodeslinkmap = {};
+    lastGraphId = -1;
+    lastNodeId = -1;
+    lastLinkId = -1;
     lastDrawData = null;
     updateStatus("Syntax OK",true);
     restart();
@@ -372,8 +378,8 @@ function help() {
 }
 
 function importXDI() {
-    suspendkeylistening = true;
-    dlg.dialog("open");
+    isDialogVisible = true;
+    $('#dialog-form').dialog("open");
 }
 
 function setNodeLabelsVisibility(newValue){

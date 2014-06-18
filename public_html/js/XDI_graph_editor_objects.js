@@ -31,7 +31,7 @@ function XDIElement () {
 	this.shortName = "";
 }
 
-function XDINode (id, name, shortName, type) {
+function XDINode (id, name, shortName, type, graphID) {
 	this.id = id;
 	this.name = name;
 	this.shortName = shortName;
@@ -39,10 +39,11 @@ function XDINode (id, name, shortName, type) {
 	this.isRoot = false;
 	this.parents = [];
 	this.children = [];
+	this.graphID = graphID;
 }
 XDINode.prototype = new XDIElement();
 
-function XDILink (id,name,shortName,left, right, source, target)
+function XDILink (id,name,shortName, left, right, source, target)
 {
 	this.id = id;
 	this.name = name;
@@ -51,7 +52,6 @@ function XDILink (id,name,shortName,left, right, source, target)
 	this.right = right;
 	this.source = source;
 	this.target = target;
-
 	this.isRel = false;
 }
 XDILink.prototype = new XDIElement();
