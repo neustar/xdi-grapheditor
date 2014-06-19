@@ -89,7 +89,7 @@ var NodeTypes = {
 }
 
 //Zoom
-var navScale = 0.2;
+var navScale = 0.2,navMargin = 10;
 var navX,navY; //axis for navigator svg
 var lastTransition = null;
 

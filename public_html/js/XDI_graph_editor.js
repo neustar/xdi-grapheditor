@@ -136,7 +136,8 @@ function initializeGraph()
 
      force = d3.layout.force()
         .size([svgWidth, svgHeight])
-        .on("tick", tickEventHandler)
+        .on("tick", forceTickEventHandler)
+        .on('end',forceEndEventHandler)
 
     drag_line=svg.select("#drag_line")
 
@@ -185,7 +186,7 @@ function getLinkPathD(d){
     }
 }
 
-function tickEventHandler() {
+function forceTickEventHandler() {
     
     
     node = svg.selectAll(".node");
@@ -204,6 +205,12 @@ function tickEventHandler() {
             })
             
     updateDragLine();
+    updateViewPortRect(); //Remove this if the refresh of navigator make it slow;
+}
+
+
+function forceEndEventHandler () {
+    updateViewPortRect();
 }
 
 //Render all SVG Elements based on jsonnodes, jsonlinks
@@ -268,7 +275,7 @@ function restart(startForce,getNewData) {
             
     node.exit().remove();
 
-    var newNodes = node.enter().append("svg:g")
+    var newNodes = node.enter().append("g")
             .on('mouseenter',mouseenterOnNodeHandler)
             .on('mouseleave',mouseleaveOnNodeHandler)
 

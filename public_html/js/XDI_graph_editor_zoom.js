@@ -38,8 +38,10 @@ function initializeZoom () {
 	svg.on("MozMousePixelScroll.zoom", null);
 
 	d3.select('#navSVG')
-	.attr('width', svgWidth*navScale)
-	.attr('height', svgHeight*navScale)
+	.attr('width', svgWidth*navScale + navMargin * 2)
+	.attr('height', svgHeight*navScale + navMargin * 2)
+	.selectAll('g')
+	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')')
 
 	navX = d3.scale.linear()
 	.domain([0,svgWidth])
@@ -53,7 +55,7 @@ function initializeZoom () {
 }
 function zoomEventHandler(){
 
-    tickEventHandler();
+    forceTickEventHandler();
 	updateViewPortRect();
 	updateZoomText();
 }
@@ -113,44 +115,53 @@ function scaleView(center,newScale)
 
 function updateViewPortRect () 
 {
-	var svgRect = d3.select('#svgRect'),viewRect = d3.select('#viewRect')
-	var curScale = zoom.scale(),curTrans = zoom.translate();
-	var rx,ry,rh,rw;
-	var staticRect, dynamicRect;
-	if(curScale > 1)
-	{
-		staticRect = svgRect;
-		dynamicRect = viewRect;
-
-		rx = - navX(curTrans[0]/curScale)
-		ry = - navY(curTrans[1]/curScale)
-		rw = navX(svgWidth/curScale)
-		rh = navY(svgHeight/curScale)	
-	}
-	else
-	{
-		staticRect = viewRect;
-		dynamicRect = svgRect;
-
-		rx = navX(curTrans[0])
-		ry = navY(curTrans[1])
-		rw = navX(svgWidth*curScale)
-		rh = navY(svgHeight*curScale)		
-	}
-
-	if(staticRect == null || dynamicRect == null)
+	if(!lastDrawData)
 		return;
 
-	staticRect
-		.attr('width', navX(svgWidth))
-		.attr('height', navY(svgHeight))
-		.attr('x', 0)
-		.attr('y', 0)		
-	dynamicRect
-	    .attr('x', rx)
-	    .attr('y', ry)
-	    .attr('width', rw)
-	    .attr('height', rh)	    
+	var svgRect = d3.select('#svgRect'),viewRect = d3.select('#viewRect')
+	var svgActualHeight = d3.select('#mainCanvas').node().offsetHeight;
+	var svgActualWidth = d3.select('#mainCanvas').node().offsetWidth;
+	var navActualHeight = svgHeight*navScale;
+
+	var nodesData = lastDrawData.nodes;
+
+	var minX = x(d3.min(nodesData,function(d) { return d.x; }));
+	var minY = y(d3.min(nodesData,function(d) { return d.y; }));
+	var maxX = x(d3.max(nodesData,function(d) { return d.x; }));
+	var maxY = y(d3.max(nodesData,function(d) { return d.y; }));
+	var dx = maxX -  minX, dy = maxY - minY;
+	
+	var vx,vy,vw,vh,sx,sy,sw,sh,r;
+	
+  	if(dx > svgActualWidth || dy > svgActualHeight)
+  	{
+  		r = navActualHeight/ dy;
+  		sx = 0;
+  		sy = 0;
+  		sw = dx * r;
+  		sh = dy * r;
+
+  		vx = (-minX) * r;
+  		vy = (-minY) * r;
+  		vw = svgActualWidth * r;
+  		vh = svgActualHeight * r;
+  	}
+  	else
+	{
+  		r = navActualHeight / svgActualHeight;
+  		vx = 0;
+  		vy = 0;
+  		vw = svgActualWidth * r;
+  		vh = svgActualHeight * r;
+
+  		sx = minX * r;
+  		sy = minY * r;
+  		sw = dx * r;
+  		sh = dy * r;
+  	}
+
+  	svgRect.attr('x', sx).attr('y', sy).attr('width', sw).attr('height', sh);
+  	viewRect.attr('x', vx).attr('y', vy).attr('width', vw).attr('height', vh);
 	  
 }	
 
