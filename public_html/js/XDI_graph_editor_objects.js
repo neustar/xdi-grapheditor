@@ -36,10 +36,13 @@ function XDINode (id, name, shortName, type, graphID) {
 	this.name = name;
 	this.shortName = shortName;
 	this.type = type;
-	this.isRoot = false;
+	// this.isRoot = false;
 	this.parents = [];
 	this.children = [];
 	this.graphID = graphID;
+
+	this.isRoot = function(){return this.type === NodeTypes.ROOT;}
+	this.isLiteral = function(){return this.type === NodeTypes.LITERAL;}
 }
 XDINode.prototype = new XDIElement();
 

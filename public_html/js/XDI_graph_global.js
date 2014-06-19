@@ -81,7 +81,11 @@ var lastGraphId = -1;
 
 var NodeTypes = {
 	LITERAL:"literal",
-	CONTEXT: "context"
+	CONTEXT: "context",
+	ROOT:"root",
+	ENTITY:"entity",
+	ATTRIBUTE:"attribute",
+	VALUE:"value"
 }
 
 //Zoom

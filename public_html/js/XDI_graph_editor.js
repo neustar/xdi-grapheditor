@@ -108,11 +108,11 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons)
+    // initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -162,8 +162,8 @@ function getLinkPathD(d){
         dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
         normX = deltaX / dist,
         normY = deltaY / dist,
-        sourcePadding = d.left ? 17 : 12,
-        targetPadding = d.right ? 17 : 12,
+        sourcePadding = d.left ? 17 : 2,
+        targetPadding = d.right ? 17 : 2,
 
         sourcePadding =  sourcePadding / zoom.scale();
         targetPadding = targetPadding / zoom.scale();
@@ -244,6 +244,8 @@ function restart(startForce,getNewData) {
     
     newLinkGs.append("svg:text")
         .attr('class', "textLabel")
+        .attr("dx", 12)
+        .attr("dy", ".35em")
         .text(function(d) {
             return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);
         });  
@@ -267,16 +269,15 @@ function restart(startForce,getNewData) {
     node.exit().remove();
 
     var newNodes = node.enter().append("svg:g")
-            .attr("class", "node selectable")
             .on('mouseenter',mouseenterOnNodeHandler)
             .on('mouseleave',mouseleaveOnNodeHandler)
 
-    newNodes.append("svg:circle")
-        .attr('r', NODE_RADIUS)
+    newNodes.append("path")
+        // .attr('r', NODE_RADIUS)
         .on('mousedown', mousedownOnNodeHandler)
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
-        .each(function(d) {if(d.isRoot){d.x = svgWidth/2; d.y = svgHeight/2;}}) //move root to the middle of the screen only when it is created
+        .each(function(d) {if(d.isRoot()){d.x = window.innerWidth/2; d.y = window.innerHeight/2;}}) //move root to the middle of the screen only when it is created
         .append("title")
         .text(function(d){return d.name});
         
@@ -286,14 +287,17 @@ function restart(startForce,getNewData) {
         .attr("dy", ".35em")
 
     //// Adjust Classes    
-    node.classed("selected", function(d) { return (d.isSelected); })
-        .classed("root", function(d) {return d.isRoot;})
-        .classed("literal", function(d) {return (d.type === NodeTypes.LITERAL);})
+    node
+        .attr("class", function(d) { return "node selectable " + d.type;})
+        .classed("selected", function(d) { return (d.isSelected); })
         .classed("folded",function(d){return d.isFolded;})
         .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
 
     node.select("text")
         .text(function(d){return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);});
+
+    node.select("path")
+        .attr('d', function(d) { return getNodeShape(d.type); })
 
     //
     // Layout
@@ -304,6 +308,26 @@ function restart(startForce,getNewData) {
         startDrag();
     }    
 
+}
+
+function getNodeShape (type) {
+    var symbol = d3.svg.symbol();
+    switch(type){
+        case NodeTypes.LITERAL:
+            symbol.type("square").size(500);
+            break;
+        case NodeTypes.CONTEXT:
+        case NodeTypes.ROOT:
+        case NodeTypes.ENTITY:
+            symbol.type("circle").size(500);
+            break;
+        
+        case NodeTypes.ATTRIBUTE:
+        case NodeTypes.VALUE:
+            symbol.type("diamond").size(400);
+            break;
+    }
+    return symbol();
 }
 
 function updateStatus(statusMessage, isOK,isEditing){

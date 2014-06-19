@@ -430,8 +430,7 @@ body{
 /********* Nodes *********/
 
 .node {
-    fill: #ccc;
-    stroke: rgba(0,0,0,0.4);
+    stroke: rgba(50,50,50,1);
     stroke-width: 3px;
     cursor: pointer;
     -webkit-transition:fill 0.2s,stroke 0.2s,opacity 0.2s;
@@ -442,33 +441,40 @@ body{
   pointer-events:none;
 }
 
-.node.fixed:hover,
-.node.matched:hover,
 .node:hover{
-  fill:#79BD9A;
-}
-
-.node.selected {
-    stroke: rgba(23,178,119,1);//#3B8686;
-    stroke-width: 4px;
-}
-
-.node.fixed {
-    fill: #777;
+  fill:#79BD9A !important;
 }
 
 .node.root {
-    stroke: #E97F02;
+  fill:#ddd;
 }
 
 .node.literal {
-    stroke: #7D9A64;    
+  fill:#ddd;
+  stroke: #7D9A64;
+}
+
+.node.entity{
+  fill:#555;
+}
+
+.node.attribute{
+  fill:#555;
+}
+
+.node.value{
+  fill:#ddd;
 }
 
 .node.selected {
-    stroke: rgba(23,178,119,1);//#3B8686;
-    stroke-width: 4px;
+  stroke: rgba(23,178,119,1);//#3B8686;
 }
+
+.node.fixed {
+  stroke:rgba(196,77,88,1);
+}
+
+
 
 .hide_literal .node.literal{
   opacity: 0;
@@ -476,13 +482,13 @@ body{
 }
 
 .node.folded{
-  stroke:#490A3D;
+  stroke:rgba(255,159,128,1);
   /*stroke-width:4px;*/
 }
 
 .node.matched{
-  /*stroke:#556270;*/
-  fill:rgba(23,178,119,1);
+  
+  stroke:rgba(64,192,203,1);//rgba(78,205,196,1);
 }
 
 .hide_node_label .node text{
@@ -495,12 +501,12 @@ body{
 }
 
 .node text {
-    font-size: 15px;
-    fill: #000;
-    stroke-width: 0px;
-    opacity: 1;
-    -webkit-transition:opacity 0.2s,font-size 0.2s;
-    pointer-events:none;
+  font-size: 15px;
+  fill: #000;
+  stroke-width: 0px;
+  opacity: 1;
+  -webkit-transition:opacity 0.2s,font-size 0.2s;
+  pointer-events:none;
 }
 
 .node:hover text {
@@ -513,7 +519,7 @@ body{
 /********* Links *********/
 
 .link {
-    stroke: #999;
+    stroke: #333;
     cursor: default;
     -webkit-transition:stroke 0.2s,opacity 0.2s;
 }
@@ -541,7 +547,7 @@ body{
 
 .link.relation {
     stroke: #C02942;
-    stroke-dasharray: 8, 8;
+    stroke-dasharray: 8, 2;
 }
 
 .hide_rel_link .link.relation{
@@ -559,7 +565,7 @@ body{
 
 .link.literal {
     stroke: #7D9A64;
-    stroke-dasharray: 8, 8;
+    stroke-dasharray: 4,4;
 }
 
 .hide_literal .link.literal{
@@ -584,13 +590,13 @@ body{
 
 
 .link.matched{
-  stroke:rgba(23,178,119,1);
+  stroke:rgba(64,192,203,1);
   opacity: 1;
 }
 
 .link text{
     font-size: 15px;
-    fill: #036564;
+    fill: #999;
     stroke:transparent;
     stroke-width:0px;
     pointer-events:none;

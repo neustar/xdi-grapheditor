@@ -192,10 +192,10 @@ function toggleFoldNode(node){
     restart();
 }
 
-function addStatement(subject, predicate, object, isrel, statement, willJoinGraph) {
+function addStatement(subject, predicate, object, isRelation, statement, willJoinGraph) {
     var subjectnode, objectnode;
     var targetGraphId = willJoinGraph? null:lastGraphId;
-    var isLiteral = (predicate === null) ? true : false;
+    var isLiteral = predicate === null;
     if (predicate === null)
         predicate = "&";
     var nodeFound = findNode(jsonnodes, subject, targetGraphId);
@@ -211,14 +211,16 @@ function addStatement(subject, predicate, object, isrel, statement, willJoinGrap
     } else
         objectnode = nodeFound;
 
-    addLink(subjectnode,objectnode,predicate,false,true,isrel);
+    addLink(subjectnode,objectnode,predicate,false,true,isRelation);
 }
 
 //Atomic operation for add a node
 function addNode(name,isLiteral, isRoot, shortName, graphID){
     if(shortName == null)
         shortName = name;
-    var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? NodeTypes.LITERAL:NodeTypes.CONTEXT, graphID);
+    var nodeType = getNodeType(name);
+    var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphID);
+    // var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? NodeTypes.LITERAL:NodeTypes.CONTEXT, graphID);
     setNodeIsRoot(newNode,isRoot);
     jsonnodes.push(newNode);
     return newNode;
@@ -359,6 +361,20 @@ function removeLink(linkToRemove){
 //     }
 // }
 
+function getNodeType (name) {
+    if(name == "")
+        return NodeTypes.ROOT;
+    if(_.contains(name,"\""))
+        return NodeTypes.LITERAL;
+
+    if(_.last(name)=="&")
+        return NodeTypes.VALUE;
+    if(_.contains(name,"<"))
+        return NodeTypes.ATTRIBUTE;
+
+    return NodeTypes.ENTITY;
+}
+
 function checkLinkValidity(linkToCheck){
     // checking statement's validity
     var subject = linkToCheck.source.name;
@@ -435,7 +451,26 @@ function setLinkIsRel(linkToSet,newValue){
 
 
 function setNodeIsRoot(nodeToSet,newValue){
-    nodeToSet.isRoot = newValue;
+    if(newValue)
+    {   
+        // nodeToSet._type = nodeToSet.type;
+        nodeToSet.type = NodeTypes.ROOT;
+    }
+    else if(nodeToSet.type == NodeTypes.ROOT)
+    {
+        nodeToSet.type = getNodeType(nodeToSet.name);
+        // nodeToSet.type = nodeToSet._type;
+        // nodeToSet._type = null;
+    }
+
+    // nodeToSet.isRoot = newValue;
+}
+
+function setNodeIsLiteral (nodeToSet,newValue) {
+    if(newValue)
+        nodeToSet.type = NodeTypes.LITERAL;
+    else
+        nodeToSet.type = getNodeType(nodeToSet.name);
 }
 
 function setLinkLabel(linkToSet,newValue){

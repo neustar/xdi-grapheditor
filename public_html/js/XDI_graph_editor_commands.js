@@ -66,7 +66,7 @@ function setRootNodeCommand () {
     if (hasSelectedNodes()) {
     
         selected_nodes.forEach(function (d) {
-            setNodeIsRoot(d,!d.isRoot)
+            setNodeIsRoot(d,!d.isRoot())
         })
         
         restart();
@@ -106,12 +106,7 @@ function invertLinkCommand () {
 function setLiteralNodeCommand () {
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function(d) {
-            var newType = "";
-            if (d.type !== NodeTypes.LITERAL) 
-                newType = NodeTypes.LITERAL;
-            else
-                newType = NodeTypes.CONTEXT;
-            d.type = newType;
+            setNodeIsLiteral(d,!d.isLiteral())
         })
         
         restart();

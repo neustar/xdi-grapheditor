@@ -28,7 +28,7 @@ function initializeLayout(nodes,links) {
 
 	nodes.forEach(function (item) {
 		item.fixed = isFrozen     //if overall is frozen
-        ||item.isRoot             //if a node is root
+        ||item.isRoot()             //if a node is root
         ||item._fixed             //or is intenionally set to fixed from other ways
         || ((item.parents == null || item.parents.length == 0) &&(item.children == null || item.children.length == 0));
 
@@ -46,7 +46,7 @@ function initializeLayout(nodes,links) {
             return d.isRelation ? 0.1 : 1;
         })
     .theta(0.1) // default is 0.8
-    //.charge(function(d) { return d.isRoot?-100*numberOfNodes:-10*numberOfNodes; })
+    //.charge(function(d) { return d.isRoot()?-100*numberOfNodes:-10*numberOfNodes; })
     .charge(-10*numberOfNodes)
     .chargeDistance(1000);
 
