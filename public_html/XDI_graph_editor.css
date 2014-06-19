@@ -471,7 +471,7 @@ body{
 }
 
 .node.fixed {
-  stroke:rgba(196,77,88,1);
+  fill:rgba(0,0,0,1);
 }
 
 
@@ -482,7 +482,7 @@ body{
 }
 
 .node.folded{
-  stroke:rgba(255,159,128,1);
+  stroke:rgba(196,77,88,1);
   /*stroke-width:4px;*/
 }
 
