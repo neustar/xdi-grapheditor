@@ -95,9 +95,9 @@ function updateSublist (outerlist,title,data) {
 	.attr('class', 'searchItem')
 	.on('click',function(d) { return zoomToElement(d); })
 	.text(function(d) { return d.shortName; })
-	.classed('relation', function(d) {return d.isRel === true;})
+	.classed('relation', function(d) {return d.isRelation === true;})
     .classed('literal', function(d) {
-    	return d.type === "literal"||(d.target != null && d.target.type === "literal");})
+    	return d.type === NodeTypes.LITERAL||(d.target != null && d.target.type === NodeTypes.LITERAL);})
 }
 
 

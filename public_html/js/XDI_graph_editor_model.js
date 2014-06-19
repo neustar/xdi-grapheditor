@@ -85,7 +85,7 @@ function isRootToCheck(d)
         return true;
     
     for (var i = 0; i < d.parents.length;i ++)
-        if(!findLink(d.parents[i],d).isRel)
+        if(!findLink(d.parents[i],d).isRelation)
             return false;
     return true;
 }
@@ -126,13 +126,13 @@ function getDrawData(root){
             var link = isParent? findLink(adjnode,node):findLink(node,adjnode);
             if(!isParent&&link!=null && !link.isAdded)    
             {   
-                if(link.isRel)
+                if(link.isRelation)
                     relationLinks.push(link);
                 else
                     resLinks.push(link);
                 link.isAdded = true;
             }
-            if(!adjnode.isAdded&&!link.isRel)
+            if(!adjnode.isAdded&&!link.isRelation)
             {
                 resNodes.push(adjnode);
                 
@@ -218,14 +218,14 @@ function addStatement(subject, predicate, object, isrel, statement, willJoinGrap
 function addNode(name,isLiteral, isRoot, shortName, graphID){
     if(shortName == null)
         shortName = name;
-    var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? "literal":"context", graphID);
+    var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? NodeTypes.LITERAL:NodeTypes.CONTEXT, graphID);
     setNodeIsRoot(newNode,isRoot);
     jsonnodes.push(newNode);
     return newNode;
 }
 
 //Atomic operation for add a link
-function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRel,shortName){
+function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRelation,shortName){
     if(shortName == null)
         shortName = linkName;
 
@@ -235,8 +235,8 @@ function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRel,shortName){
         return;
 
     var newlink = new XDILink(++lastLinkId,linkName,shortName,isLeft, isRight, sourceNode, targetNode);
-    if (isRel)
-        newlink.isRel = true;
+    if (isRelation)
+        newlink.isRelation = true;
     
     sourceNode.children.push(targetNode)
     targetNode.parents.push(sourceNode);
@@ -256,11 +256,11 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
         return link;
     }
 
-    if(targetNode.type === "context"){
+    if(targetNode.type === NodeTypes.CONTEXT){
         var linkName = targetNode.name.slice(sourceNode.name.length, targetNode.name.length);
         link = addLink(sourceNode,targetNode,linkName, isLeft, isRight, false);
     }
-    else if(targetNode.type === "literal"){
+    else if(targetNode.type === NodeTypes.LITERAL){
         var innerNode = addNode(sourceNode.name + "&", false, false, null, Math.max(sourceNode.graphID,targetNode.graphID));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
@@ -376,8 +376,8 @@ function checkLinkValidity(linkToCheck){
             // a contextual statement
             statement = subject + "//" + object;
     }
-    var lit = (linkToCheck.target.type === "literal") ? true : false;
-    var validateMessage = validateXDI(statement, linkToCheck.isRel, lit);
+    var lit = linkToCheck.target.type === NodeTypes.LITERAL;
+    var validateMessage = validateXDI(statement, linkToCheck.isRelation, lit);
     if (validateMessage === "") {
         updateStatus("Syntax OK",true);
     } else {
@@ -386,7 +386,7 @@ function checkLinkValidity(linkToCheck){
 }
 
 //Return a message if error else return "";
-function validateXDI(data, isRel, isLit) {
+function validateXDI(data, isRelation, isLit) {
     var graph = xdi.graph();
     try {
         var statement = xdi.parser.parseStatement(data);
@@ -394,7 +394,7 @@ function validateXDI(data, isRel, isLit) {
         return "Invalid XDI (syntax level) - " + err;
     }
     if (statement.isContextNodeStatement()) {
-        if (isRel) {
+        if (isRelation) {
             return "Context node with relational statement.";
         } else {
             if (isLit) {
@@ -404,7 +404,7 @@ function validateXDI(data, isRel, isLit) {
         return "";
     }
     if (statement.isRelationStatement()) {
-        if (!isRel) {
+        if (!isRelation) {
             return  "Relational statement with non-relational node.";
         } else {
             if (isLit) {
@@ -414,7 +414,7 @@ function validateXDI(data, isRel, isLit) {
         return "";
     }
     if (statement.isLiteralStatement()) {
-        if (isRel) {
+        if (isRelation) {
             return  "Literal statement with relational context.";
         } else {
             if (!isLit) {
@@ -430,7 +430,7 @@ function validateXDI(data, isRel, isLit) {
 
 
 function setLinkIsRel(linkToSet,newValue){
-    linkToSet.isRel = newValue;
+    linkToSet.isRelation = newValue;
 }
 
 
@@ -517,7 +517,7 @@ function graphToString() {
 }
 
 function isRelational(d) {
-    if (d.isRel)
+    if (d.isRelation)
         return true;
     else
         return false;

@@ -43,7 +43,7 @@ function initializeLayout(nodes,links) {
         })
     .linkStrength(function(d) {
             // range is [0,1]
-            return d.isRel ? 0.1 : 1;
+            return d.isRelation ? 0.1 : 1;
         })
     .theta(0.1) // default is 0.8
     //.charge(function(d) { return d.isRoot?-100*numberOfNodes:-10*numberOfNodes; })

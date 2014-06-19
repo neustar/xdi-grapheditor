@@ -52,7 +52,7 @@ function XDILink (id,name,shortName, left, right, source, target)
 	this.right = right;
 	this.source = source;
 	this.target = target;
-	this.isRel = false;
+	this.isRelation = false;
 }
 XDILink.prototype = new XDIElement();
 

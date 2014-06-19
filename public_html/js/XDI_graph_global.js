@@ -79,6 +79,11 @@ var lastDrawData = null;
 
 var lastGraphId = -1;
 
+var NodeTypes = {
+	LITERAL:"literal",
+	CONTEXT: "context"
+}
+
 //Zoom
 var navScale = 0.2;
 var navX,navY; //axis for navigator svg

@@ -55,7 +55,7 @@ function setRelationCommand () {
     if (hasSelectedLinks()) {
 
         selected_links.forEach(function(d) {
-            setLinkIsRel(d,!d.isRel);
+            setLinkIsRel(d,!d.isRelation);
         });
         restart();
     }
@@ -107,10 +107,10 @@ function setLiteralNodeCommand () {
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function(d) {
             var newType = "";
-            if (d.type !== "literal") 
-                newType = "literal";
+            if (d.type !== NodeTypes.LITERAL) 
+                newType = NodeTypes.LITERAL;
             else
-                newType = "context"
+                newType = NodeTypes.CONTEXT;
             d.type = newType;
         })
         

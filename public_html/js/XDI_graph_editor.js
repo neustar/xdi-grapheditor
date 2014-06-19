@@ -250,8 +250,8 @@ function restart(startForce,getNewData) {
 
     //// Adjust Classes
     link.classed('selected', function(d) {return d.isSelected;})
-        .classed('relation', function(d) {return d.isRel === true;})
-        .classed('literal', function(d) {return d.target.type === "literal";})
+        .classed('relation', function(d) {return d.isRelation;})
+        .classed('literal', function(d) {return d.target.type === NodeTypes.LITERAL;})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
 
@@ -288,7 +288,7 @@ function restart(startForce,getNewData) {
     //// Adjust Classes    
     node.classed("selected", function(d) { return (d.isSelected); })
         .classed("root", function(d) {return d.isRoot;})
-        .classed("literal", function(d) {return (d.type === "literal");})
+        .classed("literal", function(d) {return (d.type === NodeTypes.LITERAL);})
         .classed("folded",function(d){return d.isFolded;})
         .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
 
