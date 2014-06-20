@@ -99,6 +99,7 @@ var NodeTypes = {
 //Zoom
 var navScale = 0.1,navMargin = 20;
 var lastTransition = null;
+var zoomToFitMargin = 30;
 
 //Search
 var lastQuery = null;

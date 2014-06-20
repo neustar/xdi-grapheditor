@@ -38,17 +38,17 @@ THE SOFTWARE.
     <body>
         <div class="controlContainer">
             <div class="buttonContaiter">
-                <button id="XDIinputButton" class="button" onclick="importXDI()" type="button">Import XDI</button>
+                <button class="button" onclick="importXDI()" type="button">Import XDI</button>
+                <button class="button" onclick="exportGraph()" type="button">Export to XDI</button>
                 
-                <button id="exportButton" class="button" onclick="exportGraph()" type="button">Export to XDI</button>
-                <button id="clearButton" class="button" onclick="clearGraph()">Clear Graph</button>
-                <button id="fileButton" class="button" onclick="saveGraph()">Store Graph</button>
-                <button id="fileButton" class="button" onclick="loadGraph()">Load Graph</button>
-                <button id="clearGraphs" class="button" onclick="DeleteStoredGraphs()">Delete Stored Graphs</button>
+                <button class="button" onclick="clearGraph()">Clear Graph</button>
+                <button class="button" onclick="zoomToFit()">Zoom to Fit</button>
                 
-                <button id="resetZoomButton" class="button" onclick="resetZoom()">Reset Zoom</button>
+                <button class="button" onclick="saveGraph()">Store Graph</button>
+                <button class="button" onclick="loadGraph()">Load Graph</button>
+                <button class="button" onclick="DeleteStoredGraphs()">Delete Stored Graphs</button>
                 
-                <button id="helpButton" class="button" onclick="help()">Help</button>
+                <button class="button" onclick="help()">Help</button>
                 
             </div>
             <!-- <div class="parameterContainer"id="SimParamsDlg">
@@ -101,8 +101,8 @@ THE SOFTWARE.
                 <rect id="statusIndicator" class="ok browse" width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
                 
                 
-                <text id="modeMessage" class="statusText" x="30" y="20">Browse</text>
-                <text id="statusMessage" class="statusText" x="100" y="20">OK</text>
+                <text id="modeMessage" class="statusText" x="110" y="20">Browse</text>
+                <text id="statusMessage" class="statusText" x="30" y="20">OK</text>
             </svg>
             <svg id="navSVG">
                 <g>

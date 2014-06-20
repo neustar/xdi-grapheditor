@@ -210,7 +210,6 @@ function zoomTo (to) {
 
 	var res = [curCenter[0],curCenter[1],curWidth]
 
-	// console.log(res)
 	zoomFromTo(res,to)
 }
 
@@ -225,6 +224,29 @@ function zoomToElement(d){
 		var zy = (d.source.y + d.target.y)/2;
 		zoomTo([zx,zy,svgWidth*0.5]);	
 	}
+}
+
+function zoomToFit () {
+	if(!_.isEmpty(selected_nodes))
+		zoomToElementCollection(selected_nodes);
+	else
+		zoomToElementCollection(lastDrawData.nodes);
+}
+
+function zoomToSelection () {
+	if(selected_nodes)
+		zoomToElementCollection(selected_nodes);
+}
+
+function zoomToElementCollection (collection) {
+	var minX = d3.min(collection,function(d) { return d.x; });
+	var minY = d3.min(collection,function(d) { return d.y; });
+	var maxX = d3.max(collection,function(d) { return d.x; });
+	var maxY = d3.max(collection,function(d) { return d.y; });
+	var dx = maxX -  minX, dy = maxY - minY;
+	var r = Math.max(dx / svgWidth,dy / svgHeight);
+
+	zoomTo([(minX+maxX)/2,(minY+maxY)/2,r*svgWidth+2*zoomToFitMargin]) //The margin doesn't equal to the margin between graph edge and svg edge, which depends on the final scale value.
 }
 
 function resetZoom(){

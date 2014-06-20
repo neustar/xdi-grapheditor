@@ -257,15 +257,15 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
         return link;
     }
 
-    if(targetNode.type === NodeTypes.CONTEXT){
-        var linkName = targetNode.name.slice(sourceNode.name.length, targetNode.name.length);
-        link = addLink(sourceNode,targetNode,linkName, isLeft, isRight, false);
-    }
-    else if(targetNode.type === NodeTypes.LITERAL){
+    if(targetNode.type === NodeTypes.LITERAL){
         var innerNode = addNode(sourceNode.name + "&", false, false, null, Math.max(sourceNode.graphID,targetNode.graphID));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
         link = linkToInnerNode;
+    }
+    else {
+        var linkName = targetNode.name.slice(sourceNode.name.length, targetNode.name.length);
+        link = addLink(sourceNode,targetNode,linkName, isLeft, isRight, false);
     }
     checkLinkValidity(link);
 

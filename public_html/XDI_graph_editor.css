@@ -422,7 +422,7 @@ body{
 #navSVG #viewRect{
   fill:none;
   stroke:rgba(100,100,100,0.8);
-  stroke-width:2;
+  stroke-width:1;
 }
 
 /****************** Inside SVG ******************/
@@ -467,9 +467,7 @@ body{
   fill:#ddd;
 }
 
-.node.selected {
-  stroke: rgba(23,178,119,1);//#3B8686;
-}
+
 
 .node.fixed {
   fill:rgba(0,0,0,1);
@@ -485,6 +483,10 @@ body{
 .node.folded{
   stroke:rgba(196,77,88,1);
   /*stroke-width:4px;*/
+}
+
+.node.selected {
+  stroke: rgba(23,178,119,1);//#3B8686;
 }
 
 .node.matched{
