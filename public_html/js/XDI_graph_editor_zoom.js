@@ -25,7 +25,7 @@ function initializeZoom () {
 	 zoom = d3.behavior.zoom()
     .x(x)
     .y(y)
-    .scaleExtent([0.01,10])
+    .scaleExtent([0,Infinity])
     .on("zoom",zoomEventHandler)
 
     zoom(svg);
@@ -125,9 +125,8 @@ function updateViewPortRect()
 		return;
 
 	var svgRect = d3.select('#svgRect'),viewRect = d3.select('#viewRect')
-	var svgActualHeight = d3.select('#mainCanvas').node().offsetHeight;
-	var svgActualWidth = d3.select('#mainCanvas').node().offsetWidth;
-	var navActualHeight = svgHeight*navScale;
+	var navHeight = svgHeight * navScale;
+	var navWidth = svgWidth * navScale;
 
 	var nodesData = lastDrawData.nodes;
 
@@ -137,36 +136,41 @@ function updateViewPortRect()
 	var maxY = y(d3.max(nodesData,function(d) { return d.y; }));
 	var dx = maxX -  minX, dy = maxY - minY;
 	
-	var vx,vy,vw,vh,sx,sy,sw,sh,r;
+	var vx,vy,vw,vh,sx,sy,sw,sh,r,ox,oy;
 	
-  	if(dx > svgActualWidth || dy > svgActualHeight)
+  	if(dx > svgWidth || dy > svgHeight)
   	{
-  		r = navActualHeight/ dy;
+  		r = Math.min(navHeight/dy,navWidth/dx);
   		sx = 0;
   		sy = 0;
   		vx = (-minX) * r;
   		vy = (-minY) * r;
-  	
+  		ox = (navWidth - dx * r) / 2;
+  		oy = (navHeight - dy * r) / 2;
   	}
   	else
 	{
-  		r = navActualHeight / svgActualHeight;
+  		r = Math.min(navHeight / svgHeight,navWidth / svgWidth);
   		vx = 0;
   		vy = 0;  	
   		sx = minX * r;
   		sy = minY * r;
+  		ox = 0;
+  		oy = 0;
   	}
 
-	vw = svgActualWidth * r;
-	vh = svgActualHeight * r;
+	vw = svgWidth * r;
+	vh = svgHeight * r;
 	sw = dx * r;
 	sh = dy * r;
 
-  	svgRect.attr('x', sx).attr('y', sy).attr('width', sw).attr('height', sh);
-  	viewRect.attr('x', vx).attr('y', vy).attr('width', vw).attr('height', vh);
+  	svgRect.attr('x', sx+ox).attr('y', sy+oy).attr('width', sw).attr('height', sh);
+  	viewRect.attr('x', vx+ox).attr('y', vy+oy).attr('width', vw).attr('height', vh);
 	  
+
 	updateNavSize();
 }	
+
 
 function updateZoomText () {
 	curScale = zoom.scale()
