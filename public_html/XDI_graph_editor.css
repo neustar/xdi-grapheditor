@@ -408,8 +408,8 @@ body{
 
 #zoomText{
   position: absolute;
-  right: 1em;
-  bottom: 1em;
+  right: 0.1em;
+  bottom: 0.1em;
   font-weight: 200;
 }
 
@@ -630,6 +630,7 @@ body{
 .link:hover text, .hide_link_label .link:hover text, .hide_rel_label .link:hover text{
   opacity: 1;
   font-size: 1.5em;
+  fill:#333;
 }
 
 /********* Drag Line *********/

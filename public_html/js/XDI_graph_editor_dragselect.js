@@ -33,6 +33,9 @@ function initializeDragSelect () {
 	d3.select('#dragSelectCanvas')
 	.attr('class', 'brush')
 	.call(dragSelectBrush);
+
+	d3.select('#dragSelectCanvas .background')
+	.style('cursor', 'default')
 }
 
 

@@ -37,22 +37,19 @@ function initializeZoom () {
 	svg.on("mousewheel.zoom", null);
 	svg.on("MozMousePixelScroll.zoom", null);
 
-	d3.select('#navSVG')
-	.attr('width', svgWidth*navScale + navMargin * 2)
-	.attr('height', svgHeight*navScale + navMargin * 2)
-	.selectAll('g')
-	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')')
-
-	navX = d3.scale.linear()
-	.domain([0,svgWidth])
-	.range([0,svgWidth*navScale]);
-
-	navY = d3.scale.linear()
-	.domain([0,svgHeight])
-	.range([0,svgHeight*navScale]);
+	updateNavSize();
 
 	zoom.event(svg)
 }
+
+function updateNavSize () {
+	d3.select('#navSVG')
+    	.attr('width', svgWidth*navScale + navMargin * 2)
+    	.attr('height', svgHeight*navScale + navMargin * 2)
+    .selectAll('g')
+    	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')')
+}
+
 function zoomEventHandler(){
 
     forceTickEventHandler();
@@ -113,7 +110,7 @@ function scaleView(center,newScale)
 	setScaleTranslation(s1,[tx1,ty1]);
 }
 
-function updateViewPortRect () 
+function updateViewPortRect() 
 {
 	if(!lastDrawData)
 		return;
@@ -138,31 +135,28 @@ function updateViewPortRect ()
   		r = navActualHeight/ dy;
   		sx = 0;
   		sy = 0;
-  		sw = dx * r;
-  		sh = dy * r;
-
   		vx = (-minX) * r;
   		vy = (-minY) * r;
-  		vw = svgActualWidth * r;
-  		vh = svgActualHeight * r;
+  	
   	}
   	else
 	{
   		r = navActualHeight / svgActualHeight;
   		vx = 0;
-  		vy = 0;
-  		vw = svgActualWidth * r;
-  		vh = svgActualHeight * r;
-
+  		vy = 0;  	
   		sx = minX * r;
   		sy = minY * r;
-  		sw = dx * r;
-  		sh = dy * r;
   	}
+
+	vw = svgActualWidth * r;
+	vh = svgActualHeight * r;
+	sw = dx * r;
+	sh = dy * r;
 
   	svgRect.attr('x', sx).attr('y', sy).attr('width', sw).attr('height', sh);
   	viewRect.attr('x', vx).attr('y', vy).attr('width', vw).attr('height', vh);
 	  
+	updateNavSize();
 }	
 
 function updateZoomText () {

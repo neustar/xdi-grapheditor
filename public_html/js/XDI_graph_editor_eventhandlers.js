@@ -92,17 +92,14 @@ function mousewheelOnSVG () {
 
 
 function keydownOnSVG() {
-    
     // Ignore if dialog box is displayed.
     if (isDialogVisible)
         return;
     
-
     if(d3.event.srcElement == d3.select("#searchText").node())
         return;
     
     lastKeyDown = d3.event.keyCode;
-
 
     switch (d3.event.keyCode) {
         case 8: // backspace
@@ -115,6 +112,7 @@ function keydownOnSVG() {
             updateStatus(null,null,true);
             setDragSelectAbility(false);
             break;
+            
         case 18://opt/alt
             setDragSelectAbility(false);
             break;
@@ -235,7 +233,10 @@ function mousedownOnLinkHandler(d) {
     updateSelectionClass();
 }
 
-// function windowResizeHandler () {
-//     svgWidth = window.innerWidth;
-//     svgHeight = window.innerHeight;
-// }
+function windowResizeHandler () {
+    svgHeight = d3.select('#mainCanvas').node().offsetHeight;
+    svgWidth = d3.select('#mainCanvas').node().offsetWidth;
+    
+    force.size([svgWidth, svgHeight]);
+    updateViewPortRect();
+}

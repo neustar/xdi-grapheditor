@@ -28,13 +28,6 @@ THE SOFTWARE.
         <meta charset="utf-8">
         <link rel="stylesheet" href="XDI_graph_editor.css"/>
         <link rel="stylesheet" href="js/libs/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"/>
-        <style>
-            //label, textarea { display:block; }
-            textarea.text { margin-bottom:12px; width:95%; padding: .4em; }
-            .validateTips { border: 1px solid transparent; padding: 0.3em; }
-            fieldset { padding:0; border:0; margin-top:25px; }
-            .ui-dialog .ui-state-error { padding: .3em; }
-        </style>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
         <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
@@ -137,36 +130,7 @@ THE SOFTWARE.
                     <input type="search" placeholder="Search" results="10" autocomplete="on" onkeyup="searchTextChanged();" id="searchText" >
                     <button class="searchDoneButton" onclick="searchDone();">Done</button>
                 </div>
-                <div class="searchResult" id="searchResult">
-                    <section class="searchHeader">
-                        <p class="title">Links</p>
-                        <p class="itemcount">39 items</p>
-                    </section>
-                    <ul class="searchSubList">
-                        <li class="searchItem literal">=abc</li>
-                        <li class="searchItem relation">=relation</li>
-                        <li class="searchItem">ueo</li>
-                        
-                    </ul>
-                    <section class="searchHeader">
-                        <p class="title">Links</p>
-                        <p class="itemcount">39 items</p>
-                    </section>
-                    <ul class="searchSubList">
-                     <li class="searchItem">=abc</li>
-                        <li class="searchItem">=a</li>
-                        <li class="searchItem">ueo</li>
-                        <li class="searchItem">=abc</li>
-                        <li class="searchItem">=a</li>
-                        <li class="searchItem">ueo</li>
-                        <li class="searchItem">=abc</li>
-                        <li class="searchItem">=a</li>
-                        <li class="searchItem">ueo</li>
-                        <li class="searchItem">=abc</li>
-                        <li class="searchItem">=a</li>
-                        <li class="searchItem">ueo</li>
-                    </ul>
-                </div>
+                <div class="searchResult" id="searchResult"></div>
             </div>
         </div>
         <div class="instruction">

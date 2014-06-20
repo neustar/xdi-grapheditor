@@ -36,12 +36,12 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph) {
 
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
-    $.each(lines, function(i,d) {
+    lines.forEach(function(d,i) {
         if (d === null || d === "")
             lines.splice(i, 1);
     });
     var graph = xdi.graph();
-    $.each(lines, function(i, d) {
+    lines.forEach(function(d,i) {
         try {
             var statement = xdi.parser.parseStatement(d);
             graph.statement(d);
@@ -55,8 +55,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph) {
     
     xdistatements = xdi.io.write(graph);
     lines = xdistatements.split(/\r\n|\r|\n/g);
-    $.each(lines, function(i,d) {
-
+    lines.forEach(function(d,i) {
         if (d.length > 0) {
             var xdistmt = xdi.parser.parseStatement(d);
             if (xdistmt.isContextNodeStatement()) {
@@ -462,8 +461,6 @@ function setNodeIsRoot(nodeToSet,newValue){
         // nodeToSet.type = nodeToSet._type;
         // nodeToSet._type = null;
     }
-
-    // nodeToSet.isRoot = newValue;
 }
 
 function setNodeIsLiteral (nodeToSet,newValue) {

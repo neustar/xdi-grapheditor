@@ -23,16 +23,10 @@ THE SOFTWARE.
 */
 
 
-
-
-// some UI management...
-var dlg;
-
-
 $(function() {
     
     //Define the dialog for Import XDI
-    dlg = $('#dialog-form').dialog({
+    var dlg = $('#dialog-form').dialog({
         autoOpen: false,
         height: 600,
         width: 600,
@@ -49,8 +43,7 @@ $(function() {
             },
             Cancel: function() {
                 $(this).dialog('close')
-                isDialogVisible = false;
-                
+                isDialogVisible = false; 
             }
         },
     });
@@ -80,8 +73,6 @@ $(function() {
 
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")
-        // .attr("width", "100%")//totalWidth)
-        // .attr("height", "100%")//totalHeight)
         .on('mousedown', mousedownOnSVG) //event handlers has to be set within javascript. Otherwise d3.event will be null in handler
         .on('mousemove', mousemoveOnSVG)
         .on('mouseup', mouseupOnSVG)
@@ -92,8 +83,8 @@ $(function() {
         .on("keydown", keydownOnSVG)
         .on('keyup', keyupOnSVG);
 
-    // d3.select(window)
-    //     .on('resize',windowResizeHandler)
+    d3.select(window)
+        .on('resize',windowResizeHandler)
 
     //Initialize SVG Components
 
@@ -147,12 +138,9 @@ function initializeGraph()
     mousedown_node = null;
     mouseup_node = null;
     
-    node = d3.select("#nodeCanvas").selectAll(".node");
-    link = d3.select("#linkCanvas").selectAll(".link");
-    labels = d3.select("#labelsCanvas").selectAll(".label");
-
     initializeZoom();
     initializeDragSelect();
+    windowResizeHandler();
 
     restart();
 }
@@ -189,20 +177,20 @@ function getLinkPathD(d){
 function forceTickEventHandler() {
     
     
-    node = svg.selectAll(".node");
-    node.attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
-            .classed("selected", function(d) { return (d.isSelected); });
+    svg.selectAll(".node")
+        .attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
+        .classed("selected", function(d) { return (d.isSelected); });
 
-    linkPath = svg.selectAll(".link path");
+    var linkPath = svg.selectAll(".link path");
     linkPath.attr('d', getLinkPathD);
 
-    labels = svg.selectAll(".link text");
-    labels.attr("x", function(d) {
-                return x(d.source.x) + (x(d.target.x)-x(d.source.x))/3*1;
-            })
-            .attr("y", function(d) {
-                return y(d.source.y) + (y(d.target.y)-y(d.source.y))/3*1;
-            })
+    svg.selectAll(".link text")
+        .attr("x", function(d) {
+            return x(d.source.x) + (x(d.target.x)-x(d.source.x))/3*1;
+        })
+        .attr("y", function(d) {
+            return y(d.source.y) + (y(d.target.y)-y(d.source.y))/3*1;
+        })
             
     updateDragLine();
     updateViewPortRect(); //Remove this if the refresh of navigator make it slow;
@@ -213,33 +201,15 @@ function forceEndEventHandler () {
     updateViewPortRect();
 }
 
-//Render all SVG Elements based on jsonnodes, jsonlinks
-function restart(startForce,getNewData) {
-    if(startForce == null)
-        startForce = true;
-    if(getNewData == null)
-        getNewData = true;
-
-
-    var drawData = null;
-    if(getNewData || lastDrawData == null)
-    {
-        lastDrawData = getDrawData();
-    }
-    drawData = lastDrawData;
-
-    //
-    // Links
-    //
-
+function updateLinkElement (linksData) {
     //// Add new elements
     var linkCanvas = d3.select('#linkCanvas');
-    link = linkCanvas.selectAll(".link")
-        .data(drawData.links, function(d) { return d.id; });
+    var linkGs = linkCanvas.selectAll(".link")
+        .data(linksData, function(d) { return d.id; });
     
-    link.exit().remove();
+    linkGs.exit().remove();
    
-    var newLinkGs = link.enter().append("g")
+    var newLinkGs = linkGs.enter().append("g")
         .attr("class", "link selectable")
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
@@ -258,29 +228,26 @@ function restart(startForce,getNewData) {
         });  
 
     //// Adjust Classes
-    link.classed('selected', function(d) {return d.isSelected;})
+    linkGs.classed('selected', function(d) {return d.isSelected;})
         .classed('relation', function(d) {return d.isRelation;})
         .classed('literal', function(d) {return d.target.type === NodeTypes.LITERAL;})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
+}
 
-    //
-    // Nodes
-    //
-
+function updateNodeElement (nodesData) {
     //// Add new elements
     var nodeCanvas = d3.select('#nodeCanvas');
-    node = nodeCanvas.selectAll(".node")
-        .data(drawData.nodes, function(d) {return d.id;});
+    var nodeGs = nodeCanvas.selectAll(".node")
+        .data(nodesData, function(d) {return d.id;});
             
-    node.exit().remove();
+    nodeGs.exit().remove();
 
-    var newNodes = node.enter().append("g")
-            .on('mouseenter',mouseenterOnNodeHandler)
-            .on('mouseleave',mouseleaveOnNodeHandler)
+    var newNodes = nodeGs.enter().append("g")
+        .on('mouseenter',mouseenterOnNodeHandler)
+        .on('mouseleave',mouseleaveOnNodeHandler)
 
     newNodes.append("path")
-        // .attr('r', NODE_RADIUS)
         .on('mousedown', mousedownOnNodeHandler)
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
@@ -294,17 +261,36 @@ function restart(startForce,getNewData) {
         .attr("dy", ".35em")
 
     //// Adjust Classes    
-    node
+    nodeGs
         .attr("class", function(d) { return "node selectable " + d.type;})
         .classed("selected", function(d) { return (d.isSelected); })
         .classed("folded",function(d){return d.isFolded;})
         .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
 
-    node.select("text")
+    nodeGs.select("text")
         .text(function(d){return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);});
 
-    node.select("path")
+    nodeGs.select("path")
         .attr('d', function(d) { return getNodeShape(d.type); })
+}
+
+//Render all SVG Elements based on jsonnodes, jsonlinks
+function restart(startForce,getNewData) {
+    if(startForce == null)
+        startForce = true;
+    if(getNewData == null)
+        getNewData = true;
+
+    var drawData = null;
+    if(getNewData || lastDrawData == null)
+    {
+        lastDrawData = getDrawData();
+    }
+    drawData = lastDrawData;
+
+    updateLinkElement(drawData.links); 
+
+    updateNodeElement(drawData.nodes);    
 
     //
     // Layout
@@ -354,6 +340,7 @@ function updateStatus(statusMessage, isOK,isEditing){
         svg.select("#modeMessage")
             .text(modeMessage);   
     }
+    
     if(statusMessage != null)
     {
         svg.select("#statusMessage")
@@ -414,6 +401,10 @@ function importXDI() {
     $('#dialog-form').dialog("open");
 }
 
+// function setCursor (cursorType) {
+    
+// }
+
 function setNodeLabelsVisibility(newValue){
     d3.select('#nodeCanvas').classed("hide_text",newValue);
 }
@@ -457,7 +448,7 @@ function toggleFreeze (newValue) {
     if(newValue != null)
         isFrozen = newValue;
     else
-        isFrozen = ! isFrozen;
+        isFrozen = !isFrozen;
 
     restart(true,false);
 
