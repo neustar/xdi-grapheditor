@@ -46,6 +46,17 @@ var NODE_RADIUS = 13;
 var NODE_TEXT_MAX_LENGTH = 20;
 var LINK_TEXT_MAX_LENGTH = 20;
 
+
+var Mode = {
+	BROWSE:'browse',
+	EDIT:'edit',
+	VIEW:'view',
+	ZOOM_IN:'zoom in',
+	ZOOM_OUT:'zoom out',
+	PAN:'pan'
+}
+var currentMode = Mode.BROWSE;
+
 // mouse event vars
 var MOUSE_WHEEL_SCALE_DELTA = 0.02;
 
@@ -65,8 +76,6 @@ var isDialogVisible= false;
 
 var lastKeyDown = -1;
 var isFrozen = false;
-
-
 
 
 //Model

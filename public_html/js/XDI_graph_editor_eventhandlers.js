@@ -109,11 +109,12 @@ function keydownOnSVG() {
             break;
             
         case 16://shift
-            updateStatus(null,null,true);
+            updateMode(Mode.EDIT);
             setDragSelectAbility(false);
             break;
             
         case 18://opt/alt
+            updateMode(Mode.VIEW);
             setDragSelectAbility(false);
             break;
 
@@ -147,11 +148,12 @@ function keyupOnSVG() {
     switch(d3.event.keyCode){
         case 16:
             startDrag();
-            updateStatus(null,null,false);
+            updateMode(Mode.BROWSE);
             setDragSelectAbility(true);
             break;
         case 18://opt/alt
             setDragSelectAbility(true);
+            updateMode(Mode.BROWSE);
             break;
     }
 }

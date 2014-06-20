@@ -323,7 +323,7 @@ function getNodeShape (type) {
     return symbol();
 }
 
-function updateStatus(statusMessage, isOK,isEditing){
+function updateSyntaxStatus(statusMessage, isOK,isEditing){
     var indicator = svg.select("#statusIndicator");
 
     if(isOK != null) //When isOK is not passed, the corresponding class will remains the same 
@@ -331,23 +331,54 @@ function updateStatus(statusMessage, isOK,isEditing){
             .classed("ok",isOK)
             .classed("error",!isOK)
     
-    if(isEditing != null)
-    {
-        indicator
-            .classed("edit",isEditing)
-            .classed("browse",!isEditing)
-        var modeMessage = isEditing? "Edit Mode":"Browse Mode";
-        svg.select("#modeMessage")
-            .text(modeMessage);   
-    }
+    
     
     if(statusMessage != null)
     {
         svg.select("#statusMessage")
             .text(statusMessage);
     }
-    
 
+    if(isEditing != null)
+    {
+        // indicator
+        //     .classed("edit",isEditing)
+        //     .classed("browse",!isEditing)
+        var modeMessage = isEditing? "Edit Mode":"Browse Mode";
+        svg.select("#modeMessage")
+            .text(modeMessage);   
+    }
+}
+
+function updateMode (newMode) {
+    var modeMessage = newMode;
+    svg.select("#modeMessage")
+        .text(modeMessage);
+
+    var cursor = "default";
+    switch(newMode)
+    {
+        case Mode.BROWSE:
+            cursor = "default";
+            break;
+        case Mode.EDIT:
+            cursor = "crosshair";
+            break;
+        case Mode.VIEW:
+            cursor = "-webkit-grab";
+            break;
+        case Mode.ZOOM_IN:
+            cursor = "-webkit-zoom-in";
+            break;
+        case Mode.ZOOM_OUT:
+            cursor = "-webkit-zoom-out";
+            break;
+        case Mode.PAN:
+            cursor = "-webkit-grabbing";
+            break;
+    }
+    d3.select('#mainCanvas')
+    .style('cursor', cursor);
 }
 
 //
@@ -388,7 +419,7 @@ function clearGraph() {
     lastNodeId = -1;
     lastLinkId = -1;
     lastDrawData = null;
-    updateStatus("Syntax OK",true);
+    updateSyntaxStatus("Syntax OK",true);
     restart();
 }
 
@@ -401,9 +432,9 @@ function importXDI() {
     $('#dialog-form').dialog("open");
 }
 
-// function setCursor (cursorType) {
+function setCursor (cursorType) {
     
-// }
+}
 
 function setNodeLabelsVisibility(newValue){
     d3.select('#nodeCanvas').classed("hide_text",newValue);

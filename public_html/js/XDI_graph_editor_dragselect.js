@@ -35,7 +35,7 @@ function initializeDragSelect () {
 	.call(dragSelectBrush);
 
 	d3.select('#dragSelectCanvas .background')
-	.style('cursor', 'default')
+	.style('cursor', 'inherit')
 }
 
 

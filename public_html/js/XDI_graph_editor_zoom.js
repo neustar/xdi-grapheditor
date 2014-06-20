@@ -51,15 +51,23 @@ function updateNavSize () {
 }
 
 function zoomEventHandler(){
-
     forceTickEventHandler();
 	updateViewPortRect();
 	updateZoomText();
+
+	if(d3.event == null || !(d3.event.sourceEvent instanceof WheelEvent))
+		return;
+	
+	if(d3.event.sourceEvent.wheelDelta > 0)
+		updateMode(Mode.ZOOM_IN);
+	else
+		updateMode(Mode.ZOOM_OUT);
 }
 
 function startPanView(){
 	isPanning = true
 	lastTranslation = zoom.translate();
+	updateMode(Mode.PAN);
 }
 
 function updatePanView(curMousePos){
@@ -82,6 +90,7 @@ function setScaleTranslation(newScale,newTranslation){
 function endPanView(){
 	isPanning = false;
 	lastTranslation = null;
+	updateMode(Mode.VIEW);
 }
 
 function scaleView(center,newScale)

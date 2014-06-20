@@ -394,9 +394,9 @@ function checkLinkValidity(linkToCheck){
     var lit = linkToCheck.target.type === NodeTypes.LITERAL;
     var validateMessage = validateXDI(statement, linkToCheck.isRelation, lit);
     if (validateMessage === "") {
-        updateStatus("Syntax OK",true);
+        updateSyntaxStatus("Syntax OK",true);
     } else {
-        updateStatus(validateMessage,false);
+        updateSyntaxStatus(validateMessage,false);
     }
 }
 
