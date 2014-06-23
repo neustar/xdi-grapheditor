@@ -151,15 +151,19 @@ THE SOFTWARE.
         </div>
         
         
-        <div id="import-dialog" title="Define a new graph using DISPLAY">
-            <p class="validateTips">Please, make sure your XDI is valid!</p>
+        <div id="import-dialog" title="XDI Statements Input">
             <form>
             <fieldset>
-                    <label for="name">Type your XDI statements (Display Single Line) below:</label>
+                    <label for="name">Please enter your XDI statements below:</label>
+                    <br><br>
                     <textarea cols="68" rows="17" name="XDIsource" id="XDIsource" class="textarea ui-widget-content ui-corner-all"></textarea>
+                    <br><br>
                     <p>
-                        <input type="checkbox" id="clearGraphCheckBox" checked='true'>Clear All</input>
-                        <input type="checkbox" id="joinGraphCheckBox" >Add on to current graph</input>
+
+                        <input type="checkbox" id="clearGraphCheckBox" checked='true'>Delete current graph</input>
+                        <br><br>
+                        <input type="checkbox" id="joinGraphCheckBox"> Combine with current graph (otherwise import as a separate graph).</input>
+                        <br><br>
                         <input type="checkbox" id="foldRootCheckBox" >Fold Root</input>
                     </p>
             </fieldset>
