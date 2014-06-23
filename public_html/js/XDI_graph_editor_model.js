@@ -48,6 +48,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph) {
         } catch (err) {
             console.log("Invalid XDI: " + err);
             console.log(d);
+            openErrorDialog(d,i);
             return;
         }
         

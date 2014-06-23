@@ -25,51 +25,8 @@ THE SOFTWARE.
 
 $(function() {
     
-    //Define the dialog for Import XDI
-    var dlg = $('#dialog-form').dialog({
-        autoOpen: false,
-        height: 600,
-        width: 600,
-        modal: true,
-        buttons: {
-            "Graph it!": function() {
-                var importedXDI = $('#XDIsource').val();
-                var willClearGraph = $('#clearGraphCheckBox').prop('checked');
-                var willJoinGraph = $('#joinGraphCheckBox').prop('checked');
-                $(this).dialog('close')
-                isDialogVisible = false;
-                if(!_.isEmpty(importedXDI))
-                    initializeGraphWithXDI(importedXDI,willClearGraph,willJoinGraph);
-            },
-            Cancel: function() {
-                $(this).dialog('close')
-                isDialogVisible = false; 
-            }
-        },
-    });
-    
-/*
-    //Define event handler for sliders
-    var $linkdistslider = $('input[name="linkdistslider"]');
-    var $chargeslider = $('input[name="chargeslider"]');
-    var $gravityslider = $('input[name="gravityslider"]');
-    
-    $linkdistslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val());
-        updateSim(val, null, null);
-    });
-    $chargeslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val());
-        updateSim(null, val, null);
-    });
-    $gravityslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val())/10;
-        updateSim(null, null , val);
-    });
-*/
+    initializeDialogs();
+    // openErrorDialog();
 
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")
@@ -93,9 +50,8 @@ $(function() {
     x = d3.scale.linear().domain([0,window.screen.availWidth]).range([0,window.screen.availWidth]);
     y = d3.scale.linear().domain([0,window.screen.availHeight]).range([0,window.screen.availHeight]);
 
-
-    // initializeGraphWithString("{\"treeData\":{},\"relData\":{}}");
     initializeGraph();
+    
     clearGraph();
 
     //Only For Debug purpose
@@ -428,12 +384,7 @@ function help() {
 }
 
 function importXDI() {
-    isDialogVisible = true;
-    $('#dialog-form').dialog("open");
-}
-
-function setCursor (cursorType) {
-    
+    openImportDialog();
 }
 
 function setNodeLabelsVisibility(newValue){

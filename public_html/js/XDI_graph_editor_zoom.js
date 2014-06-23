@@ -121,7 +121,7 @@ function scaleView(center,newScale)
 
 function updateViewPortRect() 
 {
-	if(!lastDrawData)
+	if(!lastDrawData || _.isEmpty(lastDrawData.nodes))
 		return;
 
 	var svgRect = d3.select('#svgRect'),viewRect = d3.select('#viewRect')

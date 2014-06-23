@@ -366,7 +366,12 @@ body{
   color:#444;
 }
 
-
+#error-dialog p{
+  margin:1em;
+}
+#error-dialog p:last-of-type{
+  margin:1em 2em;
+}
 
 /****************** Graph Components ******************/
 

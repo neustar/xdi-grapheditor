@@ -481,6 +481,8 @@ button.ui-button::-moz-focus-inner {
 	width: 90%;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-weight: 100;
+	letter-spacing: 0.1em;
 }
 .ui-dialog .ui-dialog-titlebar-close {
 	position: absolute;
