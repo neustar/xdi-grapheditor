@@ -26,7 +26,6 @@ THE SOFTWARE.
 $(function() {
     
     initializeDialogs();
-    // openErrorDialog();
 
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")

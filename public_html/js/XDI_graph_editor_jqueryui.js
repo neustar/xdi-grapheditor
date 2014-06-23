@@ -24,6 +24,7 @@ function initializeDialogs () {
 
     $( "#error-dialog" ).dialog({
       resizable: false,
+      autoOpen: false,
       height:340,
       width:600,
       modal: true,
@@ -39,7 +40,6 @@ function initializeDialogs () {
         }
       }
     });
-
 }
 
 function openImportDialog () {
