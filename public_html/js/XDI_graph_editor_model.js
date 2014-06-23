@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 // Initializing the graph with XDI statements.
-function initializeGraphWithXDI(data,willClearGraph,willJoinGraph) {
+function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) {
     if(willClearGraph == null)
         willClearGraph = true;
     
@@ -74,6 +74,11 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph) {
                 console.log("Found a weird statement of unknown type.");
         }
     });
+
+    if(willFoldRoot)
+        jsonnodes.forEach(function (d) {
+            d.isFolded = d.isRoot();
+        })
 
     restart();
 }
@@ -187,10 +192,7 @@ function getDrawData(root){
     return {nodes:resNodes,links:resLinks,map:resMap};
 }
 
-function toggleFoldNode(node){
-    node.isFolded = !node.isFolded
-    restart();
-}
+
 
 function addStatement(subject, predicate, object, isRelation, statement, willJoinGraph) {
     var subjectnode, objectnode;

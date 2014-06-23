@@ -10,10 +10,11 @@ function initializeDialogs () {
                 var importedXDI = $('#XDIsource').val();
                 var willClearGraph = $('#clearGraphCheckBox').prop('checked');
                 var willJoinGraph = $('#joinGraphCheckBox').prop('checked');
+                var willFoldRoot = $('#foldRootCheckBox').prop('checked');
                 $(this).dialog('close')
                 isDialogVisible = false;
                 if(!_.isEmpty(importedXDI))
-                    initializeGraphWithXDI(importedXDI,willClearGraph,willJoinGraph);
+                    initializeGraphWithXDI(importedXDI,willClearGraph,willJoinGraph,willFoldRoot);
             },
             Cancel: function() {
                 $(this).dialog('close')

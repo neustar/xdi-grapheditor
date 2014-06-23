@@ -220,7 +220,7 @@ function mouseleaveOnNodeHandler (d) {
 }
 
 function dblclickOnNodeHandler(d){
-    toggleFoldNode(d);   
+    toggleFoldNode(d,d3.event.shiftKey);   
 }
 
 

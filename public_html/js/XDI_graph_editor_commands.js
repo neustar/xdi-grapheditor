@@ -195,3 +195,29 @@ function setNodeFixed (node, newValue) {
     node.fixed =newValue;
     restart(false,false)
 }
+
+function toggleFoldNode(node,isDirectDescendantsOnly){
+    setFoldNode (node,!node.isFolded,isDirectDescendantsOnly)   
+}
+
+function setFoldNode (node,newValue,isDirectDescendantsOnly) {
+    node.isFolded = newValue;
+
+    //Set all children folded if only expand direct descendants
+    if(isDirectDescendantsOnly && !node.isFolded && node.children != null)
+    {
+        node.children.forEach(function (d) {
+            if(!_.isEmpty(d.children)&&!findLink(node,d).isRelation)
+                d.isFolded = true;
+        })
+    }
+    
+    restart();    
+}
+
+function expandAllNodes(){
+    jsonnodes.forEach(function  (d) {
+        d.isFolded = false;
+    })
+    restart();
+}

@@ -43,9 +43,10 @@ THE SOFTWARE.
                 <button class="button" onclick="importXDI()" type="button">Import XDI</button>
                 <button class="button" onclick="exportGraph()" type="button">Export to XDI</button>
                 
-                <button class="button" onclick="clearGraph()">Clear Graph</button>
                 <button class="button" onclick="zoomToFit()">Zoom to Fit</button>
-                
+                <button class="button" onclick="expandAllNodes()">Expand All</button>
+
+                <button class="button" onclick="clearGraph()">Clear Graph</button>
                 <button class="button" onclick="saveGraph()">Store Graph</button>
                 <button class="button" onclick="loadGraph()">Load Graph</button>
                 <button class="button" onclick="DeleteStoredGraphs()">Delete Stored Graphs</button>
@@ -143,6 +144,10 @@ THE SOFTWARE.
             <b>L</b>: Invert link; Set node as Literal.
             <b>Enter</b>: Rename a node or link. 
             <b>F</b>: Fix or Unfix a node.
+            <b>Double Click on node</b>: Expand/Fold a node's subtree.
+            <b>Shift+Click on background</b>: Creat a node.
+            <b>Shift+Double Click on node</b>: Expand direct descendants only.
+            <b>Shift+Drag between nodes</b>: Creat a link.
         </div>
         
         
@@ -154,7 +159,8 @@ THE SOFTWARE.
                     <textarea cols="68" rows="17" name="XDIsource" id="XDIsource" class="textarea ui-widget-content ui-corner-all"></textarea>
                     <p>
                         <input type="checkbox" id="clearGraphCheckBox" checked='true'>Clear All</input>
-                        <input type="checkbox" id="joinGraphCheckBox" >Add on to current graph.</input>
+                        <input type="checkbox" id="joinGraphCheckBox" >Add on to current graph</input>
+                        <input type="checkbox" id="foldRootCheckBox" >Fold Root</input>
                     </p>
             </fieldset>
             </form>

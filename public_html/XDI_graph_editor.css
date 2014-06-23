@@ -452,11 +452,11 @@ body{
 }
 
 .node.root {
-  fill:#ddd;
+  fill:#eee;
 }
 
 .node.literal {
-  fill:#ddd;
+  fill:#eee;
   stroke: #7D9A64;
 }
 
@@ -469,7 +469,7 @@ body{
 }
 
 .node.value{
-  fill:#ddd;
+  fill:#eee;
 }
 
 
