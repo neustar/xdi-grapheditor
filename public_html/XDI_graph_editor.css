@@ -40,20 +40,21 @@ body{
   margin:0% 1%;
 }
 
-.controlContainer{
+.menu{
+  position:absolute;
+  z-index:2;
+  
   height: 5%;
   width: 100%;
 }
 
-.buttonContaiter{
-  padding:0% 0;
-}
 .parameterContainer{
   padding:1% 0;
 }
 
 #drawing{
   position: relative;
+  top:5%;
   overflow: hidden;
   height: 90%;
   width: 100%;
@@ -69,25 +70,107 @@ body{
     width:100%;
     height: 100%;
 }
+/********* Instruction *********/
 
-/********* HTML Components *********/
+.instruction{
+  position: absolute;
+  top: 95%;
+  color:#666;
+  font-weight:200;
+  opacity: 0.9;
+}
+
+.instruction b{
+  color:#444;
+}
+
+/********* Dialog *********/
+
+.dialog p{
+  margin:1em 0;
+}
+
+.dialog textarea{
+  border: 1px solid #999;
+  padding:0.5em;
+}
+#error-dialog p:last-of-type{
+  margin:1em 2em;
+}
+/****************** HTML Layout ******************/
+
+/********* Menu *********/
+
+.menu ul ul {
+  opacity: 0;
+  pointer-events:none;
+
+  -webkit-transition: opacity 0.5s;
+}
+
+
+
+.menu ul li:hover > ul{
+  opacity: 1;
+  pointer-events:auto;
+}
+
+.menu ul {
+  list-style: none;
+  position: relative;
+  display: inline-table;
+
+}
+.menu ul:after {
+  content: ""; clear: both; display: block;
+}
+
+.menu ul li {
+  float: left;
+  margin: 0 0.3em 0 0;
+}
+  .menu ul li:hover {
+    
+  }
+    .menu ul li:hover button {
+
+    }
+  
+  .menu ul li button {
+    
+  }
+
+.menu ul ul {
+  position: absolute; top: 100%;
+}
+  .menu ul ul li {
+    float: none;  
+    position: relative;
+  }
+    .menu ul ul li button {
+      
+    } 
+      .menu ul ul li button:hover {
+      }
 
 .button {
-   background: rgba(66,124,102,1);//#67917A;
-   padding: 0.6em 1.5em;
-   border-radius: 0px;
-   margin: 0;
-/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.2); */
+  background: rgba(66,124,102,1);//#67917A;
+  color: white;
+
+  padding: 0.6em 1.5em;
+  border-radius: 0px;
+  margin: 0;
+  
+  width: 10em; 
    
-   color: white;
-   font-size: 1em;
-   font-family: "Helvetica Neue";
-   font-weight:100;
-   letter-spacing:1px;
+  font-size: 1em;
+  font-family: "Helvetica Neue";
+  font-weight:100;
+  letter-spacing:1px;
    
   cursor: pointer;
 
-   -webkit-transition:background 0.5s, box-shadow 0.5s;
+  -webkit-transition:background 0.5s, box-shadow 0.5s;
    
 }
    
@@ -105,10 +188,17 @@ body{
   outline: 0px;
 }
 
-
 .button.off{
   background: rgba(120,120,120,0.4);
 }
+
+
+
+
+
+/****************** Graph Components ******************/
+
+/********* Legend *********/
 
 .legendContainer{
   position: absolute;
@@ -192,6 +282,7 @@ body{
   border-bottom-right-radius:5px;
 }
 
+/********* Search *********/
 
 .searchContainer{
   position: absolute;
@@ -355,32 +446,6 @@ body{
 .searchDoneButton:focus{
   outline: 0px;
 }
-
-.instruction{
-  color:#666;
-  font-weight:200;
-  opacity: 0.9;
-}
-
-.instruction b{
-  color:#444;
-}
-
-
-
-.dialog p{
-  margin:1em 0;
-}
-
-.dialog textarea{
-  border: 1px solid #999;
-  padding:0.5em;
-}
-#error-dialog p:last-of-type{
-  margin:1em 2em;
-}
-
-/****************** Graph Components ******************/
 
 #statusIndicator{
     stroke-width: 0px;

@@ -145,6 +145,7 @@ function forceTickEventHandler() {
     svg.selectAll(".link text")
         .attr("x", function(d) {return d.textPoint.x;})
         .attr("y", function(d) {return d.textPoint.y;})
+        .attr("dx", function(d) {return d.source.y < d.target.y ? 12:-12;})
         .style("text-anchor",function(d) { return d.source.y < d.target.y ? "start":"end"; })
             
     updateDragLine();

@@ -1,3 +1,22 @@
+            <!-- <div class="parameterContainer"id="SimParamsDlg">
+                <form oninput="output1.value=linkdistslider.value">
+                    Nodes distance: 0<input type="range" name="linkdistslider" min="0" max="100" value="50"/>
+                    <output name="output1" for="linkdistslider">100</output>
+                </form>
+                <form oninput="output1.value=chargeslider.value">
+                    Nodes attraction -2000<input type="range" name="chargeslider" min="-2000" max="2000"/>
+                    <output name="output1" for="chargeslider">2000</output>
+                </form>
+                <form oninput="output1.value=gravityslider.value">
+                    Attraction to center<input type="range" name="gravityslider" min="0" max="10"/>
+                    <output name="output1" for="gravityslider">10</output>
+                </form>
+                <form>
+                    Freeze Graph <input type="checkbox" name="freezecheckbox" value="check" onclick="freezeSim(this);"/>
+                </form>
+            </div>
+            <br> -->
+
 /*
     //Define event handler for sliders
     var $linkdistslider = $('input[name="linkdistslider"]');

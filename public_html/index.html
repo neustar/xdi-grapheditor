@@ -38,42 +38,24 @@ THE SOFTWARE.
         <title>XDI Graph Editor</title>
     </head>
     <body>
-        <div class="controlContainer">
-            <div class="buttonContaiter">
-                <button class="button" onclick="importXDI()" type="button">Import XDI</button>
-                <button class="button" onclick="exportGraph()" type="button">Export to XDI</button>
+        <div class="menu">
+            <ul>
+                <li><button class="button" onclick="importXDI()">Import XDI</button></li>
+                <li><button class="button" onclick="exportGraph()">Export to XDI</button></li>
                 
-                <button class="button" onclick="zoomToFit()">Zoom to Fit</button>
-                <button class="button" onclick="expandAllNodes()">Expand All</button>
-                <button class="button" onclick="openCopyDialog();">Copy Labels</button>
-
-
-                <button class="button" onclick="clearGraph()">Clear Graph</button>
-                <button class="button" onclick="saveGraph()">Store Graph</button>
-                <button class="button" onclick="loadGraph()">Load Graph</button>
-                <button class="button" onclick="DeleteStoredGraphs()">Delete Stored Graphs</button>
-                
-                <button class="button" onclick="help()">Help</button>
-                
-            </div>
-            <!-- <div class="parameterContainer"id="SimParamsDlg">
-                <form oninput="output1.value=linkdistslider.value">
-                    Nodes distance: 0<input type="range" name="linkdistslider" min="0" max="100" value="50"/>
-                    <output name="output1" for="linkdistslider">100</output>
-                </form>
-                <form oninput="output1.value=chargeslider.value">
-                    Nodes attraction -2000<input type="range" name="chargeslider" min="-2000" max="2000"/>
-                    <output name="output1" for="chargeslider">2000</output>
-                </form>
-                <form oninput="output1.value=gravityslider.value">
-                    Attraction to center<input type="range" name="gravityslider" min="0" max="10"/>
-                    <output name="output1" for="gravityslider">10</output>
-                </form>
-                <form>
-                    Freeze Graph <input type="checkbox" name="freezecheckbox" value="check" onclick="freezeSim(this);"/>
-                </form>
-            </div>
-            <br> -->
+                <li><button class="button" onclick="zoomToFit()">Zoom to Fit</button></li>
+                <li><button class="button" onclick="expandAllNodes()">Expand All</button></li>
+                <li><button class="button" onclick="openCopyDialog();">Copy Labels</button></li>
+                <li><button class="button" onclick="clearGraph()">Clear Graph</button></li>
+                <li><button class="button">Graph Storage</button>
+                    <ul>
+                        <li><button class="button" onclick="saveGraph()">Store Graph</button></li>
+                        <li><button class="button" onclick="loadGraph()">Load Graph</button></li>
+                        <li><button class="button" onclick="DeleteStoredGraphs()">Clear Storage</button></li>
+                    </ul>
+                </li>
+                <li><button class="button" onclick="help()">Help</button></li>
+            </ul>
         </div>
         <div id="drawing">
             <svg id="mainCanvas">
@@ -137,6 +119,7 @@ THE SOFTWARE.
                 </div>
                 <div class="searchResult" id="searchResult"></div>
             </div>
+            
         </div>
         <div class="instruction">
             <b>Del/Backspace</b>: Remove a node or link. 
