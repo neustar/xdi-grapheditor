@@ -54,15 +54,14 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    // initializeGraphWithXDI(attributeSingletons)
+    initializeGraphWithXDI(attributeSingletons)
 
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
-    // searchOperation("=");
 });
 
 
@@ -137,15 +136,15 @@ function forceTickEventHandler() {
         .classed("selected", function(d) { return (d.isSelected); });
 
     var linkPath = svg.selectAll(".link path");
-    linkPath.attr('d', getLinkPathD);
+    linkPath.attr('d', getLinkPathD)
+    .each(function  (d) {
+        d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
+    });
 
     svg.selectAll(".link text")
-        .attr("x", function(d) {
-            return x(d.source.x) + (x(d.target.x)-x(d.source.x))/3*1;
-        })
-        .attr("y", function(d) {
-            return y(d.source.y) + (y(d.target.y)-y(d.source.y))/3*1;
-        })
+        .attr("x", function(d) {return d.textPoint.x;})
+        .attr("y", function(d) {return d.textPoint.y;})
+        .style("text-anchor",function(d) { return d.source.y < d.target.y ? "start":"end"; })
             
     updateDragLine();
     updateViewPortRect(); //Remove this if the refresh of navigator make it slow;
@@ -176,8 +175,6 @@ function updateLinkElement (linksData) {
     
     newLinkGs.append("svg:text")
         .attr('class', "textLabel")
-        .attr("dx", 12)
-        .attr("dy", ".35em")
         .text(function(d) {
             return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);
         });  
@@ -296,9 +293,6 @@ function updateSyntaxStatus(statusMessage, isOK,isEditing){
 
     if(isEditing != null)
     {
-        // indicator
-        //     .classed("edit",isEditing)
-        //     .classed("browse",!isEditing)
         var modeMessage = isEditing? "Edit Mode":"Browse Mode";
         svg.select("#modeMessage")
             .text(modeMessage);   
@@ -361,12 +355,6 @@ function exportGraph() {
 
 function clearGraph() {
     // todo - add disappearance effect here...
-    // while(jsonnodes.length !== 0) {
-    //     var vic = jsonnodes[0];
-    //     removeNode(vic);
-    //     // removeLinksOfNode(vic);
-    // }
-
     jsonnodes = [];
     jsonlinks = [];
     nodeslinkmap = {};
