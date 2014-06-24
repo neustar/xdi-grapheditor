@@ -38,23 +38,23 @@ THE SOFTWARE.
         <title>XDI Graph Editor</title>
     </head>
     <body>
-        <div class="menu">
-            <ul>
-                <li><button class="button" onclick="importXDI()">Import XDI</button></li>
-                <li><button class="button" onclick="exportGraph()">Export to XDI</button></li>
+        <div class="menuContainer">
+            <ul class="menu">
+                <li class="menu-header"><button onclick="importXDI()">Import XDI</button></li>
+                <li class="menu-header"><button onclick="exportGraph()">Export to XDI</button></li>
                 
-                <li><button class="button" onclick="zoomToFit()">Zoom to Fit</button></li>
-                <li><button class="button" onclick="expandAllNodes()">Expand All</button></li>
-                <li><button class="button" onclick="openCopyDialog();">Copy Labels</button></li>
-                <li><button class="button" onclick="clearGraph()">Clear Graph</button></li>
-                <li><button class="button">Graph Storage</button>
-                    <ul>
-                        <li><button class="button" onclick="saveGraph()">Store Graph</button></li>
-                        <li><button class="button" onclick="loadGraph()">Load Graph</button></li>
-                        <li><button class="button" onclick="DeleteStoredGraphs()">Clear Storage</button></li>
+                <li class="menu-header"><button onclick="zoomToFit()">Zoom to Fit</button></li>
+                <li class="menu-header"><button onclick="expandAllNodes()">Expand All</button></li>
+                <li class="menu-header"><button onclick="openCopyDialog();">Copy Labels</button></li>
+                <li class="menu-header"><button onclick="clearGraph()">Clear Graph</button></li>
+                <li class="menu-header"><button>Graph Storage</button>
+                    <ul class="sub-menu">
+                        <li class="menu-item"><button onclick="saveGraph()">Store Graph</button></li>
+                        <li class="menu-item"><button onclick="loadGraph()">Load Graph</button></li>
+                        <li class="menu-item"><button onclick="DeleteStoredGraphs()">Clear Storage</button></li>
                     </ul>
                 </li>
-                <li><button class="button" onclick="help()">Help</button></li>
+                <li class="menu-header"><button onclick="help()">Help</button></li>
             </ul>
         </div>
         <div id="drawing">

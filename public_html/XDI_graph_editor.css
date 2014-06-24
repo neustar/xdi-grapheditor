@@ -40,7 +40,7 @@ body{
   margin:0% 1%;
 }
 
-.menu{
+.menuContainer{
   position:absolute;
   z-index:2;
   
@@ -101,59 +101,21 @@ body{
 
 /********* Menu *********/
 
-.menu ul ul {
-  opacity: 0;
-  pointer-events:none;
-
-  -webkit-transition: opacity 0.5s;
-}
-
-
-
-.menu ul li:hover > ul{
-  opacity: 1;
-  pointer-events:auto;
-}
-
-.menu ul {
+.menuContainer ul {
   list-style: none;
-  position: relative;
-  display: inline-table;
+/*   display: inline-table; */
 
 }
-.menu ul:after {
+
+.menuContainer ul:after {
   content: ""; clear: both; display: block;
 }
 
-.menu ul li {
-  float: left;
-  margin: 0 0.3em 0 0;
+.menu {
+  position: relative; 
 }
-  .menu ul li:hover {
-    
-  }
-    .menu ul li:hover button {
 
-    }
-  
-  .menu ul li button {
-    
-  }
-
-.menu ul ul {
-  position: absolute; top: 100%;
-}
-  .menu ul ul li {
-    float: none;  
-    position: relative;
-  }
-    .menu ul ul li button {
-      
-    } 
-      .menu ul ul li button:hover {
-      }
-
-.button {
+.menu button {
   background: rgba(66,124,102,1);//#67917A;
   color: white;
 
@@ -174,24 +136,54 @@ body{
    
 }
    
-.button:hover {
+.menu button:hover {
    background: rgba(106,172,78,1);
 /*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.3); */
 }
    
-.button:active {
+.menu button:active {
    border-top-color: #1B676B;
    background: #dce007;
 }
 
-.button:focus {
+.menu button:focus {
   outline: 0px;
 }
 
-.button.off{
+.menu button.off{
   background: rgba(120,120,120,0.4);
 }
 
+.menu-header {
+  float: left;
+  margin: 0 0.3em 0 0;
+}
+    
+.sub-menu {
+  opacity: 0;
+  pointer-events:none;
+  position: absolute; 
+  top: 100%;
+  -webkit-transition: opacity 0.5s;
+}
+
+
+
+.menu-header:hover > .sub-menu{
+  opacity: 1;
+  pointer-events:auto;
+}
+
+.menu-item {
+  float: none;  
+  position: relative;
+}
+.menu-item button {
+  
+} 
+.menu-item button:hover {
+  
+}
 
 
 
