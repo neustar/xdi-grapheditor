@@ -45,6 +45,8 @@ THE SOFTWARE.
                 
                 <button class="button" onclick="zoomToFit()">Zoom to Fit</button>
                 <button class="button" onclick="expandAllNodes()">Expand All</button>
+                <button class="button" onclick="openCopyDialog();">Copy Labels</button>
+
 
                 <button class="button" onclick="clearGraph()">Clear Graph</button>
                 <button class="button" onclick="saveGraph()">Store Graph</button>
@@ -151,29 +153,28 @@ THE SOFTWARE.
         </div>
         
         
-        <div id="import-dialog" title="XDI Statements Input">
+        <div id="import-dialog" class="dialog" title="XDI Statements Input">
             <form>
             <fieldset>
-                    <label for="name">Please enter your XDI statements below:</label>
-                    <br><br>
+                    <p for="name">Please enter your XDI statements below:</p>
                     <textarea cols="68" rows="17" name="XDIsource" id="XDIsource" class="textarea ui-widget-content ui-corner-all"></textarea>
-                    <br><br>
-                    <p>
-                        <input type="checkbox" id="clearGraphCheckBox" checked='true'> Delete current graph</input>
-                        <br><br>
-                        <input type="checkbox" id="joinGraphCheckBox"> Combine with current graph (otherwise import as a separate graph).</input>
-                        <br><br>
-                        <input type="checkbox" id="foldRootCheckBox" > Fold Root</input>
-                    </p>
+                    <p><input type="checkbox" id="clearGraphCheckBox" checked='true'> Delete current graph</input></p>
+                    <p><input type="checkbox" id="joinGraphCheckBox"> Combine with current graph (otherwise import as a separate graph).</input></p>
+                    <p><input type="checkbox" id="foldRootCheckBox" > Fold Root</input></p>
             </fieldset>
             </form>
         </div>
 
-        <div id="error-dialog" title="Statement Compile Error">
+        <div id="error-dialog" class="dialog" title="Statement Compile Error">
             <p>The following line in your statements is not supported.</p>
             <p>Please go to XDI Converter and convert <b>ALL</b> your statements, with inner=1 option <b>unchecked</b>. Then try import again.</p>
             <p>Line <span id='error-line-num'>30</span>:</p>
             <p id='error-line-content'>aoeu aoeu</p>
+        </div>
+
+        <div id="copy-dialog" class="dialog" title="Copy Labels">
+          <p>The labels of the seletced nodes and links are listed below:</p>
+          <textarea id="labelTextArea" cols="77" rows="6" readonly="true">aeou</textarea>
         </div>
 
         <script src="js/data.js"></script>

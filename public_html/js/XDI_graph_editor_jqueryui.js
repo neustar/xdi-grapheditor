@@ -41,6 +41,19 @@ function initializeDialogs () {
         }
       }
     });
+
+    $("#copy-dialog" ).dialog({
+      autoOpen: false,
+      resizable: false,
+      height:340,
+      width:600,
+      modal: true,
+      buttons: {
+        "Done": function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
 }
 
 function openImportDialog () {
@@ -53,4 +66,14 @@ function openErrorDialog (content, linenum) {
   $('#error-dialog #error-line-num').text(linenum+1);
   $('#error-dialog #error-line-content').text(content);
   $('#error-dialog').dialog("open");	
+}
+
+function openCopyDialog () {
+  var labels = [];
+  d3.selectAll('.selected text')
+  .each(function() { labels.push(this.textContent);});
+  
+  $('#labelTextArea').text(labels.join('\n'));
+  
+  $('#copy-dialog').dialog('open');
 }

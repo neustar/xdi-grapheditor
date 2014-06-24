@@ -366,8 +366,15 @@ body{
   color:#444;
 }
 
-#error-dialog p{
-  margin:1em;
+
+
+.dialog p{
+  margin:1em 0;
+}
+
+.dialog textarea{
+  border: 1px solid #999;
+  padding:0.5em;
 }
 #error-dialog p:last-of-type{
   margin:1em 2em;

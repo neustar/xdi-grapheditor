@@ -56,6 +56,7 @@ $(function() {
     //Only For Debug purpose
     initializeGraphWithXDI(attributeSingletons)
 
+    
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
     // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
