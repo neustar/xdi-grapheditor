@@ -47,8 +47,11 @@ function brushstart (d) {
 function brushend (d) {
 	// console.log("brushend")
 	var selectedNodes = d3.selectAll('.node.selected').data();
-	clearSelectedLinks();
+	var selectedLinks = d3.selectAll('.link.selected').data();
+	
 	setSelectedNodes(selectedNodes);
+	setSelectedLinks(selectedLinks);
+
 	updateSelectionClass();
 
 	dragSelectBrush.clear();
@@ -61,7 +64,8 @@ function brushmove (d) {
 	
 	d3.selectAll('.node')
 	.classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);})
-
+	d3.selectAll('.link')
+	.classed('selected',function(d) {return d.isSelected = isInExtent(d.source,extent)&&isInExtent(d.target,extent);})
 	// updateSelectionClass("node");
 }
 
