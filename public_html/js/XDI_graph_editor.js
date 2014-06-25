@@ -235,7 +235,7 @@ function restart(startForce,getNewData) {
         getNewData = true;
 
     var drawData = null;
-    if(getNewData || lastDrawData == null)
+    if(getNewData || lastDrawData === null)
     {
         lastDrawData = getDrawData();
     }

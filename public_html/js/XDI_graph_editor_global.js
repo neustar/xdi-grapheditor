@@ -31,15 +31,15 @@ var svgHeight = 0;
 
 
 //SVG Components
-var svg;
-var force;
-var x,y;
-var zoom;
-var drag=null;
+var svg = null;
+var force = null;
+var x = null,y = null;
+var zoom = null;
+var drag = null;
 
-var relData;
+var relData = null;
 // var node, link, labels;
-var drag_line, drag;
+var drag_line = null, drag = null;
 
 var NODE_RADIUS = 13;
 var NODE_TEXT_MAX_LENGTH = 20;
@@ -81,7 +81,7 @@ var isFrozen = false;
 var STORAGE_PREFIX = "XDI_GRAPH_EDITOR_";
 var lastNodeId = 0,lastLinkId = 0;
 var nodeslinkmap = {};
-var jsonnodes, jsonlinks;
+var jsonnodes = null, jsonlinks = null;
 var lastDrawData = null;
 
 var lastGraphId = -1;

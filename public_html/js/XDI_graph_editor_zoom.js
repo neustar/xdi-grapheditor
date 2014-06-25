@@ -55,7 +55,7 @@ function zoomEventHandler(){
 	updateViewPortRect();
 	updateZoomText();
 
-	if(d3.event == null || !(d3.event.sourceEvent instanceof WheelEvent))
+	if(d3.event === null || !(d3.event.sourceEvent instanceof WheelEvent))
 		return;
 	
 	if(d3.event.sourceEvent.wheelDelta > 0)
@@ -71,7 +71,7 @@ function startPanView(){
 }
 
 function updatePanView(curMousePos){
-	if(!isPanning || lastMousePos == null||lastTranslation == null)
+	if(!isPanning || lastMousePos === null||lastTranslation === null)
 		return;
 	
 	tx = lastTranslation[0] + curMousePos[0] - lastMousePos[0];

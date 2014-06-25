@@ -39,7 +39,7 @@ function mousemoveOnSVG() {
 }
 
 function mousedownOnSVG() {
-    if(!d3.event.button == 0 ) //Only react to left click
+    if(!d3.event.button === 0 ) //Only react to left click
         return;
 
     lastMousePos = d3.mouse(svg.node());
@@ -53,7 +53,7 @@ function mousedownOnSVG() {
         return;
     }
 
-    if(d3.event.srcElement == svg.node())
+    if(d3.event.srcElement === svg.node())
     {
         if(d3.event.shiftKey)
         {
@@ -76,7 +76,7 @@ function mouseupOnSVG() {
 
 
 function mousewheelOnSVG () {  
-    if(d3.event==null || !d3.event.altKey)
+    if(d3.event===null || !d3.event.altKey)
         return;
     var currentScale = zoom.scale();
     
@@ -96,7 +96,7 @@ function keydownOnSVG() {
     if (isDialogVisible)
         return;
     
-    if(d3.event.srcElement == d3.select("#searchText").node())
+    if(d3.event.srcElement === d3.select("#searchText").node())
         return;
     
     lastKeyDown = d3.event.keyCode;

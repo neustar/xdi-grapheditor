@@ -388,7 +388,7 @@ function checkLinkValidity(linkToCheck){
         // a relational statement
         statement = subject + "/" + predicate + "/" + object;
     } else {
-        if (linkToCheck.target.type === 'literal') {
+        if (linkToCheck.target.type === NodeTypes.LITERAL) {
             statement = subject + "/" + '&' + "/" + object;
         } else
             // a contextual statement
