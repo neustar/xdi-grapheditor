@@ -32,7 +32,7 @@ $(function() {
         .on('mousedown', mousedownOnSVG) //event handlers has to be set within javascript. Otherwise d3.event will be null in handler
         .on('mousemove', mousemoveOnSVG)
         .on('mouseup', mouseupOnSVG)
-        .on('mousewheel',mousewheelOnSVG)
+        .on('mousewheel',mousewheelOnSVG);
 
 
     d3.select("body")
@@ -40,7 +40,7 @@ $(function() {
         .on('keyup', keyupOnSVG);
 
     d3.select(window)
-        .on('resize',windowResizeHandler)
+        .on('resize',windowResizeHandler);
 
     //Initialize SVG Components
 
@@ -54,7 +54,7 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons)
+    initializeGraphWithXDI(attributeSingletons);
 
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
@@ -80,12 +80,12 @@ function initializeGraph()
     lastLinkId = -1;
     nodeslinkmap={};
 
-     force = d3.layout.force()
+    force = d3.layout.force()
         .size([svgWidth, svgHeight])
         .on("tick", forceTickEventHandler)
-        .on('end',forceEndEventHandler)
+        .on('end',forceEndEventHandler);
 
-    drag_line=svg.select("#drag_line")
+    drag_line=svg.select("#drag_line");
 
     initializeSelection();
 
@@ -107,15 +107,16 @@ function getLinkPathD(d){
         normX = deltaX / dist,
         normY = deltaY / dist,
         sourcePadding = d.left ? 17 : 2,
-        targetPadding = d.right ? 17 : 2,
+        targetPadding = d.right ? 17 : 2;
 
-        sourcePadding =  sourcePadding / zoom.scale();
-        targetPadding = targetPadding / zoom.scale();
+    sourcePadding =  sourcePadding / zoom.scale();
+    targetPadding = targetPadding / zoom.scale();
 
-        sourceX = d.source.x + (sourcePadding * normX),
-        sourceY = d.source.y + (sourcePadding * normY),
-        targetX = d.target.x - (targetPadding * normX),
-        targetY = d.target.y - (targetPadding * normY);
+    sourceX = d.source.x + (sourcePadding * normX);
+    sourceY = d.source.y + (sourcePadding * normY);
+    targetX = d.target.x - (targetPadding * normX);
+    targetY = d.target.y - (targetPadding * normY);
+
     var valence1 = d.source.id + "-" + d.target.id;
     var valence2 = d.target.id + "-" + d.source.id;
 
@@ -130,8 +131,6 @@ function getLinkPathD(d){
 }
 
 function forceTickEventHandler() {
-    
-    
     svg.selectAll(".node")
         .attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
         .classed("selected", function(d) { return (d.isSelected); });
@@ -169,7 +168,7 @@ function updateLinkElement (linksData) {
         .attr("class", "link selectable")
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
-        .on('mouseleave',mouseleaveOnLinkHandler)
+        .on('mouseleave',mouseleaveOnLinkHandler);
     
     newLinkGs.append("svg:path")
         .append("title")
@@ -205,27 +204,27 @@ function updateNodeElement (nodesData) {
         .on('mousedown', mousedownOnNodeHandler)
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
-        .each(function(d) {if(d.isRoot()){d.x = window.innerWidth/2; d.y = window.innerHeight/2;}}) //move root to the middle of the screen only when it is created
+        .each(function(d) {if(d.isRoot()){d.x = window.innerWidth/2 + Math.random()*100; d.y = window.innerHeight/2;}}) //move root to the middle of the screen only when it is created. The random avoids overlaps.
         .append("title")
         .text(function(d){return d.name});
         
     newNodes.append("svg:text")
         .attr('class', "textLabel")
         .attr("dx", 12)
-        .attr("dy", ".35em")
+        .attr("dy", ".35em");
 
     //// Adjust Classes    
     nodeGs
         .attr("class", function(d) { return "node selectable " + d.type;})
         .classed("selected", function(d) { return (d.isSelected); })
         .classed("folded",function(d){return d.isFolded;})
-        .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
+        .classed("fixed",function(d){return d._fixed;}); //_fixed is set when a node is fixed by user.
 
     nodeGs.select("text")
         .text(function(d){return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);});
 
     nodeGs.select("path")
-        .attr('d', function(d) { return getNodeShape(d.type); })
+        .attr('d', function(d) { return getNodeShape(d.type); });
 }
 
 //Render all SVG Elements based on jsonnodes, jsonlinks
@@ -283,7 +282,7 @@ function updateSyntaxStatus(statusMessage, isOK,isEditing){
     if(isOK != null) //When isOK is not passed, the corresponding class will remains the same 
         indicator
             .classed("ok",isOK)
-            .classed("error",!isOK)
+            .classed("error",!isOK);
     
     
     
@@ -329,7 +328,7 @@ function updateMode (newMode) {
             break;
     }
     d3.select('#mainCanvas')
-    .style('cursor', cursor);
+        .style('cursor', cursor);
 }
 
 //
@@ -393,6 +392,7 @@ function toggleNodeLabelsVisibility(){
 function toggleLinkLabelsVisibility(){
     var value = d3.select('#linkCanvas').classed("hide_text");
     setLinkLabelsVisibility(!value)
+
     d3.select('#toggleLinkButton').classed("off",!value);
 }
 
@@ -400,11 +400,12 @@ function toggleVisibility (button) {
     var name = d3.select(button).attr("name");
 
     var value = d3.select("#mainCanvas")
-    .classed("hide_"+name)
+        .classed("hide_"+name);
     
     d3.select("#mainCanvas")
-    .classed("hide_"+name,!value);
-    d3.select(button).classed("off",!value)
+        .classed("hide_"+name,!value);
+    
+    d3.select(button).classed("off",!value);
 }
 
 function trimString(string,length){
@@ -412,6 +413,7 @@ function trimString(string,length){
 
     if(str.length<string.length)
         str = str+ "..."
+
     return str;
 }
 
@@ -424,9 +426,9 @@ function toggleFreeze (newValue) {
     restart(true,false);
 
     d3.select('#freezeButton')
-    .classed('off', !isFrozen)
+        .classed('off', !isFrozen);
     
     d3.select('#unfreezeButton')
-    .classed('off', isFrozen)    
+        .classed('off', isFrozen);
 }
 

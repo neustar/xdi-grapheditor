@@ -57,6 +57,7 @@ function setRelationCommand () {
         selected_links.forEach(function(d) {
             setLinkIsRel(d,!d.isRelation);
         });
+
         restart();
     }
 }
@@ -66,7 +67,7 @@ function setRootNodeCommand () {
     if (hasSelectedNodes()) {
     
         selected_nodes.forEach(function (d) {
-            setNodeIsRoot(d,!d.isRoot())
+            setNodeIsRoot(d,!d.isRoot());
         })
         
         restart();
@@ -98,6 +99,7 @@ function invertLinkCommand () {
         selected_links.forEach(function(d) {
             inverseLinkDirection(d);
         });
+        
         restart();
     }
 }
@@ -144,8 +146,8 @@ function createNodeByClick () {
 function startDragLine(){
     // reposition drag line
     drag_line
-            .classed("hidden",false)
-            .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+        .classed("hidden",false)
+        .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
     isDraggingLine = true;
     restart(true,false);
 }
@@ -171,19 +173,19 @@ function endDragLine(){
 
 function startDrag(){
     d3.selectAll('.node')
-    .call(nodeDrag);
+        .call(nodeDrag);
 }
 
 function showShortName (HTMLElement) {
     d3.select(HTMLElement)
         .select("text")
-        .text(function(d) { return d.shortName; })
+        .text(function(d) { return d.shortName; });
 }
 
 function showTrimmedName (HTMLElement) {
     d3.select(HTMLElement)
         .select("text")
-        .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); })
+        .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); });
 }
 
 function toggleNodeFixed (node) {
@@ -193,11 +195,11 @@ function toggleNodeFixed (node) {
 function setNodeFixed (node, newValue) {
     node._fixed = newValue; //Record the fixed is set intentionally
     node.fixed =newValue;
-    restart(false,false)
+    restart(false,false);
 }
 
 function toggleFoldNode(node,isDirectDescendantsOnly){
-    setFoldNode (node,!node.isFolded,isDirectDescendantsOnly)   
+    setFoldNode(node,!node.isFolded,isDirectDescendantsOnly);
 }
 
 function setFoldNode (node,newValue,isDirectDescendantsOnly) {

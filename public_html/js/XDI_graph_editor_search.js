@@ -47,27 +47,27 @@ function searchOperation (targetString) {
 
 function clearSearchList () {
 	d3.select("#searchResult")
-	.selectAll("*").remove();
+		.selectAll("*").remove();
 	
 	d3.selectAll(".node")
-	.classed("matched", false);
+		.classed("matched", false);
 
 	d3.selectAll(".link")
-	.classed("matched",false);
+		.classed("matched",false);
 }
 
 function updateSearchResult (resultData) {
-	var list = d3.select("#searchResult")
+	var list = d3.select("#searchResult");
 
 	clearSearchList();
 
 	d3.selectAll(".node")
-	.data(resultData.nodes, function(d) {return d.id;})
-	.classed("matched",true)
+		.data(resultData.nodes, function(d) {return d.id;})
+		.classed("matched",true);
 
 	d3.selectAll(".link")
-	.data(resultData.links, function(d) {return d.id;})
-	.classed("matched",true)	
+		.data(resultData.links, function(d) {return d.id;})
+		.classed("matched",true);	
 
 	updateSublist(list,"Nodes",resultData.nodes);
 	updateSublist(list,"Links",resultData.links);
@@ -75,29 +75,30 @@ function updateSearchResult (resultData) {
 
 function updateSublist (outerlist,title,data) {
 	var header = outerlist.append("section")
-	.attr('class', "searchHeader")
+	.attr('class', "searchHeader");
 	
 	header.append('p')
-	.attr('class', 'title')
-	.text(title);
+		.attr('class', 'title')
+		.text(title);
 
 	header.append('p')
-	.attr('class', 'itemcount')
-	.text(data.length + " matches");
+		.attr('class', 'itemcount')
+		.text(data.length + " matches");
 
 	var list = outerlist.append("ul")
-	.attr('class', "searchSubList")
+		.attr('class', "searchSubList")
 	
 	list.selectAll(".searchItem")
-	.data(data)
-	.enter()
-	.append("li")
-	.attr('class', 'searchItem')
-	.on('click',function(d) { return zoomToElement(d); })
-	.text(function(d) { return d.shortName; })
-	.classed('relation', function(d) {return d.isRelation === true;})
-    .classed('literal', function(d) {
-    	return d.type === NodeTypes.LITERAL||(d.target != null && d.target.type === NodeTypes.LITERAL);})
+		.data(data)
+		.enter()
+		.append("li")
+		.attr('class', 'searchItem')
+		.on('click',function(d) { return zoomToElement(d); })
+		.text(function(d) { return d.shortName; })
+		.classed('relation', function(d) {return d.isRelation === true;})
+	    .classed('literal', function(d) {
+	    	return d.type === NodeTypes.LITERAL||(d.target != null && d.target.type === NodeTypes.LITERAL);
+	    });
 }
 
 
@@ -118,22 +119,21 @@ function searchTextChanged () {
 
 	lastQuery = query;
 
-	searchOperation(query)
+	searchOperation(query);
 }
 
 function searchDone () {
 	d3.select(".searchContainer")	
-	.classed("hidden", true);
+		.classed("hidden", true);
 
-	d3.select('#searchText')
-	.node().value = "";
+	d3.select('#searchText').node().value = "";
 	lastQuery = null;
 	clearSearchList();
 }
 
 function searchStart () {
 	d3.select(".searchContainer")	
-	.classed("hidden", false);
+		.classed("hidden", false);
 
 	// clearAllSelection();
 }

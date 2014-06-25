@@ -11,13 +11,13 @@ function initializeDialogs () {
                 var willClearGraph = $('#clearGraphCheckBox').prop('checked');
                 var willJoinGraph = $('#joinGraphCheckBox').prop('checked');
                 var willFoldRoot = $('#foldRootCheckBox').prop('checked');
-                $(this).dialog('close')
+                $(this).dialog('close');
                 isDialogVisible = false;
                 if(!_.isEmpty(importedXDI))
                     initializeGraphWithXDI(importedXDI,willClearGraph,willJoinGraph,willFoldRoot);
             },
             Cancel: function() {
-                $(this).dialog('close')
+                $(this).dialog('close');
                 isDialogVisible = false; 
             }
         },
@@ -30,12 +30,12 @@ function initializeDialogs () {
       width:600,
       modal: true,
       buttons: {
-        "Go to XDI Converter": function() {
-          $( this ).dialog( "close" );
-          window.open('http://xdi2.projectdanube.org/XDIConverter', '_blank');
-          isDialogVisible = false;
-        },
-        Cancel: function() {
+        // "Go to XDI Converter": function() {
+        //   $( this ).dialog( "close" );
+        //   window.open('http://xdi2.projectdanube.org/XDIConverter', '_blank');
+        //   isDialogVisible = false;
+        // },
+        Done: function() {
           $( this ).dialog( "close" );
           isDialogVisible = false;
         }
@@ -71,7 +71,7 @@ function openErrorDialog (content, linenum) {
 function openCopyDialog () {
   var labels = [];
   d3.selectAll('.selected text')
-  .each(function() { labels.push(this.textContent);});
+    .each(function() { labels.push(this.textContent);});
   
   $('#labelTextArea').text(labels.join('\n'));
   

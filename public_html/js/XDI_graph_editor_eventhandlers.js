@@ -35,7 +35,7 @@ function mousemoveOnSVG() {
     if(isDraggingLine)
         updateDragLine();
     else if (isPanning)
-        updatePanView([curMousePos.x,curMousePos.y])
+        updatePanView([curMousePos.x,curMousePos.y]);
 }
 
 function mousedownOnSVG() {
@@ -78,15 +78,15 @@ function mouseupOnSVG() {
 function mousewheelOnSVG () {  
     if(d3.event==null || !d3.event.altKey)
         return;
-    var currentScale = zoom.scale()
+    var currentScale = zoom.scale();
     
     if(d3.event.wheelDelta > 0)
         currentScale += MOUSE_WHEEL_SCALE_DELTA;
     else if (d3.event.wheelDelta < 0)
         currentScale -= MOUSE_WHEEL_SCALE_DELTA;
     
-    mousePos = d3.mouse(svg.node())
-    scaleView(mousePos,currentScale)
+    mousePos = d3.mouse(svg.node());
+    scaleView(mousePos,currentScale);
 }
 
 

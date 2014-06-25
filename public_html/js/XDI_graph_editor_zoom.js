@@ -23,10 +23,10 @@ THE SOFTWARE.
 */
 function initializeZoom () {	
 	 zoom = d3.behavior.zoom()
-    .x(x)
-    .y(y)
-    .scaleExtent([0,Infinity])
-    .on("zoom",zoomEventHandler)
+	    .x(x)
+	    .y(y)
+	    .scaleExtent([0,Infinity])
+	    .on("zoom",zoomEventHandler);
 
     zoom(svg);
 
@@ -39,7 +39,7 @@ function initializeZoom () {
 
 	updateNavSize();
 
-	zoom.event(svg)
+	zoom.event(svg);
 }
 
 function updateNavSize () {
@@ -47,7 +47,7 @@ function updateNavSize () {
     	.attr('width', svgWidth*navScale + navMargin * 2)
     	.attr('height', svgHeight*navScale + navMargin * 2)
     .selectAll('g')
-    	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')')
+    	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')');
 }
 
 function zoomEventHandler(){
@@ -74,8 +74,8 @@ function updatePanView(curMousePos){
 	if(!isPanning || lastMousePos == null||lastTranslation == null)
 		return;
 	
-	tx = lastTranslation[0] + curMousePos[0] - lastMousePos[0]
-	ty = lastTranslation[1] + curMousePos[1] - lastMousePos[1]
+	tx = lastTranslation[0] + curMousePos[0] - lastMousePos[0];
+	ty = lastTranslation[1] + curMousePos[1] - lastMousePos[1];
 	setScaleTranslation(null,[tx,ty]);
 }
 
@@ -83,7 +83,7 @@ function setScaleTranslation(newScale,newTranslation){
 	if(newScale != null)
 		zoom.scale(newScale);
 	if(newTranslation != null)
-		zoom.translate(newTranslation)
+		zoom.translate(newTranslation);
 	zoom.event(svg);
 }
 
@@ -95,26 +95,26 @@ function endPanView(){
 
 function scaleView(center,newScale)
 {
-	scaleExtent = zoom.scaleExtent()
-	maxScale = d3.max(scaleExtent)
-	minScale = d3.min(scaleExtent)
-	newScale = Math.max(newScale,minScale)
-	newScale = Math.min(newScale,maxScale)
+	var scaleExtent = zoom.scaleExtent();
+	var maxScale = d3.max(scaleExtent);
+	var minScale = d3.min(scaleExtent);
+	newScale = Math.max(newScale,minScale);
+	newScale = Math.min(newScale,maxScale);
 
 
 	var s0 = zoom.scale();
 	var s1 = newScale;
 	
 
-	var mx = center[0]
-	var my = center[1]
+	var mx = center[0];
+	var my = center[1];
 	
 	currrentTranslation = zoom.translate();
-	var tx0 = currrentTranslation[0]
-	var ty0 = currrentTranslation[1]
+	var tx0 = currrentTranslation[0];
+	var ty0 = currrentTranslation[1];
 
-	var tx1 = mx - (mx-tx0)/s0*s1
-	var ty1 = my - (my-ty0)/s0*s1
+	var tx1 = mx - (mx-tx0)/s0*s1;
+	var ty1 = my - (my-ty0)/s0*s1;
 	
 	setScaleTranslation(s1,[tx1,ty1]);
 }
@@ -124,7 +124,7 @@ function updateViewPortRect()
 	if(!lastDrawData || _.isEmpty(lastDrawData.nodes))
 		return;
 
-	var svgRect = d3.select('#svgRect'),viewRect = d3.select('#viewRect')
+	var svgRect = d3.select('#svgRect'),viewRect = d3.select('#viewRect');
 	var navHeight = svgHeight * navScale;
 	var navWidth = svgWidth * navScale;
 
@@ -173,10 +173,10 @@ function updateViewPortRect()
 
 
 function updateZoomText () {
-	curScale = zoom.scale()
+	curScale = zoom.scale();
 	curScale = Math.round(curScale*100)/100;
 	d3.select('#zoomText')
-	.text(curScale+" x");
+		.text(curScale+" x");
 }
 function getScaleRatio(){
 	return zoom.scale();
@@ -187,20 +187,19 @@ function zoomFromTo (from,to) {
 	var center = [svgWidth/2, svgHeight/2]
 	var i = d3.interpolateZoom(from,to)
 	d3.transition()
-	.duration(Math.abs(i.duration)) //might a bug it will return negatative when the center remain the same 
-	.tween("",function  () {
-		
-		return function (t) {
-			// console.log(i(t))
-			var res = i(t);
-			var k = svgWidth / res[2];
-			var newTranslation = [center[0] - res[0] * k,center[1] - res[1] * k];			
-			// console.log(newTranslation + " " + k)
-			zoom.translate(newTranslation);
-			zoom.scale(k);
-			zoom.event(svg);
-		}
-	})
+		.duration(Math.abs(i.duration)) //might a bug it will return negatative when the center remain the same 
+		.tween("",function  () {
+			return function (t) {
+				// console.log(i(t))
+				var res = i(t);
+				var k = svgWidth / res[2];
+				var newTranslation = [center[0] - res[0] * k,center[1] - res[1] * k];			
+				// console.log(newTranslation + " " + k)
+				zoom.translate(newTranslation);
+				zoom.scale(k);
+				zoom.event(svg);
+			}
+		});
 }
 
 function zoomTo (to) {
@@ -212,9 +211,9 @@ function zoomTo (to) {
 	curCenter[0] = (-translate[0] + svgWidth/2)/scale;
 	curCenter[1] = (-translate[1] + svgHeight/2)/scale;
 
-	var res = [curCenter[0],curCenter[1],curWidth]
+	var res = [curCenter[0],curCenter[1],curWidth];
 
-	zoomFromTo(res,to)
+	zoomFromTo(res,to);
 }
 
 function zoomToElement(d){
@@ -250,9 +249,9 @@ function zoomToElementCollection (collection) {
 	var dx = maxX -  minX, dy = maxY - minY;
 	var r = Math.max(dx / svgWidth,dy / svgHeight);
 
-	zoomTo([(minX+maxX)/2,(minY+maxY)/2,r*svgWidth+2*zoomToFitMargin]) //The margin doesn't equal to the margin between graph edge and svg edge, which depends on the final scale value.
+	zoomTo([(minX+maxX)/2,(minY+maxY)/2,r*svgWidth+2*zoomToFitMargin]); //The margin doesn't equal to the margin between graph edge and svg edge, which depends on the final scale value.
 }
 
 function resetZoom(){
-	zoomTo([svgWidth/2,svgHeight/2,svgWidth])
+	zoomTo([svgWidth/2,svgHeight/2,svgWidth]);
 }

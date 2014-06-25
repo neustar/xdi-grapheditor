@@ -32,7 +32,6 @@ var svgHeight = 0;
 
 //SVG Components
 var svg;
-
 var force;
 var x,y;
 var zoom;
@@ -94,7 +93,7 @@ var NodeTypes = {
 	ENTITY:"entity",
 	ATTRIBUTE:"attribute",
 	VALUE:"value"
-}
+};
 
 //Zoom
 var navScale = 0.1,navMargin = 20;

@@ -28,9 +28,8 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
         willClearGraph = true;
     
     if(willClearGraph)
-    {
         clearGraph();
-    }
+    
     if(!willJoinGraph)
         lastGraphId ++;
 
@@ -102,12 +101,12 @@ function getDrawData(root){
     if(jsonnodes==null||jsonnodes.length == 0)
         return {nodes:[],links:[]};
 
-    console.log("getDrawData")
+    console.log("getDrawData");
 
     var rootsToCheck = [];
 
     if(root!=null)
-        rootsToCheck = [root]
+        rootsToCheck = [root];
     else
     {    
         jsonnodes.forEach(function(d){
@@ -127,7 +126,7 @@ function getDrawData(root){
         if(collection == null)
             return;
         for (var i = collection.length - 1; i >= 0; i--) {
-            var adjnode = collection[i]
+            var adjnode = collection[i];
             var link = isParent? findLink(adjnode,node):findLink(node,adjnode);
             if(!isParent&&link!=null && !link.isAdded)    
             {   
@@ -140,7 +139,6 @@ function getDrawData(root){
             if(!adjnode.isAdded&&!link.isRelation)
             {
                 resNodes.push(adjnode);
-                
                 adjnode.isAdded = true;
                 recurse(adjnode);
             }
@@ -173,7 +171,8 @@ function getDrawData(root){
     })
     
     resNodes.forEach(function(item){item.isAdded = false;})
-    resLinks.forEach(function(item){item.isAdded = false;
+    resLinks.forEach(function(item){
+        item.isAdded = false;
         resMap[item.source.id + '-' + item.target.id] = item;
     })
     
@@ -242,7 +241,7 @@ function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRelation,shortN
     if (isRelation)
         newlink.isRelation = true;
     
-    sourceNode.children.push(targetNode)
+    sourceNode.children.push(targetNode);
     targetNode.parents.push(sourceNode);
     
     jsonlinks.push(newlink);
@@ -251,12 +250,12 @@ function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRelation,shortN
 }
 
 
-//Add link between any two selected nodes. May be against XDI rules
+//Add link between any two selected nodes. No XDI Validation.
 function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     var link = findLink(sourceNode,targetNode);
     if(link != null){ //if link exists, set direction, return;
         link.left=isLeft;
-        link.right=isRight
+        link.right=isRight;
         return link;
     }
 
@@ -302,8 +301,7 @@ function findLink(source,target){
 function findNode(nodeCollection, name, graphID) {
     return _.find(nodeCollection,function(d) { 
         if(graphID!=null)
-            return d.name==name 
-            && d.graphID==graphID; 
+            return d.name==name && d.graphID==graphID; 
         else
             return d.name==name;
     })
@@ -366,11 +364,13 @@ function removeLink(linkToRemove){
 function getNodeType (name) {
     if(name == "")
         return NodeTypes.ROOT;
+    
     if(_.contains(name,"\""))
         return NodeTypes.LITERAL;
 
     if(_.last(name)=="&")
         return NodeTypes.VALUE;
+    
     if(_.contains(name,"<"))
         return NodeTypes.ATTRIBUTE;
 

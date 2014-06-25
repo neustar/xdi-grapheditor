@@ -36,22 +36,21 @@ function initializeLayout(nodes,links) {
 
 
 	force
-	.gravity(0)
-	.linkDistance(function(d) { 
-            // default is 20.
-            return 30 + 30*d.source.children.length;
-        })
-    .linkStrength(function(d) {
-            // range is [0,1]
-            return d.isRelation ? 0.1 : 1;
-        })
-    .theta(0.1) // default is 0.8
-    //.charge(function(d) { return d.isRoot()?-100*numberOfNodes:-10*numberOfNodes; })
-    .charge(-10*numberOfNodes)
-    .chargeDistance(1000);
+    	.gravity(0)
+    	.linkDistance(function(d) { 
+                // default is 20.
+                return 30 + 30*d.source.children.length;
+            })
+        .linkStrength(function(d) {
+                // range is [0,1]
+                return d.isRelation ? 0.1 : 1;
+            })
+        .theta(0.1) // default is 0.8
+        .charge(-10*numberOfNodes)
+        .chargeDistance(1000);
 
     force
-    .nodes(nodes)
-    .links(links)
-    .start();
+        .nodes(nodes)
+        .links(links)
+        .start();
 }

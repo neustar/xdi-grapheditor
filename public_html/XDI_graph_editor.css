@@ -179,6 +179,9 @@ body{
   position: relative;
 }
 .menu-item button {
+  font-weight:100;
+  text-align:left;
+  padding:0.5em 0.5em;
   
 } 
 .menu-item button:hover {

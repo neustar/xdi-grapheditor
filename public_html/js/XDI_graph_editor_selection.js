@@ -35,7 +35,7 @@ function addNewSelection (objToAdd, selectionSet) {
 //Atomic Operation for clear selection set
 function clearSelectionSet (selectionSet) {
 	if(selectionSet!=null)
-		selectionSet.forEach(function(d) { d.isSelected=false; })
+		selectionSet.forEach(function(d) { d.isSelected=false; });
 	selectionSet = [];
 	return selectionSet;
 }
@@ -92,6 +92,7 @@ function updateSelectionClass (className) {
 		className = "." + className;
 	else
 		className = "";
+	
 	d3.selectAll(".selectable"+className)
-	.classed("selected",function(d) { return d.isSelected; })
+		.classed("selected",function(d) { return d.isSelected; });
 }

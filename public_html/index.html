@@ -40,7 +40,52 @@ THE SOFTWARE.
     <body>
         <div class="menuContainer">
             <ul class="menu">
-                <li class="menu-header"><button onclick="importXDI()">Import XDI</button></li>
+                <li class="menu-header"><button>File</button>
+                    <ul class="sub-menu">
+                        <li class="menu-item"><button onclick="importXDI()">Import XDI...</button></li>
+                        <li class="menu-item"><button onclick="exportGraph()">Export to XDI...</button></li>
+                        <li class="menu-item"><button onclick="clearGraph()">Clear Graph</button></li>
+                        <li class="menu-item"><button onclick="saveGraph()">Store Graph</button></li>
+                        <li class="menu-item"><button onclick="loadGraph()">Load Graph</button></li>
+                        <li class="menu-item"><button onclick="DeleteStoredGraphs()">Clear Storage</button></li>
+                    </ul>
+                </li>
+                <li class="menu-header"><button>Edit</button>
+                    <ul class="sub-menu">
+                        <li class="menu-item"><button onclick="openCopyDialog();">Copy Label...</button></li>
+                        <li class="menu-item"><button>Delete Object</button></li>
+                        <li class="menu-item"><button>Rename Object...</button></li>
+                    </ul>
+                </li>
+                <li class="menu-header"><button>View</button>
+                    <ul class="sub-menu">
+                        <li class="menu-item"><button onclick="zoomToFit()">Zoom to Fit</button></li>
+                        <li class="menu-item"><button>Actual Size</button></li>
+                    </ul>
+                </li>
+                <li class="menu-header"><button>Node</button>
+                    <ul class="sub-menu">
+                        <li class="menu-item"><button>New Node...</button></li>
+                        <li class="menu-item"><button>Fix/Unfix</button></li>
+                        <li class="menu-item"><button>Fold/Unfold</button></li>
+                        <li class="menu-item"><button>Unfold Descendant</button></li>
+                        <li class="menu-item"><button onclick="expandAllNodes()">Unfold All</button></li>
+                        <li class="menu-item"><button>Set as Root</button></li>
+                        <li class="menu-item"><button>Set as Literal</button></li>
+                    </ul>
+                </li>
+                <li class="menu-header"><button>Link</button>
+                    <ul class="sub-menu">
+                        <li class="menu-item"><button>Set as Relation</button></li>
+                        <li class="menu-item"><button>Double Direction</button></li>
+                        <li class="menu-item"><button>Invert Direction</button></li>
+                    </ul>
+                </li>
+                
+                <li class="menu-header"><button onclick="help()">Help</button></li>
+
+
+                <!-- <li class="menu-header"><button onclick="importXDI()">Import XDI</button></li>
                 <li class="menu-header"><button onclick="exportGraph()">Export to XDI</button></li>
                 
                 <li class="menu-header"><button onclick="zoomToFit()">Zoom to Fit</button></li>
@@ -53,8 +98,8 @@ THE SOFTWARE.
                         <li class="menu-item"><button onclick="loadGraph()">Load Graph</button></li>
                         <li class="menu-item"><button onclick="DeleteStoredGraphs()">Clear Storage</button></li>
                     </ul>
-                </li>
-                <li class="menu-header"><button onclick="help()">Help</button></li>
+                </li> -->
+                
             </ul>
         </div>
         <div id="drawing">
@@ -149,10 +194,10 @@ THE SOFTWARE.
         </div>
 
         <div id="error-dialog" class="dialog" title="Statement Compile Error">
-            <p>The following line in your statements is not supported.</p>
-            <p>Please go to XDI Converter and convert <b>ALL</b> your statements, with inner=1 option <b>unchecked</b>. Then try import again.</p>
-            <p>Line <span id='error-line-num'>30</span>:</p>
-            <p id='error-line-content'>aoeu aoeu</p>
+            <p>The following line(s) in your statement(s) are not supported.</p>
+            <p>Please validate all the statement(s). Then try import again.</p>
+            <p>Line <span id='error-line-num'></span>:</p>
+            <p id='error-line-content'></p>
         </div>
 
         <div id="copy-dialog" class="dialog" title="Copy Labels">
