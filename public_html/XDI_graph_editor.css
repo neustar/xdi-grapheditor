@@ -112,7 +112,10 @@ body{
 }
 
 .menu {
-  position: relative; 
+  position: relative;
+
+  /*For the opacity transition bug in Safari*/
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .menu li{
