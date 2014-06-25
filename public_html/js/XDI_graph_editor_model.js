@@ -24,15 +24,16 @@ THE SOFTWARE.
 
 // Initializing the graph with XDI statements.
 function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) {
-    if(willClearGraph == null)
+    if (willClearGraph == null)
         willClearGraph = true;
     
     if(willClearGraph)
     {
         clearGraph();
     }
-    if(!willJoinGraph)
-        lastGraphId ++;
+    
+    if (!willJoinGraph)
+        lastGraphId++;
 
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
@@ -78,7 +79,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
     if(willFoldRoot)
         jsonnodes.forEach(function (d) {
             d.isFolded = d.isRoot();
-        })
+        });
 
     restart();
 }
@@ -86,11 +87,11 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
 
 function isRootToCheck(d)
 {
-    if(d.parents == null || d.parents.length == 0)
+    if (d.parents == null || d.parents.length === 0)
         return true;
     
     for (var i = 0; i < d.parents.length;i ++)
-        if(!findLink(d.parents[i],d).isRelation)
+        if (!findLink(d.parents[i],d).isRelation)
             return false;
     return true;
 }
@@ -99,23 +100,23 @@ function getDrawData2(root){
    return {nodes:jsonnodes,links:jsonlinks,map:nodeslinkmap};
 }
 function getDrawData(root){
-    if(jsonnodes==null||jsonnodes.length == 0)
+    if (jsonnodes == null || jsonnodes.length === 0)
         return {nodes:[],links:[]};
 
-    console.log("getDrawData")
+    console.log("getDrawData");
 
     var rootsToCheck = [];
 
-    if(root!=null)
-        rootsToCheck = [root]
+    if (root != null)
+        rootsToCheck = [root];
     else
     {    
         jsonnodes.forEach(function(d){
             if(isRootToCheck(d))
                 rootsToCheck.push(d);
-        })
+        });
     }
-    if(rootsToCheck.length == 0 && jsonnodes!= null && jsonnodes.length>0)
+    if (rootsToCheck.length === 0 && jsonnodes != null && jsonnodes.length > 0)
         rootsToCheck = [jsonnodes[0]];//Every node has parent.
     
     var resNodes = [];
@@ -124,12 +125,12 @@ function getDrawData(root){
     var resMap = {};
     
     function checkCollection (node,collection,isParent) {
-        if(collection == null)
+        if (collection == null)
             return;
         for (var i = collection.length - 1; i >= 0; i--) {
-            var adjnode = collection[i]
+            var adjnode = collection[i];
             var link = isParent? findLink(adjnode,node):findLink(node,adjnode);
-            if(!isParent&&link!=null && !link.isAdded)    
+            if (!isParent && link != null && !link.isAdded)    
             {   
                 if(link.isRelation)
                     relationLinks.push(link);
@@ -137,7 +138,7 @@ function getDrawData(root){
                     resLinks.push(link);
                 link.isAdded = true;
             }
-            if(!adjnode.isAdded&&!link.isRelation)
+            if (!adjnode.isAdded && !link.isRelation)
             {
                 resNodes.push(adjnode);
                 
@@ -149,7 +150,6 @@ function getDrawData(root){
 
     function recurse(node)
     {
-        // console.log("id: " + node.id);
         if(node.isFolded)
             return;
         checkCollection(node,node.children, false);
@@ -157,25 +157,25 @@ function getDrawData(root){
     }
 
     rootsToCheck.forEach(function(d){
-        if(!d.isAdded)
+        if (!d.isAdded)
         {
             resNodes.push(d);
             d.isAdded = true;
             recurse(d);
             
         }
-    })
+    });
 
     relationLinks.forEach(function(item){
         item.isAdded = false;
-        if(item.source.isAdded && item.target.isAdded)
+        if (item.source.isAdded && item.target.isAdded)
             resLinks.push(item);
-    })
+    });
     
-    resNodes.forEach(function(item){item.isAdded = false;})
+    resNodes.forEach(function(item){item.isAdded = false;});
     resLinks.forEach(function(item){item.isAdded = false;
         resMap[item.source.id + '-' + item.target.id] = item;
-    })
+    });
     
     // resNodes.sort(function(a,b){return a.id-b.id})
     // resLinks.sort(function(a,b){
@@ -218,7 +218,7 @@ function addStatement(subject, predicate, object, isRelation, statement, willJoi
 
 //Atomic operation for add a node
 function addNode(name,isLiteral, isRoot, shortName, graphID){
-    if(shortName == null)
+    if (shortName == null)
         shortName = name;
     var nodeType = getNodeType(name);
     var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphID);
@@ -230,19 +230,19 @@ function addNode(name,isLiteral, isRoot, shortName, graphID){
 
 //Atomic operation for add a link
 function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRelation,shortName){
-    if(shortName == null)
+    if (shortName == null)
         shortName = linkName;
 
     var linkObject = findLink(sourceNode,targetNode);
     
-    if(linkObject)//if link exists, then don't add a new one.
+    if (linkObject)//if link exists, then don't add a new one.
         return;
 
     var newlink = new XDILink(++lastLinkId,linkName,shortName,isLeft, isRight, sourceNode, targetNode);
     if (isRelation)
         newlink.isRelation = true;
     
-    sourceNode.children.push(targetNode)
+    sourceNode.children.push(targetNode);
     targetNode.parents.push(sourceNode);
     
     jsonlinks.push(newlink);
@@ -254,13 +254,13 @@ function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRelation,shortN
 //Add link between any two selected nodes. May be against XDI rules
 function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     var link = findLink(sourceNode,targetNode);
-    if(link != null){ //if link exists, set direction, return;
+    if (link != null){ //if link exists, set direction, return;
         link.left=isLeft;
-        link.right=isRight
+        link.right=isRight;
         return link;
     }
 
-    if(targetNode.type === NodeTypes.LITERAL){
+    if (targetNode.type === NodeTypes.LITERAL){
         var innerNode = addNode(sourceNode.name + "&", false, false, null, Math.max(sourceNode.graphID,targetNode.graphID));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
@@ -301,12 +301,12 @@ function findLink(source,target){
 // Returns the position/index in node collection of the node with name value name
 function findNode(nodeCollection, name, graphID) {
     return _.find(nodeCollection,function(d) { 
-        if(graphID!=null)
-            return d.name==name 
-            && d.graphID==graphID; 
+        if (graphID != null)
+            return d.name === name 
+            && d.graphID === graphID; 
         else
-            return d.name==name;
-    })
+            return d.name === name;
+    });
 }
 
 // Returns the position/index of the first link matching the provided node name
@@ -334,7 +334,7 @@ function removeNode(nodeToRemove) {
 
 //Atomic REMOVE LINK
 function removeLink(linkToRemove){
-    if(linkToRemove == null)
+    if (linkToRemove == null)
         return;
     var source = linkToRemove.source;
     var target = linkToRemove.target;
@@ -364,12 +364,12 @@ function removeLink(linkToRemove){
 // }
 
 function getNodeType (name) {
-    if(name == "")
+    if (name === "")
         return NodeTypes.ROOT;
     if(_.contains(name,"\""))
         return NodeTypes.LITERAL;
 
-    if(_.last(name)=="&")
+    if(_.last(name) === "&")
         return NodeTypes.VALUE;
     if(_.contains(name,"<"))
         return NodeTypes.ATTRIBUTE;
@@ -458,7 +458,7 @@ function setNodeIsRoot(nodeToSet,newValue){
         // nodeToSet._type = nodeToSet.type;
         nodeToSet.type = NodeTypes.ROOT;
     }
-    else if(nodeToSet.type == NodeTypes.ROOT)
+    else if (nodeToSet.type === NodeTypes.ROOT)
     {
         nodeToSet.type = getNodeType(nodeToSet.name);
         // nodeToSet.type = nodeToSet._type;
