@@ -39,52 +39,54 @@ THE SOFTWARE.
     </head>
     <body>
         <div class="menuContainer">
-            <ul class="menu">
-                <li class="menu-header"><button>File</button>
+        <ul class="menu">
+                <li class="menu-header"><span>File</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><button onclick="importXDI()">Import XDI...</button></li>
-                        <li class="menu-item"><button onclick="exportGraph()">Export to XDI...</button></li>
-                        <li class="menu-item"><button onclick="clearGraph()">Clear Graph</button></li>
-                        <li class="menu-item"><button onclick="saveGraph()">Store Graph</button></li>
-                        <li class="menu-item"><button onclick="loadGraph()">Load Graph</button></li>
-                        <li class="menu-item"><button onclick="DeleteStoredGraphs()">Clear Storage</button></li>
+                        <li class="menu-item" onclick="importXDI()"><span>Import XDI...</span></li>
+                        <li class="menu-item" onclick="exportGraph()"><span>Export to XDI...</span></li>
+                        <li class="menu-item" onclick="clearGraph()"><span>Clear Graph</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item" onclick="saveGraph()"><span>Store Graph</span></li>
+                        <li class="menu-item" onclick="loadGraph()"><span>Load Graph</span></li>
+                        <li class="menu-item" onclick="DeleteStoredGraphs()"><span>Clear Storage</span></li>
                     </ul>
                 </li>
-                <li class="menu-header"><button>Edit</button>
+                <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><button onclick="openCopyDialog();">Copy Label...</button></li>
-                        <li class="menu-item"><button>Delete Object</button></li>
-                        <li class="menu-item"><button>Rename Object...</button></li>
+                        <li class="menu-item" onclick="openCopyDialog()"><span>Copy Label...</span></li>
+                        <li class="menu-item"><span>Delete Object</span><span class="shortcut">⌫</span></li>
+                        <li class="menu-item"><span>Rename Object...</span><span class="shortcut">↵</span></li>
                     </ul>
                 </li>
-                <li class="menu-header"><button>View</button>
+                <li class="menu-header"><span>View</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><button onclick="zoomToFit()">Zoom to Fit</button></li>
-                        <li class="menu-item"><button>Actual Size</button></li>
+                        <li class="menu-item" onclick="zoomToFit()"><span>Zoom to Fit</span></li>
+                        <li class="menu-item"><span>Actual Size</span></li>
                     </ul>
                 </li>
-                <li class="menu-header"><button>Node</button>
+                <li class="menu-header"><span>Node</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><button>New Node...</button></li>
-                        <li class="menu-item"><button>Fix/Unfix</button></li>
-                        <li class="menu-item"><button>Fold/Unfold</button></li>
-                        <li class="menu-item"><button>Unfold Level 1</button></li>
-                        <li class="menu-item"><button onclick="expandAllNodes()">Unfold All</button></li>
-                        <li class="menu-item"><button>Set as Root</button></li>
-                        <li class="menu-item"><button>Set as Literal</button></li>
+                        <li class="menu-item"><span>New Node...</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item"><span>Fix/Unfix</span><span class="shortcut">F</span></li>
+                        <li class="menu-item"><span>Fold/Unfold</span></li>
+                        <li class="menu-item"><span>Unfold Level 1</span></li>
+                        <li class="menu-item" onclick="expandAllNodes()"><span>Unfold All</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item"><span>Set as Root</span><span class="shortcut">R</span></li>
+                        <li class="menu-item"><span>Set as Literal</span><span class="shortcut">L</span></li>
                     </ul>
                 </li>
-                <li class="menu-header"><button>Link</button>
+                <li class="menu-header"><span>Link</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><button>Set as Relation</button></li>
-                        <li class="menu-item"><button>Double Direction</button></li>
-                        <li class="menu-item"><button>Invert Direction</button></li>
+                        <li class="menu-item"><span>Set as Relation</span><span class="shortcut">R</span></li>
+                        <li class="menu-item"><span>Double Direction</span><span class="shortcut">B</span></li>
+                        <li class="menu-item"><span>Invert Direction</span><span class="shortcut">L</span></li>
                     </ul>
                 </li>
-                <li class="menu-header"><button onclick="help()">Help</button></li>
-                
+                <li class="menu-header" onclick="help()"><span>Help</span></li>
             </ul>
-        </div>
+    </div>
         <div id="drawing">
             <svg id="mainCanvas">
                 <defs>

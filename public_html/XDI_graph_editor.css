@@ -44,8 +44,8 @@ body{
   position:absolute;
   z-index:2;
   
-  height: 5%;
-  width: 100%;
+  width: 98%;
+  background: rgba(66,124,102,1);
 }
 
 .parameterContainer{
@@ -115,48 +115,40 @@ body{
   position: relative; 
 }
 
-.menu button {
-  background: rgba(66,124,102,1);//#67917A;
-  color: white;
+.menu li{
+  -webkit-transition:background 0.5s;
+}
 
-  padding: 0.6em 1.5em;
+.menu span {
+  background:transparent;
+  color: rgba(255,255,255,0.9);
+
   border-radius: 0px;
-  margin: 0;
   
-  width: 10em; 
-   
   font-size: 1em;
   font-family: "Helvetica Neue";
-  font-weight:100;
+   font-weight:200;
+  
   letter-spacing:1px;
    
   cursor: pointer;
-
-  -webkit-transition:background 0.5s, box-shadow 0.5s;
    
 }
    
-.menu button:hover {
-   background: rgba(106,172,78,1);
-/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.3); */
-}
-   
-.menu button:active {
-   border-top-color: #1B676B;
-   background: #dce007;
-}
-
-.menu button:focus {
-  outline: 0px;
-}
-
-.menu button.off{
-  background: rgba(120,120,120,0.4);
-}
 
 .menu-header {
   float: left;
-  margin: 0 0.3em 0 0;
+  background: rgba(66,124,102,1);
+  
+}
+
+.menu-header:hover{
+  background:rgba(89,166,101,1);
+}
+
+.menu-header > span{
+  padding: 0.5em 1.5em;
+  display:block;
 }
     
 .sub-menu {
@@ -165,6 +157,8 @@ body{
   position: absolute; 
   top: 100%;
   -webkit-transition: opacity 0.5s;
+  background: rgba(17,133,89,0.8);
+  padding: 0.3em 0;
 }
 
 
@@ -177,15 +171,34 @@ body{
 .menu-item {
   float: none;  
   position: relative;
+  padding:0.1em 1em 0.1em 1.5em;
 }
-.menu-item button {
-  font-weight:100;
+
+.menu-item:hover{
+  background: rgba(190,213,117,0.6);
+}
+
+.menu-item:active{
+  background: #dce007;
+}
+
+.menu-item span {
   text-align:left;
-  padding:0.5em 0.5em;
-  
+  display:inline-block;
 } 
-.menu-item button:hover {
-  
+.menu-item span:first-of-type{
+  min-width:9em;
+}
+.menu-item span.shortcut{
+  color:rgbA(255,255,255,0.6);
+  text-align:right;
+  min-width:3em;
+}
+
+.section-line{
+  background:rgba(118,180,105,1);
+  height:1px;
+  margin:0.2em 0;
 }
 
 
