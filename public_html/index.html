@@ -53,6 +53,11 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
+                        <li class="menu-item" onclick="cutSelection()"><span>Cut</span></li>
+                        <li class="menu-item" onclick="copySelection()"><span>Copy</span></li>
+                        <li class="menu-item" onclick="pasteToGraph()"><span>Paste</span></li>
+                        <li class="menu-item" onclick="duplicateSelection()"><span>Duplicate</span></li>
+                        <li class="section-line"></li>
                         <li class="menu-item" onclick="openCopyDialog()"><span>Copy Label...</span></li>
                         <li class="menu-item" onclick="deleteCommand()"><span>Delete Object</span><span class="shortcut">⌫</span></li>
                         <li class="menu-item" onclick="editNameCommand()"><span>Rename Object...</span><span class="shortcut">↵</span></li>
@@ -209,5 +214,6 @@ THE SOFTWARE.
         <script type="text/javascript" src="js/XDI_graph_editor_selection.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_commands.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_dragselect.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_clipboard.js"></script>
     </body>
 </html>

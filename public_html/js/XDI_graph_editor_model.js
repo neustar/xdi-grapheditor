@@ -31,7 +31,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
         clearGraph();
     
     if (!willJoinGraph)
-        lastGraphId++;
+        lastGraphID++;
 
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
@@ -195,20 +195,19 @@ function getDrawData(root){
 
 function addStatement(subject, predicate, object, isRelation, statement, willJoinGraph) {
     var subjectnode, objectnode;
-    var targetGraphId = willJoinGraph? null:lastGraphId;
+    var targetGraphID = willJoinGraph? null:lastGraphID;
     var isLiteral = predicate === null;
     if (predicate === null)
         predicate = "&";
-    var nodeFound = findNode(jsonnodes, subject, targetGraphId);
+    var nodeFound = findNode(jsonnodes, subject, targetGraphID);
     if (nodeFound == null) {
-        var isRoot = subject === "";
-        subjectnode = addNode(subject,false,isRoot,null, lastGraphId);
+        subjectnode = addNode(subject,null, lastGraphID);
     } else
         subjectnode = nodeFound;
     
-    nodeFound = findNode(jsonnodes, object, targetGraphId);
+    nodeFound = findNode(jsonnodes, object, targetGraphID);
     if (nodeFound == null) {
-        objectnode = addNode(object,isLiteral,false, statement.object()._string, lastGraphId);
+        objectnode = addNode(object, statement.object()._string, lastGraphID);
     } else
         objectnode = nodeFound;
 
@@ -216,36 +215,47 @@ function addStatement(subject, predicate, object, isRelation, statement, willJoi
 }
 
 //Atomic operation for add a node
-function addNode(name,isLiteral, isRoot, shortName, graphID){
+function addNode(name, shortName, graphID, willSave){ //willSave: true if will save to jsonnodes.
     if (shortName == null)
         shortName = name;
+    if (willSave == null)
+        willSave = true;
+
+    
     var nodeType = getNodeType(name);
-    var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphID);
-    // var newNode = new XDINode(++lastNodeId,name,shortName,isLiteral ? NodeTypes.LITERAL:NodeTypes.CONTEXT, graphID);
-    setNodeIsRoot(newNode,isRoot);
-    jsonnodes.push(newNode);
+    var newNode = new XDINode(++lastNodeID,name,shortName,nodeType, graphID);
+    
+    if(willSave)
+        jsonnodes.push(newNode);
+    
     return newNode;
 }
 
 //Atomic operation for add a link
-function addLink(sourceNode,targetNode,linkName,isLeft,isRight,isRelation,shortName){
+function addLink(sourceNode,targetNode,name,isLeft,isRight,isRelation,shortName, willSave){
     if (shortName == null)
-        shortName = linkName;
+        shortName = name;
+
+    if(willSave == null)
+        willSave = true;
 
     var linkObject = findLink(sourceNode,targetNode);
     
     if (linkObject)//if link exists, then don't add a new one.
         return;
 
-    var newlink = new XDILink(++lastLinkId,linkName,shortName,isLeft, isRight, sourceNode, targetNode);
+    var newlink = new XDILink(++lastLinkID,name,shortName,isLeft, isRight, sourceNode, targetNode);
     if (isRelation)
         newlink.isRelation = true;
     
     sourceNode.children.push(targetNode);
     targetNode.parents.push(sourceNode);
     
-    jsonlinks.push(newlink);
-    addLinktoMap(sourceNode, targetNode, newlink);
+    if(willSave)
+    {
+        jsonlinks.push(newlink);
+        addLinkToMap(sourceNode, targetNode, newlink);
+    }
     return newlink;
 }
 
@@ -260,7 +270,7 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     }
 
     if (targetNode.type === NodeTypes.LITERAL){
-        var innerNode = addNode(sourceNode.name + "&", false, false, null, Math.max(sourceNode.graphID,targetNode.graphID));
+        var innerNode = addNode(sourceNode.name + "&", null, Math.max(sourceNode.graphID,targetNode.graphID));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
         link = linkToInnerNode;
@@ -275,7 +285,7 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
 }
 
 //Atomic ADD operation for nodeslinkmap
-function addLinktoMap(source, target,linkObject) {
+function addLinkToMap(source, target,linkObject) {
     var key = source.id + '-' + target.id;
     if (!(key in nodeslinkmap)) {
         nodeslinkmap[key] = linkObject;
@@ -347,7 +357,7 @@ function removeLink(linkToRemove){
     target.parents.splice(target.parents.indexOf(source),1);
     var spliceret = jsonlinks.splice(jsonlinks.indexOf(linkToRemove), 1);
     if (spliceret.length !== 1) 
-        console.log("Error removing the link.");
+        console.log("Link do not exists.");
     delLinkfromMap(source, target);
 }
 
@@ -506,7 +516,7 @@ function inverseLinkDirection(linkToSet){
     //     target_t0.children = [];
     //     target_t0.children.push(source_t0);
     // }
-    addLinktoMap(target_t0, source_t0,linkToSet);
+    addLinkToMap(target_t0, source_t0,linkToSet);
     delLinkfromMap(source_t0, target_t0);
 }
 

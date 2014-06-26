@@ -75,14 +75,14 @@ function createNodeByClick () {
     if(nodename === null)
         return;
     
-    var nodeFound = findNode(jsonnodes, nodename, lastGraphId);
+    var nodeFound = findNode(jsonnodes, nodename, lastGraphID);
     if (nodeFound) {
         if (nodename !== "")
         // Name already taken
             alert("Node already exists!");
         return;
     }
-    var newnode = addNode(nodename,false,false,null, lastGraphId);
+    var newnode = addNode(nodename,null, lastGraphID);
     var point;
     if(d3.event !== null)
         point = d3.mouse(svg.node());
@@ -237,5 +237,38 @@ function expandAllNodes(){
     jsonnodes.forEach(function  (d) {
         d.isFolded = false;
     })
+    restart();
+}
+
+function copySelection () {
+    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
+        return;
+
+    copyObjectsToClipBoard(selected_nodes,selected_links);
+}
+
+function pasteToGraph () {
+    if(_.isEmpty(clipBoard.nodes)) //Cannot paste if there is no nodes. Links cannot be pasted if there is no nodes two.
+        return;
+
+    pasteFromClipBoard();
+    clearAllSelection();
+    restart();
+}
+
+function duplicateSelection () {
+    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
+        return;
+
+    duplicateObjects(selected_nodes,selected_links);
+    restart();
+}
+
+function cutSelection () {
+    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
+        return;
+
+    cutObjectsToClipBoard(selected_nodes,selected_links);
+    clearAllselection();
     restart();
 }

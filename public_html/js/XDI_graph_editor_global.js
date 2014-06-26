@@ -79,12 +79,12 @@ var isFrozen = false;
 
 //Model
 var STORAGE_PREFIX = "XDI_GRAPH_EDITOR_";
-var lastNodeId = 0,lastLinkId = 0;
+var lastNodeID = 0,lastLinkID = 0;
 var nodeslinkmap = {};
 var jsonnodes = null, jsonlinks = null;
 var lastDrawData = null;
 
-var lastGraphId = -1;
+var lastGraphID = -1;
 
 var NodeTypes = {
 	LITERAL:"literal",
@@ -110,3 +110,6 @@ var selected_nodes = null, // a collection of all the selected nodes
 
 //Drag Select
 var dragSelectBrush = null;
+
+//Copy & Paste
+var clipBoard = {nodes: [], links: []};

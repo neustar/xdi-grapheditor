@@ -43,6 +43,9 @@ function XDINode (id, name, shortName, type, graphID) {
 
 	this.isRoot = function(){return this.type === NodeTypes.ROOT;};
 	this.isLiteral = function(){return this.type === NodeTypes.LITERAL;};
+	this.clone = function(){
+		return new XDINode(this.id,this.name,this.type,this.graphID);
+	}
 }
 XDINode.prototype = new XDIElement();
 
@@ -56,6 +59,9 @@ function XDILink (id,name,shortName, left, right, source, target)
 	this.source = source;
 	this.target = target;
 	this.isRelation = false;
+	this.clone = function() { 
+		return new XDILink(this.id, this.name,this.shortName, this.left, this.right, this.source, this.target); 
+	}
 }
 XDILink.prototype = new XDIElement();
 

@@ -119,7 +119,7 @@ body{
 }
 
 .menu li{
-  -webkit-transition:background 0.5s;
+  -webkit-transition:background 0.2s;
 }
 
 .menu span {

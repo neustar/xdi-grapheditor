@@ -54,12 +54,12 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons);
+    // initializeGraphWithXDI(attributeSingletons);
 
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
+    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -76,8 +76,8 @@ function initializeGraph()
 {
     jsonnodes=[];
     jsonlinks=[];
-    lastNodeId = -1;
-    lastLinkId = -1;
+    lastNodeID = -1;
+    lastLinkID = -1;
     nodeslinkmap={};
 
     force = d3.layout.force()
@@ -359,9 +359,9 @@ function clearGraph() {
     jsonnodes = [];
     jsonlinks = [];
     nodeslinkmap = {};
-    lastGraphId = -1;
-    lastNodeId = -1;
-    lastLinkId = -1;
+    lastGraphID = -1;
+    lastNodeID = -1;
+    lastLinkID = -1;
     lastDrawData = null;
     updateSyntaxStatus("Syntax OK",true);
     restart();
