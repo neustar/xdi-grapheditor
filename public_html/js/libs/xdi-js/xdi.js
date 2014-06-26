@@ -1065,7 +1065,7 @@
                                         return xdi.constants.nodetypes.ROOT;
                                     if(nodelabel.match(/^".*"$/) != null)
                                         return xdi.constants.nodetypes.LITERAL;
-                                    if(_.last(nodelabel) === "&")
+                                    if(nodelabel.slice(-1) === "&")
                                         return xdi.constants.nodetypes.VALUE;
                                     if(nodelabel.match(/^<.*>$/) != null)
                                         return xdi.constants.nodetypes.ATTRIBUTE;
