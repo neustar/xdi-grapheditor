@@ -183,7 +183,7 @@ function updateLinkElement (linksData) {
     //// Adjust Classes
     linkGs.classed('selected', function(d) {return d.isSelected;})
         .classed('relation', function(d) {return d.isRelation;})
-        .classed('literal', function(d) {return d.target.type === NodeTypes.LITERAL;})
+        .classed('literal', function(d) {return d.target.type === xdi.constants.nodetypes.LITERAL;})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
 }
@@ -259,17 +259,17 @@ function restart(startForce,getNewData) {
 function getNodeShape (type) {
     var symbol = d3.svg.symbol();
     switch(type){
-        case NodeTypes.LITERAL:
+        case xdi.constants.nodetypes.LITERAL:
             symbol.type("square").size(500);
             break;
-        case NodeTypes.CONTEXT:
-        case NodeTypes.ROOT:
-        case NodeTypes.ENTITY:
+        case xdi.constants.nodetypes.CONTEXT:
+        case xdi.constants.nodetypes.ROOT:
+        case xdi.constants.nodetypes.ENTITY:
             symbol.type("circle").size(500);
             break;
         
-        case NodeTypes.ATTRIBUTE:
-        case NodeTypes.VALUE:
+        case xdi.constants.nodetypes.ATTRIBUTE:
+        case xdi.constants.nodetypes.VALUE:
             symbol.type("diamond").size(400);
             break;
     }

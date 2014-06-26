@@ -41,8 +41,8 @@ function XDINode (id, name, shortName, type, graphID) {
 	this.children = [];
 	this.graphID = graphID;
 
-	this.isRoot = function(){return this.type === NodeTypes.ROOT;};
-	this.isLiteral = function(){return this.type === NodeTypes.LITERAL;};
+	this.isRoot = function(){return this.type === xdi.constants.nodetypes.ROOT;};
+	this.isLiteral = function(){return this.type === xdi.constants.nodetypes.LITERAL;};
 	this.clone = function(){
 		return new XDINode(this.id,this.name,this.type,this.graphID);
 	}

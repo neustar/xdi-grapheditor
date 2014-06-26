@@ -86,14 +86,6 @@ var lastDrawData = null;
 
 var lastGraphID = -1;
 
-var NodeTypes = {
-	LITERAL:"literal",
-	CONTEXT: "context",
-	ROOT:"root",
-	ENTITY:"entity",
-	ATTRIBUTE:"attribute",
-	VALUE:"value"
-};
 
 //Zoom
 var navScale = 0.1,navMargin = 20;

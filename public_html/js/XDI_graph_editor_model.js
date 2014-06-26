@@ -222,7 +222,7 @@ function addNode(name, shortName, graphID, willSave){ //willSave: true if will s
         willSave = true;
 
     
-    var nodeType = getNodeType(name);
+    var nodeType = xdi.util.getNodeType(name);
     var newNode = new XDINode(++lastNodeID,name,shortName,nodeType, graphID);
     
     if(willSave)
@@ -269,7 +269,7 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
         return link;
     }
 
-    if (targetNode.type === NodeTypes.LITERAL){
+    if (targetNode.type === xdi.constants.nodetypes.LITERAL){
         var innerNode = addNode(sourceNode.name + "&", null, Math.max(sourceNode.graphID,targetNode.graphID));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
@@ -371,22 +371,6 @@ function removeLink(linkToRemove){
 //     }
 // }
 
-function getNodeType (name) {
-    if (name === "")
-        return NodeTypes.ROOT;
-    
-    if(_.contains(name,"\""))
-        return NodeTypes.LITERAL;
-
-    if(_.last(name) === "&")
-        return NodeTypes.VALUE;
-    
-    if(_.contains(name,"<"))
-        return NodeTypes.ATTRIBUTE;
-
-    return NodeTypes.ENTITY;
-}
-
 function checkLinkValidity(linkToCheck){
     // checking statement's validity
     var subject = linkToCheck.source.name;
@@ -398,13 +382,13 @@ function checkLinkValidity(linkToCheck){
         // a relational statement
         statement = subject + "/" + predicate + "/" + object;
     } else {
-        if (linkToCheck.target.type === NodeTypes.LITERAL) {
+        if (linkToCheck.target.type === xdi.constants.nodetypes.LITERAL) {
             statement = subject + "/" + '&' + "/" + object;
         } else
             // a contextual statement
             statement = subject + "//" + object;
     }
-    var lit = linkToCheck.target.type === NodeTypes.LITERAL;
+    var lit = linkToCheck.target.type === xdi.constants.nodetypes.LITERAL;
     var validateMessage = validateXDI(statement, linkToCheck.isRelation, lit);
     if (validateMessage === "") {
         updateSyntaxStatus("Syntax OK",true);
@@ -466,11 +450,11 @@ function setNodeIsRoot(nodeToSet,newValue){
     if(newValue)
     {   
         // nodeToSet._type = nodeToSet.type;
-        nodeToSet.type = NodeTypes.ROOT;
+        nodeToSet.type = xdi.constants.nodetypes.ROOT;
     }
-    else if (nodeToSet.type === NodeTypes.ROOT)
+    else if (nodeToSet.type === xdi.constants.nodetypes.ROOT)
     {
-        nodeToSet.type = getNodeType(nodeToSet.name);
+        nodeToSet.type = xdi.util.getNodeType(nodeToSet.name);
         // nodeToSet.type = nodeToSet._type;
         // nodeToSet._type = null;
     }
@@ -478,9 +462,9 @@ function setNodeIsRoot(nodeToSet,newValue){
 
 function setNodeIsLiteral (nodeToSet,newValue) {
     if(newValue)
-        nodeToSet.type = NodeTypes.LITERAL;
+        nodeToSet.type = xdi.constants.nodetypes.LITERAL;
     else
-        nodeToSet.type = getNodeType(nodeToSet.name);
+        nodeToSet.type = xdi.util.getNodeType(nodeToSet.name);
 }
 
 function setLinkLabel(linkToSet,newValue){
