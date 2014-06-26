@@ -38,42 +38,6 @@ function deleteCommand () {
     }
 }
 
-function setDoubleArrowCommand () {
-    if (hasSelectedLinks()) {
-        // set link direction to both left and right
-        selected_links.forEach(function(d) {
-            d.left = true;
-            d.right = true;
-        });
-        
-        restart();
-    }
-}
-
-// Toggling a link relationship status on/off
-function setRelationCommand () {
-    if (hasSelectedLinks()) {
-
-        selected_links.forEach(function(d) {
-            setLinkIsRel(d,!d.isRelation);
-        });
-
-        restart();
-    }
-}
-
-// Setting a node as root, updating graphics too.
-function setRootNodeCommand () {
-    if (hasSelectedNodes()) {
-    
-        selected_nodes.forEach(function (d) {
-            setNodeIsRoot(d,!d.isRoot());
-        })
-        
-        restart();
-    }
-}
-
 function editNameCommand(){
     if (hasSelectedLinks()) {
         selected_links.forEach(function(d) {
@@ -93,27 +57,7 @@ function editNameCommand(){
     }
 }
 
-// Inversing the link direction
-function invertLinkCommand () {
-    if (hasSelectedLinks()) {
-        selected_links.forEach(function(d) {
-            inverseLinkDirection(d);
-        });
-        
-        restart();
-    }
-}
 
-// Changing the Node type to literal or back to the default contextual 
-function setLiteralNodeCommand () {
-    if (hasSelectedNodes()) {
-        selected_nodes.forEach(function(d) {
-            setNodeIsLiteral(d,!d.isLiteral())
-        })
-        
-        restart();
-    }
-}
 
 
 function fixNodeCommand () {
@@ -121,6 +65,10 @@ function fixNodeCommand () {
         selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
 }
 
+function foldNodeCommand (isDirectDescendantsOnly) {
+    if(hasSelectedNodes())
+        selected_nodes.forEach(function(d) { return toggleFoldNode(d,isDirectDescendantsOnly);})
+}
 
 function createNodeByClick () {
     var nodename = prompt("Please enter the node's name", "");
@@ -135,12 +83,80 @@ function createNodeByClick () {
         return;
     }
     var newnode = addNode(nodename,false,false,null, lastGraphId);
-    var point = d3.mouse(svg.node());
+    var point;
+    if(d3.event !== null)
+        point = d3.mouse(svg.node());
+    else
+        point = [svgWidth/2,svgHeight/2];
     newnode.x = point[0];
     newnode.y = point[1];
     restart();
 
 }
+
+// Changing the Node type to literal or back to the default contextual 
+function setLiteralNodeCommand () {
+    if (hasSelectedNodes()) {
+        selected_nodes.forEach(function(d) {
+            setNodeIsLiteral(d,!d.isLiteral())
+        })
+        
+        restart();
+    }
+}
+
+
+// Setting a node as root, updating graphics too.
+function setRootNodeCommand () {
+    if (hasSelectedNodes()) {
+    
+        selected_nodes.forEach(function (d) {
+            setNodeIsRoot(d,!d.isRoot());
+        })
+        
+        restart();
+    }
+}
+
+
+
+// Inversing the link direction
+function invertLinkCommand () {
+    if (hasSelectedLinks()) {
+        selected_links.forEach(function(d) {
+            inverseLinkDirection(d);
+        });
+        
+        restart();
+    }
+}
+
+function setDoubleArrowCommand () {
+    if (hasSelectedLinks()) {
+        // set link direction to both left and right
+        selected_links.forEach(function(d) {
+            d.left = true;
+            d.right = true;
+        });
+        
+        restart();
+    }
+}
+
+
+// Toggling a link relationship status on/off
+function setRelationCommand () {
+    if (hasSelectedLinks()) {
+
+        selected_links.forEach(function(d) {
+            setLinkIsRel(d,!d.isRelation);
+        });
+
+        restart();
+    }
+}
+
+
 
 
 function startDragLine(){

@@ -160,7 +160,7 @@ body{
   position: absolute; 
   top: 100%;
   -webkit-transition: opacity 0.5s;
-  background: rgba(17,133,89,0.8);
+  background: rgba(17,83,56,0.7);
   padding: 0.3em 0;
 }
 

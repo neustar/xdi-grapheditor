@@ -54,37 +54,42 @@ THE SOFTWARE.
                 <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
                         <li class="menu-item" onclick="openCopyDialog()"><span>Copy Label...</span></li>
-                        <li class="menu-item"><span>Delete Object</span><span class="shortcut">⌫</span></li>
-                        <li class="menu-item"><span>Rename Object...</span><span class="shortcut">↵</span></li>
+                        <li class="menu-item" onclick="deleteCommand()"><span>Delete Object</span><span class="shortcut">⌫</span></li>
+                        <li class="menu-item" onclick="editNameCommand()"><span>Rename Object...</span><span class="shortcut">↵</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>View</span>
                     <ul class="sub-menu">
+                        <li class="menu-item" onclick="resetZoom()"><span>Actual Size</span></li>
                         <li class="menu-item" onclick="zoomToFit()"><span>Zoom to Fit</span></li>
-                        <li class="menu-item"><span>Actual Size</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Node</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><span>New Node...</span></li>
+                        <li class="menu-item" onclick="createNodeByClick()"><span>New Node...</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item"><span>Fix/Unfix</span><span class="shortcut">F</span></li>
-                        <li class="menu-item"><span>Fold/Unfold</span></li>
-                        <li class="menu-item"><span>Unfold Level 1</span></li>
+                        <li class="menu-item" onclick="fixNodeCommand()"><span>Fix/Unfix</span><span class="shortcut">F</span></li>
+                        <li class="menu-item" onclick="foldNodeCommand(false)"><span>Fold/Unfold</span></li>
+                        <li class="menu-item" onclick="foldNodeCommand(true)"><span>Unfold Level 1</span></li>
                         <li class="menu-item" onclick="expandAllNodes()"><span>Unfold All</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item"><span>Set as Root</span><span class="shortcut">R</span></li>
-                        <li class="menu-item"><span>Set as Literal</span><span class="shortcut">L</span></li>
+                        <li class="menu-item" onclick="setRootNodeCommand()"><span>Set as Root</span><span class="shortcut">R</span></li>
+                        <li class="menu-item" onclick="setLiteralNodeCommand()"><span>Set as Literal</span><span class="shortcut">L</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Link</span>
                     <ul class="sub-menu">
-                        <li class="menu-item"><span>Set as Relation</span><span class="shortcut">R</span></li>
-                        <li class="menu-item"><span>Double Direction</span><span class="shortcut">B</span></li>
-                        <li class="menu-item"><span>Invert Direction</span><span class="shortcut">L</span></li>
+                        <li class="menu-item" onclick="invertLinkCommand()"><span>Invert Direction</span><span class="shortcut">L</span></li>
+                        <li class="menu-item" onclick="setRelationCommand()"><span>Set as Relation</span><span class="shortcut">R</span></li>
+                        <li class="menu-item" onclick="setDoubleArrowCommand()"><span>Double Direction</span><span class="shortcut">B</span></li>
+                        
                     </ul>
                 </li>
-                <li class="menu-header" onclick="help()"><span>Help</span></li>
+                <li class="menu-header"><span>Help</span>
+                    <ul class="sub-menu">
+                        <li class="menu-item" onclick="help()"><span>Manual & Tutorial</span></li>
+                    </ul>
+                </li>
             </ul>
     </div>
         <div id="drawing">
