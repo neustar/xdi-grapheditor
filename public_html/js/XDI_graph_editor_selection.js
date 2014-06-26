@@ -48,9 +48,11 @@ function hasSelections (selectionSet) {
 
 function setSelectedNodes (nodeSet) {
 	selected_nodes = nodeSet;
+	updateMenuItemAbility();
 }
 function setSelectedLinks (linkSet) {
 	selected_links = linkSet;
+	updateMenuItemAbility();
 }
 //Interfaces for global use
 
@@ -60,10 +62,12 @@ function initializeSelection () {
 
 function addSeletedNode (nodeToAdd) {
 	addNewSelection(nodeToAdd,selected_nodes);
+	updateMenuItemAbility();
 }
 
 function addSeletedLink (linkToAdd) {
 	addNewSelection(linkToAdd,selected_links);
+	updateMenuItemAbility();
 }
 
 function clearAllSelection () {
@@ -73,10 +77,12 @@ function clearAllSelection () {
 
 function clearSelectedNodes (){
 	selected_nodes = clearSelectionSet(selected_nodes);
+	updateMenuItemAbility();
 }
 
 function clearSelectedLinks () {
 	selected_links = clearSelectionSet(selected_links);
+	updateMenuItemAbility();
 }
 
 function hasSelectedNodes () {
@@ -96,3 +102,4 @@ function updateSelectionClass (className) {
 	d3.selectAll(".selectable"+className)
 		.classed("selected",function(d) { return d.isSelected; });
 }
+

@@ -185,6 +185,11 @@ body{
   background: #dce007;
 }
 
+.menu-item.disabled{
+  pointer-events:none;
+  opacity: 0.3;
+}
+
 .menu-item span {
   text-align:left;
   display:inline-block;

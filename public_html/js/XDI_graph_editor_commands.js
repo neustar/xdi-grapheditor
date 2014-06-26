@@ -272,3 +272,14 @@ function cutSelection () {
     clearAllselection();
     restart();
 }
+
+function setMenuItemAbility (classSelector,isEnabled) {
+    d3.select(classSelector)
+        .classed('disabled',isEnabled);
+}
+
+function updateMenuItemAbility () {
+    d3.selectAll('.menu-item.selection').classed('disabled',!hasSelectedNodes()&&!hasSelectedLinks());
+    d3.selectAll('.menu-item.selection.need-node').classed('disabled',!hasSelectedNodes());
+    d3.selectAll('.menu-item.selection.need-link').classed('disabled',!hasSelectedLinks());
+}
