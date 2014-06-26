@@ -99,7 +99,8 @@ var NodeTypes = {
 var navScale = 0.1,navMargin = 20;
 var lastTransition = null;
 var zoomToFitMargin = 30;
-
+var navDrag = null;
+var isViewRectStatic = false; //whether #viewRect is static in the navigator
 //Search
 var lastQuery = null;
 

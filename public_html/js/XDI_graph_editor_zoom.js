@@ -37,6 +37,13 @@ function initializeZoom () {
 	svg.on("mousewheel.zoom", null);
 	svg.on("MozMousePixelScroll.zoom", null);
 
+	navDrag = d3.behavior.drag()
+		.on('drag',navDragged)
+
+	d3.select('#navSVG')
+		.on('mousewheel',mousewheelOnSVG)
+		.call(navDrag);
+
 	updateNavSize();
 
 	zoom.event(svg);
@@ -147,6 +154,8 @@ function updateViewPortRect()
   		vy = (-minY) * r;
   		ox = (navWidth - dx * r) / 2;
   		oy = (navHeight - dy * r) / 2;
+
+  		isViewRectStatic = false;
   	}
   	else
 	{
@@ -157,6 +166,8 @@ function updateViewPortRect()
   		sy = minY * r;
   		ox = 0;
   		oy = 0;
+
+  		isViewRectStatic = true;
   	}
 
 	vw = svgWidth * r;
@@ -254,4 +265,22 @@ function zoomToElementCollection (collection) {
 
 function resetZoom(){
 	zoomTo([svgWidth/2,svgHeight/2,svgWidth]);
+}
+
+function navDragged () {
+	var newTranslate = zoom.translate();
+
+	if(isViewRectStatic) 
+	{	
+		//Pan to move the graph content
+		newTranslate[0] += d3.event.dx/navScale;
+		newTranslate[1] += d3.event.dy/navScale;
+	}
+	else
+	{	
+		//Pan to move the viewport
+		newTranslate[0] -= d3.event.dx/navScale;
+		newTranslate[1] -= d3.event.dy/navScale;
+	}
+	setScaleTranslation(null,newTranslate);
 }

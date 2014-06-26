@@ -491,8 +491,13 @@ body{
   position: absolute;
   right: 0%;
   bottom: 0%;
-  pointer-events:none;
   background: rgba(200,200,200,0.5);
+
+  cursor: -webkit-grab;
+}
+
+#navSVG:active{
+ cursor: -webkit-grabbing; 
 }
 
 #zoomText{
