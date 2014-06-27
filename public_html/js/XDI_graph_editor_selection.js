@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 
-//Atomic Operation for add a new selection (link or node)
+//Atomic ADD Operation for add a new selection (link or node)
 function addNewSelection (objToAdd, selectionSet) {
 	if(selectionSet!=null&&!objToAdd.isSelected)
 	{
@@ -32,7 +32,7 @@ function addNewSelection (objToAdd, selectionSet) {
 	}
 }
 
-//Atomic Operation for clear selection set
+//Atomic CLEAR Operation for clear selection set
 function clearSelectionSet (selectionSet) {
 	if(selectionSet!=null)
 		selectionSet.forEach(function(d) { d.isSelected=false; });
@@ -40,21 +40,24 @@ function clearSelectionSet (selectionSet) {
 	return selectionSet;
 }
 
-//Atomic Operation for checking emptiness
+//Atomic HAS Operation for checking emptiness
 function hasSelections (selectionSet) {
 	return selectionSet != null && selectionSet.length > 0;
 }
 
 
+
+
 function setSelectedNodes (nodeSet) {
 	selected_nodes = nodeSet;
+	selected_nodes.forEach(function(d) { return d.isSelected = true; });
 	updateMenuItemAbility();
 }
 function setSelectedLinks (linkSet) {
 	selected_links = linkSet;
+	selected_links.forEach(function(d) { return d.isSelected = true; });
 	updateMenuItemAbility();
 }
-//Interfaces for global use
 
 function initializeSelection () {
 	clearAllSelection();

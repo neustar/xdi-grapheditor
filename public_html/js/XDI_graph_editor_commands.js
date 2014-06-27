@@ -135,8 +135,13 @@ function setDoubleArrowCommand () {
     if (hasSelectedLinks()) {
         // set link direction to both left and right
         selected_links.forEach(function(d) {
-            d.left = true;
-            d.right = true;
+            if(d.left&&d.right)
+                d.left = false
+            else
+            {
+                d.left = true;
+                d.right = true;
+            }
         });
         
         restart();
@@ -286,4 +291,14 @@ function updateMenuItemAbility () {
 
     d3.selectAll('#pasteCommand').classed('disabled',isClipBoardEmpty());
     d3.selectAll('.menu-item.need-content').classed('disabled',isGraphEmpty());
+}
+
+function selectAll () {
+    if(!lastDrawData)
+        return;
+    
+    //Only select visible nodes
+    setSelectedNodes(lastDrawData.nodes);
+    setSelectedLinks(lastDrawData.links);
+    updateSelectionClass();
 }
