@@ -57,12 +57,13 @@ $(function() {
     // initializeGraphWithXDI(attributeSingletons);
 
     
-    // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
+    initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
+    
 });
 
 

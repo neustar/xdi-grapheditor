@@ -44,6 +44,7 @@ THE SOFTWARE.
                     <ul class="sub-menu">
                         <li class="menu-item" onclick="importXDI()"><span>Import XDI...</span></li>
                         <li class="menu-item need-content" onclick="exportGraph()"><span>Export to XDI...</span></li>
+                        <li class="menu-item need-content" onclick="exportToPNG()"><span>Export to PNG...</span></li>
                         <li class="menu-item need-content" onclick="clearGraph()"><span>Clear Graph</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item need-content" onclick="saveGraph()"><span>Store Graph</span></li>
@@ -127,11 +128,11 @@ THE SOFTWARE.
                 
                 <g id="linkCanvas"></g>
                 <g id="nodeCanvas"></g>
-                <rect id="statusIndicator" class="ok browse" width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
-                
-                
-                <text id="modeMessage" class="statusText" x="110" y="20">Browse</text>
-                <text id="statusMessage" class="statusText" x="30" y="20">OK</text>
+                <g id="status">
+                    <rect id="statusIndicator" class="ok browse" width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                    <text id="modeMessage" class="statusText" x="110" y="20">Browse</text>
+                    <text id="statusMessage" class="statusText" x="30" y="20">OK</text>
+                </g>
             </svg>
             <svg id="navSVG">
                 <g>
@@ -217,5 +218,6 @@ THE SOFTWARE.
         <script type="text/javascript" src="js/XDI_graph_editor_commands.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_dragselect.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_clipboard.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_screenshot.js"></script>
     </body>
 </html>

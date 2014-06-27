@@ -621,6 +621,8 @@ body{
 
 .link {
     stroke: #333;
+    stroke-width: 4px;
+    fill:none;
     cursor: default;
     -webkit-transition:stroke 0.2s,opacity 0.2s;
 }
@@ -631,8 +633,6 @@ body{
 }
 
 .link path{
-  stroke-width: 4px;
-  fill:none;
   -webkit-transition:opacity 0.2s;
 }
 
