@@ -78,3 +78,7 @@ function cutObjectsToClipBoard (nodesToCut,linksToCut) {
 function clearClipBoard () {
 	clipBoard = {nodes: [], links: []};
 }
+
+function isClipBoardEmpty () {
+    return _.isEmpty(clipBoard.nodes); //Can paste only when there is node. There shouldn't have only links in clipboard
+}

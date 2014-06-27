@@ -30,9 +30,9 @@ function initializeLayout(nodes,links) {
 		item.fixed = isFrozen     //if overall is frozen
         ||item.isCommonRoot()             //if a node is root
         ||item._fixed             //or is intenionally set to fixed from other ways
-        || ((item.parents == null || item.parents.length === 0) &&(item.children == null || item.children.length === 0));
+        ||_.isEmpty(item.parents) //or has no parents (to provide a separate float away)
 
-	});                             //or has no other links
+ 	 });                             
 
 
 	force

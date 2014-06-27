@@ -43,20 +43,20 @@ THE SOFTWARE.
                 <li class="menu-header"><span>File</span>
                     <ul class="sub-menu">
                         <li class="menu-item" onclick="importXDI()"><span>Import XDI...</span></li>
-                        <li class="menu-item" onclick="exportGraph()"><span>Export to XDI...</span></li>
-                        <li class="menu-item" onclick="clearGraph()"><span>Clear Graph</span></li>
+                        <li class="menu-item need-content" onclick="exportGraph()"><span>Export to XDI...</span></li>
+                        <li class="menu-item need-content" onclick="clearGraph()"><span>Clear Graph</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item" onclick="saveGraph()"><span>Store Graph</span></li>
+                        <li class="menu-item need-content" onclick="saveGraph()"><span>Store Graph</span></li>
                         <li class="menu-item" onclick="loadGraph()"><span>Load Graph</span></li>
                         <li class="menu-item" onclick="DeleteStoredGraphs()"><span>Clear Storage</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
-                        <li class="menu-item selection" onclick="cutSelection()"><span>Cut</span></li>
-                        <li class="menu-item selection" onclick="copySelection()"><span>Copy</span></li>
-                        <li class="menu-item selection" onclick="pasteToGraph()"><span>Paste</span></li>
-                        <li class="menu-item selection" onclick="duplicateSelection()"><span>Duplicate</span></li>
+                        <li class="menu-item selection need-node" onclick="cutSelection()"><span>Cut</span></li>
+                        <li class="menu-item selection need-node" onclick="copySelection()"><span>Copy</span></li>
+                        <li class="menu-item selection" id="pasteCommand" onclick="pasteToGraph()"><span>Paste</span></li>
+                        <li class="menu-item selection need-node" onclick="duplicateSelection()"><span>Duplicate</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item selection" onclick="openCopyDialog()"><span>Copy Label...</span></li>
                         <li class="menu-item selection" onclick="deleteCommand()"><span>Delete Object</span><span class="shortcut">⌫</span></li>
@@ -65,8 +65,8 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>View</span>
                     <ul class="sub-menu">
-                        <li class="menu-item" onclick="resetZoom()"><span>Actual Size</span></li>
-                        <li class="menu-item" onclick="zoomToFit()"><span>Zoom to Fit</span></li>
+                        <li class="menu-item need-content" onclick="resetZoom()"><span>Actual Size</span></li>
+                        <li class="menu-item need-content" onclick="zoomToFit()"><span>Zoom to Fit</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Node</span>

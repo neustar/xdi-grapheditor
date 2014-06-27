@@ -245,6 +245,7 @@ function copySelection () {
         return;
 
     copyObjectsToClipBoard(selected_nodes,selected_links);
+    updateMenuItemAbility ();
 }
 
 function pasteToGraph () {
@@ -269,7 +270,7 @@ function cutSelection () {
         return;
 
     cutObjectsToClipBoard(selected_nodes,selected_links);
-    clearAllselection();
+    clearAllSelection();
     restart();
 }
 
@@ -282,4 +283,7 @@ function updateMenuItemAbility () {
     d3.selectAll('.menu-item.selection').classed('disabled',!hasSelectedNodes()&&!hasSelectedLinks());
     d3.selectAll('.menu-item.selection.need-node').classed('disabled',!hasSelectedNodes());
     d3.selectAll('.menu-item.selection.need-link').classed('disabled',!hasSelectedLinks());
+
+    d3.selectAll('#pasteCommand').classed('disabled',isClipBoardEmpty());
+    d3.selectAll('.menu-item.need-content').classed('disabled',isGraphEmpty());
 }
