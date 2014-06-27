@@ -97,25 +97,29 @@ function copyElementStyle (selector,oldSVG,newSVG,styleNames) {
 
 
 function screenshot(svgToShot){
-  var html = svgToShot
+  svgToShot
     .attr("version", 1.1)
     .attr("xmlns", "http://www.w3.org/2000/svg")
-    .node().outerHTML;//.parentNode.innerHTML;
-    console.log(html)
-    var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-    // window.open(imgsrc,'_blank');
-    var image = new Image();
-    image.src = imgsrc;
-    image.onload = function () {
-      var canvas = document.createElement('canvas');
-      canvas.width = image.width;
-      canvas.height = image.height;
+  
+  var serializer = new XMLSerializer();
+  var html = serializer.serializeToString(svgToShot.node());
+    
+  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+  // window.open(imgsrc,'_blank');
+  var image = new Image();
+  image.src = imgsrc;
 
-      var context = canvas.getContext('2d');
-      context.drawImage(image,0,0);
+  image.onload = function () {
+    var canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
 
-      var pngsrc = canvas.toDataURL('image/png');
-      window.open(pngsrc,'_blank');
-    }       
+    var context = canvas.getContext('2d');
+    context.drawImage(image,0,0);
+
+    var pngsrc = canvas.toDataURL();
+    window.open(pngsrc,'_blank');
+  }
+  image.crossOrigin = 'anonymous';
   
 }
