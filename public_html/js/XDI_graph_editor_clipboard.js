@@ -22,27 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-
-
-function copyObjectsToClipBoard(nodesToCopy, linksToCopy) {
-    var nodeIDDict = {}; // {orignal node id: new node}
+//Atomic CLONE operation for cut, copy, paste, duplicate
+//Clone node and links and redirect links to connect new nodes
+function cloneNodeLinks (nodes,links) {             
+     var nodeIDDict = {}; // {orignal node id: new node}
     
-    lastGraphID ++;
-    clipBoard = {nodes: [], links: []};
+    // lastGraphID ++;
+    var result = {nodes: [], links: []};
 
-    nodesToCopy.forEach(function  (d) {
+    nodes.forEach(function  (d) {
         var nd = addNode(d.name, d.shortName, lastGraphID,false);    
-        clipBoard.nodes.push(nd);
+        result.nodes.push(nd);
         nodeIDDict[d.id] = nd;
         nd.x = d.x;
         nd.y = d.y;
     })
 
-    if(linksToCopy==null)
-    	return;
+    if(links==null)
+        return;
     
     var newLinks = [];
-    linksToCopy.forEach(function(d) { 
+    links.forEach(function(d) { 
         var newSource = nodeIDDict[d.source.id];
         var newTarget = nodeIDDict[d.target.id];
         
@@ -50,16 +50,29 @@ function copyObjectsToClipBoard(nodesToCopy, linksToCopy) {
             return;
 
         var nd = addLink(newSource,newTarget,d.name,d.left,d.right,d.isRelation,d.shortName,false);
-        clipBoard.links.push(nd);
+        result.links.push(nd);
     })    
+
+    return result;
+}
+
+function copyObjectsToClipBoard(nodesToCopy, linksToCopy) {
+   clearClipBoard();
+   clipBoard = cloneNodeLinks(nodesToCopy,linksToCopy);
 }
 
 function pasteFromClipBoard () {
-	jsonnodes = jsonnodes.concat(clipBoard.nodes);
-	jsonlinks = jsonlinks.concat(clipBoard.links);
+    //Create new graph ID to support duplicated names
+    lastGraphID ++;
+    
+    //Clone new copies from clipboard to support multiple paste.
+    var res = cloneNodeLinks(clipBoard.nodes,clipBoard.links);
+    res.nodes.forEach(function(d) { d.lastGraphID = lastGraphID; })
 
-	clipBoard.links.forEach(function(d) { addLinkToMap(d.source,d.target,d);});
-	clearClipBoard();
+    //Add nodes and links to the global arrays
+	jsonnodes = jsonnodes.concat(res.nodes);
+	jsonlinks = jsonlinks.concat(res.links);
+    res.links.forEach(function(d) { addLinkToMap(d.source,d.target,d);});
 }
 
 function duplicateObjects (nodesToCopy,linksToCopy) {
