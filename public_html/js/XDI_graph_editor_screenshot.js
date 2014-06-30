@@ -22,6 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 function exportToPNG () {
+  var isChrome = window.navigator.userAgent.indexOf("Chrome") > -1;
+  if(!isChrome)
+  {
+      var confirmRes = confirm("Export as *.png is only permitted in Chrome.\n *.svg will be exported instead.\n Do you wish to continue?");
+      if(!confirmRes) return;
+  }
+
   var oldSVG = d3.select('#mainCanvas');
   var newSVG = d3.select(oldSVG.node().cloneNode(true));
   
@@ -64,7 +71,7 @@ function exportToPNG () {
   copyTextStyle('.link.relation text',oldSVG,newSVG);
 
 
-  screenshot(newSVG);
+  screenshot(newSVG, isChrome);
 }
 
 function copyNodeStyle (selector,oldSVG,newSVG) {
@@ -96,7 +103,7 @@ function copyElementStyle (selector,oldSVG,newSVG,styleNames) {
 }
 
 
-function screenshot(svgToShot){
+function screenshot(svgToShot, saveAsPNG){
   svgToShot
     .attr("version", 1.1)
     .attr("xmlns", "http://www.w3.org/2000/svg")
@@ -117,9 +124,10 @@ function screenshot(svgToShot){
     var context = canvas.getContext('2d');
     context.drawImage(image,0,0);
 
-    var pngsrc = canvas.toDataURL();
-    window.open(pngsrc,'_blank');
+    var ressrc = saveAsPNG? canvas.toDataURL() : imgsrc;
+    var win = window.open(ressrc,'_blank');
+    if(!win)
+      alert("Oops! The popup of your image is blocked. Please set your browser to allow popups and try again.");
   }
-  image.crossOrigin = 'anonymous';
   
 }
