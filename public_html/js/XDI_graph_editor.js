@@ -97,6 +97,7 @@ function initializeGraph()
     initializeZoom();
     initializeDragSelect();
     windowResizeHandler();
+    initializeMenu();
 
     restart();
 }

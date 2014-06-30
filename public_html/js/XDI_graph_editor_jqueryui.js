@@ -101,3 +101,27 @@ function openCopyDialog () {
   
   $('#copy-dialog').dialog('open');
 }
+
+function initializeMenu(){
+    var menu = $('.menu');
+    var header = $('.menu-header');
+    var item = $('.menu-item');
+
+    header.click(function(e) { 
+      menu.toggleClass('active'); 
+    })
+    header.mouseenter(function() { header.removeClass('active'); $(this).addClass('active'); })
+
+    item.click(function(e) { 
+      e.stopPropagation();
+      menu.removeClass('active'); 
+      header.removeClass('active'); 
+    });
+    $('body').click(function(e) { 
+      if(menu.has(e.toElement).length==0)
+      {
+        menu.removeClass('active');
+        header.removeClass('active');
+      }
+    })
+}

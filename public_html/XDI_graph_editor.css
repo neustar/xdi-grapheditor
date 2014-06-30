@@ -146,6 +146,10 @@ body{
 }
 
 .menu-header:hover{
+  background:rgba(79,149,101,1);
+}
+
+.menu.active .menu-header.active{
   background:rgba(89,166,101,1);
 }
 
@@ -166,7 +170,7 @@ body{
 
 
 
-.menu-header:hover > .sub-menu{
+.menu.active .menu-header.active > .sub-menu{
   opacity: 1;
   pointer-events:auto;
 }
@@ -178,7 +182,7 @@ body{
 }
 
 .menu-item:hover{
-  background: rgba(190,213,117,0.6);
+  background: rgba(190,213,117,0.5);
 }
 
 .menu-item:active{
