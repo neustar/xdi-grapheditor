@@ -219,5 +219,9 @@ THE SOFTWARE.
         <script type="text/javascript" src="js/XDI_graph_editor_dragselect.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_clipboard.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_screenshot.js"></script>
+        <script>
+            var inputurl = /[&?]input=([^&]+)/.exec(location.search);
+            inputurl = inputurl ? inputurl[1].replace(/"/g, '&quot;') : '';
+        </script>
     </body>
 </html>
