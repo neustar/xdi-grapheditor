@@ -31,7 +31,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
         clearGraph();
     
     if (!willJoinGraph)
-        lastGraphID++;
+        lastGraphId++;
 
     var lines = data.split(/\r\n|\r|\n/g);
     // removing empty lines etc.
@@ -196,19 +196,19 @@ function getDrawData(root){
 
 function addStatement(subject, predicate, object, isRelation, statement, willJoinGraph) {
     var subjectnode, objectnode;
-    var targetGraphID = willJoinGraph? null:lastGraphID;
+    var targetGraphId = willJoinGraph? null:lastGraphId;
     var isLiteral = predicate === null;
     if (predicate === null)
         predicate = "&";
-    var nodeFound = findNode(jsonnodes, subject, targetGraphID);
+    var nodeFound = findNode(jsonnodes, subject, targetGraphId);
     if (nodeFound == null) {
-        subjectnode = addNode(subject,null, lastGraphID);
+        subjectnode = addNode(subject,null, lastGraphId);
     } else
         subjectnode = nodeFound;
     
-    nodeFound = findNode(jsonnodes, object, targetGraphID);
+    nodeFound = findNode(jsonnodes, object, targetGraphId);
     if (nodeFound == null) {
-        objectnode = addNode(object, statement.object()._string, lastGraphID);
+        objectnode = addNode(object, statement.object()._string, lastGraphId);
     } else
         objectnode = nodeFound;
 
@@ -216,42 +216,35 @@ function addStatement(subject, predicate, object, isRelation, statement, willJoi
 }
 
 //Atomic operation for add a node
-function addNode(name, shortName, graphID, willSave){ //willSave: true if will save to jsonnodes.
+function addNode(name, shortName, graphId, isCloning){
     if (shortName == null)
         shortName = name;
-    if (willSave == null)
-        willSave = true;
 
     var nodeType = xdi.util.getNodeType(name);
-    var newNode = new XDINode(++lastNodeID,name,shortName,nodeType, graphID);
+    var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphId);
     
-    if(willSave)
+    if(!isCloning)
         jsonnodes.push(newNode);
     
     return newNode;
 }
 
 //Atomic operation for add a link
-function addLink(sourceNode,targetNode,name,isLeft,isRight,isRelation,shortName, willSave){
+function addLink(sourceNode,targetNode,name,isLeft,isRight,isRelation,shortName, isCloning){
     if (shortName == null)
         shortName = name;
 
-    if(willSave == null)
-        willSave = true;
-
-    var linkObject = findLink(sourceNode,targetNode);
-    
-    if (linkObject)//if link exists, then don't add a new one.
+    if(!isCloning && findLink(sourceNode,targetNode))//if link exists, then don't add a new one.
         return;
 
-    var newlink = new XDILink(++lastLinkID,name,shortName,isLeft, isRight, sourceNode, targetNode);
+    var newlink = new XDILink(++lastLinkId,name,shortName,isLeft, isRight, sourceNode, targetNode);
     if (isRelation)
         newlink.isRelation = true;
     
     sourceNode.children.push(targetNode);
     targetNode.parents.push(sourceNode);
     
-    if(willSave)
+    if(!isCloning)
     {
         jsonlinks.push(newlink);
         addLinkToMap(sourceNode, targetNode, newlink);
@@ -270,7 +263,7 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     }
 
     if (targetNode.type === xdi.constants.nodetypes.LITERAL){
-        var innerNode = addNode(sourceNode.name + "&", null, Math.max(sourceNode.graphID,targetNode.graphID));
+        var innerNode = addNode(sourceNode.name + "&", null, Math.max(sourceNode.graphId,targetNode.graphId));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
         link = linkToInnerNode;
@@ -308,10 +301,10 @@ function findLink(source,target){
 }
 
 // Returns the position/index in node collection of the node with name value name
-function findNode(nodeCollection, name, graphID) {
+function findNode(nodeCollection, name, graphId) {
     return _.find(nodeCollection,function(d) { 
-        if (graphID != null)
-            return d.name === name && d.graphID === graphID; 
+        if (graphId != null)
+            return d.name === name && d.graphId === graphId; 
         else
             return d.name === name;
     });

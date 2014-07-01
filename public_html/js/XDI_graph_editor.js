@@ -85,8 +85,8 @@ function initializeGraph()
 {
     jsonnodes=[];
     jsonlinks=[];
-    lastNodeID = -1;
-    lastLinkID = -1;
+    lastNodeId = -1;
+    lastLinkId = -1;
     nodeslinkmap={};
 
     force = d3.layout.force()
@@ -371,9 +371,9 @@ function clearGraph() {
     jsonnodes = [];
     jsonlinks = [];
     nodeslinkmap = {};
-    lastGraphID = -1;
-    lastNodeID = -1;
-    lastLinkID = -1;
+    lastGraphId = -1;
+    lastNodeId = -1;
+    lastLinkId = -1;
     lastDrawData = null;
     updateSyntaxStatus("Syntax OK",true);
     restart();

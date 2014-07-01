@@ -82,14 +82,14 @@ function createNodeByClick () {
     if(nodename === null)
         return;
     
-    var nodeFound = findNode(jsonnodes, nodename, lastGraphID);
+    var nodeFound = findNode(jsonnodes, nodename, lastGraphId);
     if (nodeFound) {
         if (nodename !== "")
         // Name already taken
             alert("Node already exists!");
         return;
     }
-    var newnode = addNode(nodename,null, lastGraphID);
+    var newnode = addNode(nodename,null, lastGraphId);
     var point;
     if(d3.event !== null)
         point = d3.mouse(svg.node());

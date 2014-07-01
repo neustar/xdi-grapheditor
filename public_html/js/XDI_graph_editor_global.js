@@ -79,12 +79,12 @@ var isFrozen = false;
 
 //Model
 var STORAGE_PREFIX = "XDI_GRAPH_EDITOR_";
-var lastNodeID = 0,lastLinkID = 0;
+var lastNodeId = 0,lastLinkId = 0;
 var nodeslinkmap = {};
 var jsonnodes = null, jsonlinks = null;
 var lastDrawData = null;
 
-var lastGraphID = -1;
+var lastGraphId = -1;
 
 var backupData = []; 
 var currentBackupPos = -1;

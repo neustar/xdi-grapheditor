@@ -24,47 +24,57 @@ THE SOFTWARE.
 
 //Atomic CLONE operation for cut, copy, paste, duplicate
 //Clone node and links and redirect links to connect new nodes
-function cloneNodeLinks (nodes,links) {             
-     var nodeIDDict = {}; // {orignal node id: new node}
+function cloneNodeLinks (nodes,links, willKeepSameID) {             
+     var nodeIdDict = {}; // {orignal node id: new node}
     
-    // lastGraphID ++;
     var result = {nodes: [], links: []};
-
+    var oldLastNodeId = lastNodeId, oldLastLinkId = lastLinkId;
     nodes.forEach(function  (d) {
-        var nd = addNode(d.name, d.shortName, lastGraphID,false);    
-        result.nodes.push(nd);
-        nodeIDDict[d.id] = nd;
+        var nd = addNode(d.name, d.shortName, lastGraphId,true);
+        if(willKeepSameID)
+            nd.id = d.id;
         nd.x = d.x;
         nd.y = d.y;
+        result.nodes.push(nd);
+        nodeIdDict[d.id] = nd;
     })
+
+    if(willKeepSameID)
+        lastNodeId = oldLastNodeId;
 
     if(links==null)
         return;
     
     var newLinks = [];
     links.forEach(function(d) { 
-        var newSource = nodeIDDict[d.source.id];
-        var newTarget = nodeIDDict[d.target.id];
+        var newSource = nodeIdDict[d.source.id];
+        var newTarget = nodeIdDict[d.target.id];
         
         if(!(newSource && newTarget)) //ignore the links without both of its node copied
             return;
 
-        var nd = addLink(newSource,newTarget,d.name,d.left,d.right,d.isRelation,d.shortName,false);
+        var nd = addLink(newSource,newTarget,d.name,d.left,d.right,d.isRelation,d.shortName,true);
+
+        if(willKeepSameID)
+            nd.id = d.id;
         result.links.push(nd);
     })    
+
+    if(willKeepSameID)
+        lastLinkId = oldLastLinkId;
 
     return result;
 }
 
 function copyObjectsToClipBoard(nodesToCopy, linksToCopy) {
    clearClipBoard();
-   clipBoard = cloneNodeLinks(nodesToCopy,linksToCopy);
+   clipBoard = cloneNodeLinks(nodesToCopy,linksToCopy,true);
 }
 
-function pasteFrom(source)
+function pasteFrom(source, willKeepSameID)
 {   
     //Clone new copies from clipboard to support multiple paste.
-    var res = cloneNodeLinks(source.nodes,source.links);
+    var res = cloneNodeLinks(source.nodes,source.links,willKeepSameID);
 
     //Add nodes and links to the global arrays
     jsonnodes = jsonnodes.concat(res.nodes);
@@ -73,6 +83,7 @@ function pasteFrom(source)
 }
 
 function pasteFromClipBoard () {
+    lastGraphId ++;
     pasteFrom(clipBoard)
 }
 
