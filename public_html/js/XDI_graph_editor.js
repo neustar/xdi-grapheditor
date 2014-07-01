@@ -106,6 +106,7 @@ function initializeGraph()
     initializeDragSelect();
     windowResizeHandler();
     initializeMenu();
+    initializeCommands();
 
     restart();
 }

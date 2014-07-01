@@ -86,6 +86,9 @@ var lastDrawData = null;
 
 var lastGraphID = -1;
 
+var backupData = []; 
+var currentBackupPos = -1;
+
 
 //Zoom
 var navScale = 0.1,navMargin = 20;

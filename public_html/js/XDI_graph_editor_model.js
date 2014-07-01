@@ -79,6 +79,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
             d.isFolded = d.isRoot();
         });
 
+    backup();
     restart();
 }
 
@@ -221,7 +222,6 @@ function addNode(name, shortName, graphID, willSave){ //willSave: true if will s
     if (willSave == null)
         willSave = true;
 
-    
     var nodeType = xdi.util.getNodeType(name);
     var newNode = new XDINode(++lastNodeID,name,shortName,nodeType, graphID);
     

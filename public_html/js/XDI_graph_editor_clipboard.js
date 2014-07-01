@@ -61,18 +61,19 @@ function copyObjectsToClipBoard(nodesToCopy, linksToCopy) {
    clipBoard = cloneNodeLinks(nodesToCopy,linksToCopy);
 }
 
-function pasteFromClipBoard () {
-    //Create new graph ID to support duplicated names
-    lastGraphID ++;
-    
+function pasteFrom(source)
+{   
     //Clone new copies from clipboard to support multiple paste.
-    var res = cloneNodeLinks(clipBoard.nodes,clipBoard.links);
-    res.nodes.forEach(function(d) { d.lastGraphID = lastGraphID; })
+    var res = cloneNodeLinks(source.nodes,source.links);
 
     //Add nodes and links to the global arrays
-	jsonnodes = jsonnodes.concat(res.nodes);
-	jsonlinks = jsonlinks.concat(res.links);
+    jsonnodes = jsonnodes.concat(res.nodes);
+    jsonlinks = jsonlinks.concat(res.links);
     res.links.forEach(function(d) { addLinkToMap(d.source,d.target,d);});
+}
+
+function pasteFromClipBoard () {
+    pasteFrom(clipBoard)
 }
 
 function duplicateObjects (nodesToCopy,linksToCopy) {

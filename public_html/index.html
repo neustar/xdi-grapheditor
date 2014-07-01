@@ -54,6 +54,9 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
+                        <li class="menu-item" id="undoMenuItem" onclick="undo()"><span>Undo</span></li>
+                        <li class="menu-item" id="redoMenuItem" onclick="redo()"><span>Redo</span></li>
+                        <li class="section-line"></li>
                         <li class="menu-item selection need-node" onclick="cutSelection()"><span>Cut</span></li>
                         <li class="menu-item selection need-node" onclick="copySelection()"><span>Copy</span></li>
                         <li class="menu-item selection" id="pasteCommand" onclick="pasteToGraph()"><span>Paste</span></li>

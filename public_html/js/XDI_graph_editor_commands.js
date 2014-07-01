@@ -22,19 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 function deleteCommand () {
+    var deletePerformed = false;
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function (d) {
             removeNode(d);
             // removeLinksOfNode(d);
         })
         clearSelectedNodes();
-        restart();
+        deletePerformed = true;
     }
 
     if (hasSelectedLinks()) {
         selected_links.forEach(function (d) {removeLink(d)});
         clearSelectedLinks();
+        deletePerformed = true;
+    }
+
+    if(deletePerformed)
+    {
         restart();
+        backup();
     }
 }
 
@@ -259,6 +266,7 @@ function pasteToGraph () {
 
     pasteFromClipBoard();
     clearAllSelection();
+    backup();
     restart();
 }
 
@@ -267,6 +275,7 @@ function duplicateSelection () {
         return;
 
     duplicateObjects(selected_nodes,selected_links);
+    backup();
     restart();
 }
 
@@ -276,6 +285,7 @@ function cutSelection () {
 
     cutObjectsToClipBoard(selected_nodes,selected_links);
     clearAllSelection();
+    backup();
     restart();
 }
 
@@ -301,4 +311,52 @@ function selectAll () {
     setSelectedNodes(lastDrawData.nodes);
     setSelectedLinks(lastDrawData.links);
     updateSelectionClass();
+}
+
+function initializeCommands(){
+    backupData = [];
+    currentBackupPos = -1;
+    updateUndoRedoMenu();
+}
+
+function backup(){
+    backupData = backupData.slice(0,currentBackupPos + 1);
+    
+    var res = cloneNodeLinks(jsonnodes,jsonlinks);
+    backupData.push(res);
+    currentBackupPos = backupData.length - 1;
+    updateUndoRedoMenu();
+    return res;
+}
+function restoreTo(backupPos){
+    if(_.isEmpty(backupData))
+        return;
+    jsonnodes = [];
+    jsonlinks = [];
+    nodeslinkmap = {};
+    pasteFrom(backupData[backupPos]);
+    updateUndoRedoMenu();
+    restart();
+}
+
+function undo(){
+    if(currentBackupPos > 0)
+    {
+        currentBackupPos --;
+        restoreTo(currentBackupPos);
+    }
+}
+
+function redo () {
+    if(currentBackupPos < backupData.length - 1)
+    {
+        currentBackupPos ++;
+        restoreTo(currentBackupPos);
+    }
+    
+}
+
+function updateUndoRedoMenu () {
+    d3.select('#undoMenuItem').classed('disabled',currentBackupPos===0);
+    d3.select('#redoMenuItem').classed('disabled',currentBackupPos+1===backupData.length);
 }
