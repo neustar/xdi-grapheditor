@@ -57,20 +57,12 @@ $(function() {
     //initializeGraphWithXDI(attributeSingletons);
     var initdata = null;
     if (inputurl.length > 1) {
-        var datarequest = new XMLHttpRequest();
-        datarequest.open("GET", inputurl);
-        datarequest.onreadystatechange = function() {
-            if (datarequest.readyState === 4 && datarequest.status === 200) {
-                var type = datarequest.getResponseHeader("Content-Type");
-                if (type.match(/^text/)) {
-                    initdata = datarequest.responseText;
-                    initializeGraphWithXDI(initdata);
-                }
-            } else {
-                initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
-            }
-        };
-        datarequest.send(null);
+        $.get(inputurl, "", function(data, textStatus, jqXHR) {
+            if(jqXHR.getResponseHeader("Content-Type").match(/^text/))
+                initializeGraphWithXDI(data);
+        });
+    } else {
+        initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
