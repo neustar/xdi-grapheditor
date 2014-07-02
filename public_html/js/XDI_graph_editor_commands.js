@@ -107,7 +107,7 @@ function createNodeByClick () {
     backup();
     var newnode = addNode(nodename,null, lastGraphId);
     var point;
-    if(d3.event !== null)
+    if(d3.event instanceof MouseEvent)
         point = d3.mouse(svg.node());
     else
         point = [svgWidth/2,svgHeight/2];

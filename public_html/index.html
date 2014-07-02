@@ -52,15 +52,15 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
-                        <li class="menu-item" id="undoMenuItem" onclick="undo()"><span>Undo</span></li>
-                        <li class="menu-item" id="redoMenuItem" onclick="redo()"><span>Redo</span></li>
+                        <li class="menu-item" id="undoMenuItem" onclick="undo()"><span>Undo</span><span class="shortcut">Z</span></li>
+                        <li class="menu-item" id="redoMenuItem" onclick="redo()"><span>Redo</span><span class="shortcut">⇧Z</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item selection need-node" onclick="cutSelection()"><span>Cut</span></li>
-                        <li class="menu-item selection need-node" onclick="copySelection()"><span>Copy</span></li>
-                        <li class="menu-item selection" id="pasteCommand" onclick="pasteToGraph()"><span>Paste</span></li>
-                        <li class="menu-item selection need-node" onclick="duplicateSelection()"><span>Duplicate</span></li>
+                        <li class="menu-item selection need-node" onclick="cutSelection()"><span>Cut</span><span class="shortcut">X</span></li>
+                        <li class="menu-item selection need-node" onclick="copySelection()"><span>Copy</span><span class="shortcut">C</span></li>
+                        <li class="menu-item selection" id="pasteCommand" onclick="pasteToGraph()"><span>Paste</span><span class="shortcut">V</span></li>
+                        <li class="menu-item selection need-node" onclick="duplicateSelection()"><span>Duplicate</span><span class="shortcut">D</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item need-content" onclick="selectAll()"><span>Select All</span></li>
+                        <li class="menu-item need-content" onclick="selectAll()"><span>Select All</span><span class="shortcut">A</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item selection" onclick="openCopyDialog()"><span>Copy Label...</span></li>
                         <li class="menu-item selection" onclick="deleteCommand()"><span>Delete Object</span><span class="shortcut">⌫</span></li>
@@ -75,7 +75,7 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Node</span>
                     <ul class="sub-menu">
-                        <li class="menu-item" onclick="createNodeByClick()"><span>New Node...</span></li>
+                        <li class="menu-item" onclick="createNodeByClick()"><span>New Node...</span><span class="shortcut">N</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item selection need-node" onclick="fixNodeCommand()"><span>Fix/Unfix</span><span class="shortcut">F</span></li>
                         <li class="menu-item selection need-node" onclick="foldNodeCommand(false)"><span>Fold/Unfold</span></li>

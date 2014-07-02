@@ -98,11 +98,9 @@ function keydownOnSVG() {
     
     if(d3.event.srcElement === d3.select("#searchText").node())
         return;
-    
+
     lastKeyDown = d3.event.keyCode;
-
-    console.log(d3.event.keyCode);
-
+    console.log(lastKeyDown)
     switch (d3.event.keyCode) {
         case 8: // backspace
         case 46: // delete
@@ -141,6 +139,32 @@ function keydownOnSVG() {
         case 70: // F
             fixNodeCommand();
             break;
+
+        case 65: //A
+            selectAll();
+            break;
+        case 90: //Z
+            if(d3.event.shiftKey)
+                redo();
+            else
+                undo();
+            break;
+        case 88: //X
+            cutSelection();
+            break;
+        case 67: //C
+            copySelection();
+            break;
+        case 86: //V
+            pasteToGraph();
+            break;    
+        case 68: //D
+            duplicateSelection();
+            break;
+        case 78: //N
+            createNodeByClick();
+            break;
+
     }
 }
 
