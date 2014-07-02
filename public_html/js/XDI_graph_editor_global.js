@@ -96,8 +96,8 @@ var lastDrawData = null;
 
 var lastGraphId = -1;
 
-var backupData = []; 
-var currentBackupPos = -1;
+var backupData = [null]; 
+var currentBackupPos = 0;
 
 
 //Zoom

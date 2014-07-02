@@ -21,38 +21,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+function initializeCommands(){
+    backupData = [null];
+    currentBackupPos = 0;
+    updateUndoRedoMenu();
+}
+
+
 function deleteCommand () {
-    var deletePerformed = false;
+    var performed = hasSelectedLinks()||hasSelectedNodes();
+    if(performed)
+        backup();
+
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function (d) {
             removeNode(d);
             // removeLinksOfNode(d);
         })
         clearSelectedNodes();
-        deletePerformed = true;
     }
 
     if (hasSelectedLinks()) {
         selected_links.forEach(function (d) {removeLink(d)});
         clearSelectedLinks();
-        deletePerformed = true;
     }
 
-    if(deletePerformed)
-    {
+    if(performed)
         restart();
-        backup();
-    }
 }
 
 function editNameCommand(){
+    var performed = hasSelectedLinks()||hasSelectedNodes();
+    if(performed)
+        backup();
+
     if (hasSelectedLinks()) {
         selected_links.forEach(function(d) {
             var existinglabel = d.shortName;
             var labelval = prompt("Please enter a new value for this label", existinglabel);
             setLinkLabel(d,labelval);
         });
-        restart(false,false);
+        updateLinkElement();
     }
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function(d) {
@@ -60,7 +69,7 @@ function editNameCommand(){
         var nodename = prompt("Please enter a new name for this node", existingname);
         setNodeLabel(d,nodename);
         })
-        restart(false,false);
+        updateNodeElement();
     }
 }
 
@@ -69,12 +78,18 @@ function editNameCommand(){
 
 function fixNodeCommand () {
     if(hasSelectedNodes())
+    {
+        backup();
         selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
+    }
 }
 
 function foldNodeCommand (isDirectDescendantsOnly) {
     if(hasSelectedNodes())
+    {
+        backup();
         selected_nodes.forEach(function(d) { return toggleFoldNode(d,isDirectDescendantsOnly);})
+    }
 }
 
 function createNodeByClick () {
@@ -89,6 +104,7 @@ function createNodeByClick () {
             alert("Node already exists!");
         return;
     }
+    backup();
     var newnode = addNode(nodename,null, lastGraphId);
     var point;
     if(d3.event !== null)
@@ -104,6 +120,7 @@ function createNodeByClick () {
 // Changing the Node type to literal or back to the default contextual 
 function setLiteralNodeCommand () {
     if (hasSelectedNodes()) {
+        backup();
         selected_nodes.forEach(function(d) {
             setNodeIsLiteral(d,!d.isLiteral())
         })
@@ -116,7 +133,7 @@ function setLiteralNodeCommand () {
 // Setting a node as root, updating graphics too.
 function setRootNodeCommand () {
     if (hasSelectedNodes()) {
-    
+        backup();
         selected_nodes.forEach(function (d) {
             setNodeIsRoot(d,!d.isRoot());
         })
@@ -130,6 +147,7 @@ function setRootNodeCommand () {
 // Inversing the link direction
 function invertLinkCommand () {
     if (hasSelectedLinks()) {
+        backup();
         selected_links.forEach(function(d) {
             inverseLinkDirection(d);
         });
@@ -141,6 +159,7 @@ function invertLinkCommand () {
 function setDoubleArrowCommand () {
     if (hasSelectedLinks()) {
         // set link direction to both left and right
+        backup();
         selected_links.forEach(function(d) {
             if(d.left&&d.right)
                 d.left = false
@@ -159,7 +178,7 @@ function setDoubleArrowCommand () {
 // Toggling a link relationship status on/off
 function setRelationCommand () {
     if (hasSelectedLinks()) {
-
+        backup();
         selected_links.forEach(function(d) {
             setLinkIsRel(d,!d.isRelation);
         });
@@ -246,6 +265,7 @@ function setFoldNode (node,newValue,isDirectDescendantsOnly) {
 }
 
 function expandAllNodes(){
+    backup();
     globalNodes.forEach(function  (d) {
         d.isFolded = false;
     })
@@ -263,29 +283,30 @@ function copySelection () {
 function pasteToGraph () {
     if(_.isEmpty(clipBoard.nodes)) //Cannot paste if there is no nodes. Links cannot be pasted if there is no nodes two.
         return;
+    backup();
 
     pasteFromClipBoard();
     clearAllSelection();
-    backup();
+    
     restart();
 }
 
 function duplicateSelection () {
     if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
         return;
-
-    duplicateObjects(selected_nodes,selected_links);
     backup();
+    duplicateObjects(selected_nodes,selected_links);
     restart();
 }
 
 function cutSelection () {
     if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
         return;
+    backup();
 
     cutObjectsToClipBoard(selected_nodes,selected_links);
     clearAllSelection();
-    backup();
+    
     restart();
 }
 
@@ -313,21 +334,8 @@ function selectAll () {
     updateSelectionClass();
 }
 
-function initializeCommands(){
-    backupData = [];
-    currentBackupPos = -1;
-    updateUndoRedoMenu();
-}
 
-function backup(){
-    backupData = backupData.slice(0,currentBackupPos + 1);
-    
-    var res = cloneNodeLinks(globalNodes,globalLinks);
-    backupData.push(res);
-    currentBackupPos = backupData.length - 1;
-    updateUndoRedoMenu();
-    return res;
-}
+
 function restoreTo(backupPos){
     if(_.isEmpty(backupData))
         return;
@@ -337,24 +345,40 @@ function restoreTo(backupPos){
     pasteFrom(backupData[backupPos]);
     updateUndoRedoMenu();
     restart();
+
+    force.stop();
+    forceTickEventHandler();
+    force.resume();
 }
+
+function backup(){
+    backupData = backupData.slice(0,currentBackupPos + 1);
+    backupData[currentBackupPos] = cloneNodeLinks(globalNodes,globalLinks);
+    backupData.push(null);
+    currentBackupPos = backupData.length - 1;
+    updateUndoRedoMenu();
+}
+
 
 function undo(){
     if(currentBackupPos > 0)
     {
+        if(backupData[currentBackupPos]==null)
+            backupData[currentBackupPos] = cloneNodeLinks(globalNodes,globalLinks);
         currentBackupPos --;
         restoreTo(currentBackupPos);
     }
+    
 }
 
-function redo () {
+function redo() {
     if(currentBackupPos < backupData.length - 1)
     {
         currentBackupPos ++;
         restoreTo(currentBackupPos);
     }
-    
 }
+
 
 function updateUndoRedoMenu () {
     d3.select('#undoMenuItem').classed('disabled',currentBackupPos===0);

@@ -35,6 +35,7 @@ function cloneNodeLinks (nodes,links, willKeepSameId) {
             nd.id = d.id;
         nd.x = d.x;
         nd.y = d.y;
+        nd.isFolded = d.isFolded;
         result.nodes.push(nd);
         nodeIdDict[d.id] = nd;
     })

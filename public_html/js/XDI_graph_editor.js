@@ -57,19 +57,21 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons);
+    
     if (inputurl.length > 1) {
         $.get(inputurl, "", function(data, textStatus, jqXHR) {
             if(jqXHR.getResponseHeader("Content-Type").match(/^text/))
                 initializeGraphWithXDI(data);
         });
     } else {
-        // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
+        initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
+
+    // initializeGraphWithXDI(attributeSingletons);
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
+    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -169,7 +171,12 @@ function forceEndEventHandler () {
     updateViewPortRect();
 }
 
-function updateLinkElement (linksData) {
+
+
+function updateLinkElement () {
+    if(lastDrawData==null || lastDrawData.links == null)
+        return;
+    var linksData = lastDrawData.links;
     //// Add new elements
     var linkCanvas = d3.select('#linkCanvas');
     var linkGs = linkCanvas.selectAll(".link")
@@ -201,7 +208,10 @@ function updateLinkElement (linksData) {
         .text(function(d) {return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);});  
 }
 
-function updateNodeElement (nodesData) {
+function updateNodeElement () {
+    if(lastDrawData==null || lastDrawData.nodes== null)
+        return;
+    var nodesData = lastDrawData.nodes;
     //// Add new elements
     var nodeCanvas = d3.select('#nodeCanvas');
     var nodeGs = nodeCanvas.selectAll(".node")
@@ -217,7 +227,6 @@ function updateNodeElement (nodesData) {
         .on('mousedown', mousedownOnNodeHandler)
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
-        .each(function(d) {if(d.isRoot()){d.x = window.innerWidth/2 + Math.random()*100; d.y = window.innerHeight/2;}}) //move root to the middle of the screen only when it is created. The random avoids overlaps.
         .append("title")
         .text(function(d){return d.name});
         
@@ -241,29 +250,29 @@ function updateNodeElement (nodesData) {
 }
 
 //Render all SVG Elements based on globalNodes, globalLinks
-function restart(startForce,getNewData) {
+function restart(startForce,getNewData,centerRootNodes) {
     if(startForce == null)
         startForce = true;
     if(getNewData == null)
         getNewData = true;
 
-    var drawData = null;
+    // var drawData = null;
     if(getNewData || lastDrawData === null)
     {
         lastDrawData = getDrawData();
     }
-    drawData = lastDrawData;
+    // drawData = lastDrawData;
 
-    updateLinkElement(drawData.links); 
+    updateLinkElement(); 
 
-    updateNodeElement(drawData.nodes);    
+    updateNodeElement();    
 
     //
     // Layout
     //
     if(startForce)
     {
-        initializeLayout(drawData.nodes, drawData.links);
+        initializeLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
         startDrag();
     }    
 

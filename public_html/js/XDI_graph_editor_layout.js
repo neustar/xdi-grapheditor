@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-function initializeLayout(nodes,links) {
+function initializeLayout(nodes,links,centerRootNodes) {
     if(_.isEmpty(nodes)&&_.isEmpty(links))
         return;
 	var numberOfNodes = nodes.length;
@@ -34,6 +34,11 @@ function initializeLayout(nodes,links) {
         ||item._fixed             //or is intenionally set to fixed from other ways
         ||_.isEmpty(item.parents) //or has no parents (to provide a separate float away)
 
+        //Move root to the middle of the screen. The random avoids overlaps.
+        if(centerRootNodes&&item.isCommonRoot())
+        {
+            item.x = window.innerWidth/2 + Math.random()*100; item.y = window.innerHeight/2;
+        }
  	 });                             
 
 
@@ -50,6 +55,7 @@ function initializeLayout(nodes,links) {
         .theta(0.1) // default is 0.8
         .charge(-10*numberOfNodes)
         .chargeDistance(1000);
+
 
     force
         .nodes(nodes)

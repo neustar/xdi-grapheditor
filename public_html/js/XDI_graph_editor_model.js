@@ -78,9 +78,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
         globalNodes.forEach(function (d) {
             d.isFolded = d.isRoot();
         });
-
-    backup();
-    restart();
+    restart(true,true,true);
 }
 
 
@@ -337,6 +335,12 @@ function removeNode(nodeToRemove) {
 function removeLink(linkToRemove){
     if (linkToRemove == null)
         return;
+    var globalIndex = globalLinks.indexOf(linkToRemove);
+    if(globalIndex < 0)
+    {
+        console.log("Link do not exists.");
+        return;
+    }
     var source = linkToRemove.source;
     var target = linkToRemove.target;
     
@@ -348,9 +352,9 @@ function removeLink(linkToRemove){
         source.children.splice(source.children.indexOf(target), 1);
     }
     target.parents.splice(target.parents.indexOf(source),1);
-    var spliceret = globalLinks.splice(globalLinks.indexOf(linkToRemove), 1);
+    var spliceret = globalLinks.splice(globalIndex, 1);
     if (spliceret.length !== 1) 
-        console.log("Link do not exists.");
+        console.log("spliceret error");
     delLinkfromMap(source, target);
 }
 

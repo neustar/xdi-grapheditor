@@ -101,6 +101,8 @@ function keydownOnSVG() {
     
     lastKeyDown = d3.event.keyCode;
 
+    console.log(d3.event.keyCode);
+
     switch (d3.event.keyCode) {
         case 8: // backspace
         case 46: // delete
@@ -220,7 +222,7 @@ function mouseleaveOnNodeHandler (d) {
 }
 
 function dblclickOnNodeHandler(d){
-    toggleFoldNode(d,d3.event.shiftKey);   
+    foldNodeCommand(d3.event.shiftKey);   
 }
 
 
