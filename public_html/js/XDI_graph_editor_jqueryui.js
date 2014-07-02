@@ -118,7 +118,7 @@ function initializeMenu(){
       menu.removeClass('active'); 
       header.removeClass('active'); 
     });
-    $('body').click(function(e) { 
+    $('body').mousedown(function(e) { 
       if(menu.has(e.toElement).length==0)
       {
         menu.removeClass('active');

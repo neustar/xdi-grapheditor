@@ -189,9 +189,7 @@ function updateLinkElement (linksData) {
     
     newLinkGs.append("svg:text")
         .attr('class', "textLabel")
-        .text(function(d) {
-            return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);
-        });  
+        
 
     //// Adjust Classes
     linkGs.classed('selected', function(d) {return d.isSelected;})
@@ -199,6 +197,8 @@ function updateLinkElement (linksData) {
         .classed('literal', function(d) {return d.target.type === xdi.constants.nodetypes.LITERAL;})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
+    linkGs.select('text')
+        .text(function(d) {return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);});  
 }
 
 function updateNodeElement (nodesData) {

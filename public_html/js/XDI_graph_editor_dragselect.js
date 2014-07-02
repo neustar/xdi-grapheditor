@@ -41,11 +41,11 @@ function initializeDragSelect () {
 
 function brushstart (d) {
 	// console.log("brushstart");
-	
 }
 
 function brushend (d) {
 	// console.log("brushend")
+	console.log(d3.event)
 	var selectedNodes = d3.selectAll('.node.selected').data();
 	var selectedLinks = d3.selectAll('.link.selected').data();
 	

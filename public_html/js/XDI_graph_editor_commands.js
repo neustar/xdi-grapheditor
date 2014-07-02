@@ -48,7 +48,7 @@ function deleteCommand () {
 function editNameCommand(){
     if (hasSelectedLinks()) {
         selected_links.forEach(function(d) {
-            var existinglabel = d.name;
+            var existinglabel = d.shortName;
             var labelval = prompt("Please enter a new value for this label", existinglabel);
             setLinkLabel(d,labelval);
         });
@@ -56,7 +56,7 @@ function editNameCommand(){
     }
     if (hasSelectedNodes()) {
         selected_nodes.forEach(function(d) {
-        var existingname = d.name;
+        var existingname = d.shortName;
         var nodename = prompt("Please enter a new name for this node", existingname);
         setNodeLabel(d,nodename);
         })
