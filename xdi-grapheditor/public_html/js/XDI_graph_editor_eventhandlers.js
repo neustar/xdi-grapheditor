@@ -35,10 +35,12 @@ function mousemoveOnSVG() {
     if(isDraggingLine)
         updateDragLine();
     else if (isPanning)
-        updatePanView([curMousePos.x,curMousePos.y])
+        updatePanView([curMousePos.x,curMousePos.y]);
 }
 
 function mousedownOnSVG() {
+    if(!d3.event.button === 0 ) //Only react to left click
+        return;
 
     lastMousePos = d3.mouse(svg.node());
 
@@ -51,145 +53,91 @@ function mousedownOnSVG() {
         return;
     }
 
-    // if (d3.event.shiftKey || mousedown_node || mousedown_link || isPanning || isDraggingLine)
-    //     return;
-
-    if(d3.event.button == 0 && d3.event.shiftKey) // is left click with shift
+    if(d3.event.srcElement === svg.node())
     {
-        createNodeByClick();
-        return;
-    }
-
-    if(d3.event.srcElement == svg.node())
-    {
-        clearAllSelection();
+        if(d3.event.shiftKey)
+        {
+            createNodeByClick();
+            setDragSelectAbility(true); //The window will not trigger shift key up events to enable drag select
+        }
     }
 }
 
-function clearAllSelection () {
-    selected_node = null;
-    selected_link = null;
-    restart(false,false);
-}
+
 
 function mouseupOnSVG() {
     if(isDraggingLine)
         endDragLine();
     else if (isPanning)
         endPanView();
-    
 
     resetMouseVars();
 }
 
 
 function mousewheelOnSVG () {  
-    if(d3.event==null || !d3.event.altKey)
+    if(d3.event===null || !d3.event.altKey)
         return;
-    var currentScale = zoom.scale()
+    var currentScale = zoom.scale();
     
     if(d3.event.wheelDelta > 0)
         currentScale += MOUSE_WHEEL_SCALE_DELTA;
     else if (d3.event.wheelDelta < 0)
         currentScale -= MOUSE_WHEEL_SCALE_DELTA;
     
-    mousePos = d3.mouse(svg.node())
-    scaleView(mousePos,currentScale)
+    mousePos = d3.mouse(svg.node());
+    scaleView(mousePos,currentScale);
 }
 
 
 
 function keydownOnSVG() {
-    
     // Ignore if dialog box is displayed.
-    if (suspendkeylistening)
+    if (isDialogVisible)
         return;
     
-
-    if(d3.event.srcElement == d3.select("#searchText").node())
+    if(d3.event.srcElement === d3.select("#searchText").node())
         return;
     
     lastKeyDown = d3.event.keyCode;
-
 
     switch (d3.event.keyCode) {
         case 8: // backspace
         case 46: // delete
             d3.event.preventDefault(); //Otherwise will trigger "Back" in browser
-            if (selected_node) {
-                removeNode(selected_node);
-                removeLinksOfNode(selected_node);
-            } else if (selected_link) {                
-                removeLink(selected_link)
-            }
-            selected_link = null;
-            selected_node = null;
-
-            restart();
+            deleteCommand();
             break;
             
         case 16://shift
-            updateStatus(null,null,true);
+            updateMode(Mode.EDIT);
+            setDragSelectAbility(false);
+            break;
+            
+        case 18://opt/alt
+            updateMode(Mode.VIEW);
+            setDragSelectAbility(false);
             break;
 
         case 66: // B
-            if (selected_link) {
-                // set link direction to both left and right
-                selected_link.left = true;
-                selected_link.right = true;
-                restart();
-            }
-            
+            setDoubleArrowCommand();
             break;
             
         case 82: // R
-            // toggling a link relationship status on/off
-            if (selected_link) {
-                setLinkIsRel(selected_link,!selected_link.isRel);
-                restart();
-            } else if (selected_node) {
-            // or setting a node as root // updating graphics too.
-                setNodeIsRoot(selected_node,!selected_node.isRoot)
-                restart();
-            }
+            setRelationCommand();
+            setRootNodeCommand();
             break;
             
         case 13: // Enter - update the labels of selected object
-            if (selected_link) {
-                var existinglabel = selected_link.name;
-                var labelval = prompt("Please enter a new value for this label", existinglabel);
-                setLinkLabel(selected_link,labelval);
-                restart(false,false);    
-            } else if (selected_node) {
-                var existingname = selected_node.name;
-                var nodename = prompt("Please enter a new name for this node", existingname);
-                setNodeLabel(selected_node,nodename);
-                restart(false,false);
-            }
-            
-            
+            editNameCommand();
             break;
+
         case 76: // L
-            // Inversing the link direction
-            if (selected_link) {
-                inverseLinkDirection(selected_link);
-                restart();
-            } else if (selected_node) {
-                // changing the Node type to literal or
-                // back to the default contextual  
-                var newType = "";
-                if (selected_node.type !== "literal") 
-                    newType = "literal";
-                else
-                    newType = "context"
-                selected_node.type = newType;
-                restart();
-            }
-            
+            invertLinkCommand();
+            setLiteralNodeCommand();
             break;
+
         case 70: // F
-            if(selected_node)
-                toggleNodeFixed(selected_node);
+            fixNodeCommand();
             break;
     }
 }
@@ -200,7 +148,12 @@ function keyupOnSVG() {
     switch(d3.event.keyCode){
         case 16:
             startDrag();
-            updateStatus(null,null,false);
+            updateMode(Mode.BROWSE);
+            setDragSelectAbility(true);
+            break;
+        case 18://opt/alt
+            setDragSelectAbility(true);
+            updateMode(Mode.BROWSE);
             break;
     }
 }
@@ -208,17 +161,13 @@ function keyupOnSVG() {
 function mousedownOnNodeHandler(d){
     if (d3.event.altKey)
         return;
-
-    // if (d3.event.shiftKey || d3.event.altKey)
-    //     return;
     mousedown_node = d;
-    // if (mousedown_node === selected_node)
-    //     selected_node = null;
-    // else
-        selected_node = mousedown_node;
-    selected_link = null;
+    
+    if(!d3.event.shiftKey&&!d.isSelected) //If shift not press and the nodes is not part of the selection
+        clearAllSelection();
+    addSeletedNode(mousedown_node);
 
-    restart(false,false);
+    updateSelectionClass();
 
     if(d3.event.shiftKey)
         startDragLine();
@@ -248,8 +197,8 @@ function mouseupOnNodeHandler(d) {
         target = mouseup_node;
         var link = addLinkBetweenNodes(source,target,false,true);
         // select new link
-        selected_link = link;
-        selected_node = null;
+        clearAllSelection();
+        addSeletedLink(link);
         restart();
     }
 }
@@ -270,101 +219,26 @@ function mouseleaveOnNodeHandler (d) {
     showTrimmedName(this);
 }
 
-
-
 function dblclickOnNodeHandler(d){
-    toggleFoldNode(d);   
+    toggleFoldNode(d,d3.event.shiftKey);   
 }
 
 
 function mousedownOnLinkHandler(d) {
-    if (d3.event.shiftKey)
-        return;
-
     // select link
     mousedown_link = d;
-    if (mousedown_link === selected_link)
-        selected_link = null;
-    else
-        selected_link = mousedown_link;
-    selected_node = null;
-    restart(false,false);
+    if (!d3.event.shiftKey&&!d.isSelected)
+        clearAllSelection();
+
+    addSeletedLink(mousedown_link);
+
+    updateSelectionClass();
 }
 
-
-
-
-function createNodeByClick () {
-    var nodename = prompt("Please enter the node's name", "");
-    if(nodename === null)
-        return;
+function windowResizeHandler () {
+    svgHeight = d3.select('#mainCanvas').node().offsetHeight;
+    svgWidth = d3.select('#mainCanvas').node().offsetWidth;
     
-    var ind = findNodeIndex(jsonnodes, nodename);
-    if (ind !== null) {
-        if (nodename !== "")
-        // Name already taken
-            alert("Node already exists!");
-        return;
-    }
-    var newnode = addNode(nodename,false,false);
-    var point = d3.mouse(svg.node());
-    newnode.x = point[0];
-    newnode.y = point[1];
-    restart();
-
-}
-
-function startDragLine(){
-    // reposition drag line
-    drag_line
-            .classed("hidden",false)
-            .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
-    isDraggingLine = true;
-    restart(true,false);
-}
-
-function updateDragLine(){
-
-    if(isDraggingLine && mousedown_node && curMousePos != null)
-    {
-        var startPos = {x:mousedown_node.x,y:mousedown_node.y};
-        var endPos = curMousePos;
-        drag_line.attr('d', 'M' + x(startPos.x) + ',' + y(startPos.y) + 'L' +
-                (endPos.x) + ',' + (endPos.y));
-    }   
-}
-
-
-function endDragLine(){
-    if (isDraggingLine) {
-        drag_line.classed("hidden",true)
-        isDraggingLine = false;
-    }
-}
-
-function startDrag(){
-    d3.selectAll('.node')
-    .call(nodeDrag);
-}
-
-function showShortName (HTMLElement) {
-    d3.select(HTMLElement)
-        .select("text")
-        .text(function(d) { return d.shortName; })
-}
-
-function showTrimmedName (HTMLElement) {
-    d3.select(HTMLElement)
-        .select("text")
-        .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); })
-}
-
-function toggleNodeFixed (node) {
-    setNodeFixed(node,!node.fixed);
-}
-
-function setNodeFixed (node, newValue) {
-    node._fixed = newValue; //Record the fixed is set intentionally
-    node.fixed =newValue;
-    restart(false,false)
+    force.size([svgWidth, svgHeight]);
+    updateViewPortRect();
 }

@@ -25,39 +25,45 @@ THE SOFTWARE.
 
 // Global D3/SVG vars
 //SVG Dimensions
-var totalWidth = 1400;
-var totalHeight = 600;
 var svgMargin = {top:0,left:0,right:0,bottom:0}
-var svgWidth = totalWidth - svgMargin.left - svgMargin.right;
-var svgHeight = totalHeight - svgMargin.top - svgMargin.bottom;
+var svgWidth = 0;
+var svgHeight = 0;
 
 
 //SVG Components
-var svg;
+var svg = null;
+var force = null;
+var x = null,y = null;
+var zoom = null;
+var drag = null;
 
-var force;
-var x,y;
-var zoom;
-var drag=null;
-
-var relData;
-var node, link, labels;
-var drag_line, drag;
+var relData = null;
+// var node, link, labels;
+var drag_line = null, drag = null;
 
 var NODE_RADIUS = 13;
 var NODE_TEXT_MAX_LENGTH = 20;
 var LINK_TEXT_MAX_LENGTH = 20;
 
+
+var Mode = {
+	BROWSE:'browse',
+	EDIT:'edit',
+	VIEW:'view',
+	ZOOM_IN:'zoom in',
+	ZOOM_OUT:'zoom out',
+	PAN:'pan'
+}
+var currentMode = Mode.BROWSE;
+
 // mouse event vars
 var MOUSE_WHEEL_SCALE_DELTA = 0.02;
 
-var selected_node = null,
-    selected_link = null,
-    mousedown_link = null,
+var mousedown_link = null,
     mousedown_node = null,
     mouseup_node = null,
     lastMousePos = null, //mouse pos when mouse down
-    currMousePos = null; //mouse pos will dragging
+    currMousePos = null; //mouse pos while dragging
 
 var isPanning = false;
 var isDraggingLine = false;
@@ -65,24 +71,40 @@ var isDraggingLine = false;
 
 
 // suspending key listener when dialog box is displayed
-var suspendkeylistening = false;
+var isDialogVisible= false;
 
 var lastKeyDown = -1;
 var isFrozen = false;
-
 
 
 //Model
 var STORAGE_PREFIX = "XDI_GRAPH_EDITOR_";
 var lastNodeId = 0,lastLinkId = 0;
 var nodeslinkmap = {};
-var jsonnodes, jsonlinks;
+var jsonnodes = null, jsonlinks = null;
 var lastDrawData = null;
 
-//Zoom
-var navScale = 0.2;
-var navX,navY; //axis for navigator svg
-var lastTransition = null;
+var lastGraphId = -1;
 
+var backupData = []; 
+var currentBackupPos = -1;
+
+
+//Zoom
+var navScale = 0.1,navMargin = 20;
+var lastTransition = null;
+var zoomToFitMargin = 30;
+var navDrag = null;
+var isViewRectStatic = false; //whether #viewRect is static in the navigator
 //Search
 var lastQuery = null;
+
+//Select
+var selected_nodes = null, // a collection of all the selected nodes
+    selected_links = null;
+
+//Drag Select
+var dragSelectBrush = null;
+
+//Copy & Paste
+var clipBoard = {nodes: [], links: []};

@@ -28,27 +28,29 @@ function initializeLayout(nodes,links) {
 
 	nodes.forEach(function (item) {
 		item.fixed = isFrozen     //if overall is frozen
-        ||item.isRoot             //if a node is root
+        ||item.isCommonRoot()             //if a node is root
         ||item._fixed             //or is intenionally set to fixed from other ways
-        || ((item.parents == null || item.parents.length == 0) &&(item.children == null || item.children.length == 0));
+        ||_.isEmpty(item.parents) //or has no parents (to provide a separate float away)
 
-	})                             //or has no other links
+ 	 });                             
 
 
 	force
-	.gravity(0)
-	.linkDistance(function(d) { 
-            return 40*d.source.children.length;
-        })
-    .linkStrength(function(d) { 
-            return d.isRel?0.03:3;
-        })
-    .charge(function(d) { return d.isRoot?-100*numberOfNodes:-10*numberOfNodes; })
-    .chargeDistance(1000)
-
+    	.gravity(0)
+    	.linkDistance(function(d) { 
+                // default is 20.
+                return 30 + 30*d.source.children.length;
+            })
+        .linkStrength(function(d) {
+                // range is [0,1]
+                return d.isRelation ? 0.1 : 1;
+            })
+        .theta(0.1) // default is 0.8
+        .charge(-10*numberOfNodes)
+        .chargeDistance(1000);
 
     force
-    .nodes(nodes)
-    .links(links)
-    .start()
+        .nodes(nodes)
+        .links(links)
+        .start();
 }
