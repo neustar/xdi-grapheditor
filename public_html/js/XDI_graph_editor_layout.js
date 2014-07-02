@@ -23,6 +23,8 @@ THE SOFTWARE.
 */
 
 function initializeLayout(nodes,links) {
+    if(_.isEmpty(nodes)&&_.isEmpty(links))
+        return;
 	var numberOfNodes = nodes.length;
 	var numberOflinks = links.length;
 

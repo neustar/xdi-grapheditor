@@ -50,6 +50,7 @@ function XDINode (id, name, shortName, type, graphId) {
 }
 XDINode.prototype = new XDIElement();
 
+
 function XDILink (id,name,shortName, left, right, source, target)
 {
 	this.id = id;
@@ -65,8 +66,6 @@ function XDILink (id,name,shortName, left, right, source, target)
 	}
 }
 XDILink.prototype = new XDIElement();
-
-
 
 
 

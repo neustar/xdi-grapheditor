@@ -24,7 +24,10 @@ THE SOFTWARE.
 
 
 $(function() {
-    
+    detectBrowserType();
+    if(currentBrowser!==BrowserTypes.Chrome && currentBrowser!==BrowserTypes.Safari)
+        alert("Oops! Your are using " + currentBrowser + " to open XDI Graph Editor.\nFor best performance, we recommend you to use the latest Chrome or Safari broswer.")
+
     initializeDialogs();
 
     //Initialize SVG
@@ -54,14 +57,14 @@ $(function() {
     clearGraph();
 
     //Only For Debug purpose
-    //initializeGraphWithXDI(attributeSingletons);
+    initializeGraphWithXDI(attributeSingletons);
     if (inputurl.length > 1) {
         $.get(inputurl, "", function(data, textStatus, jqXHR) {
             if(jqXHR.getResponseHeader("Content-Type").match(/^text/))
                 initializeGraphWithXDI(data);
         });
     } else {
-        initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
+        // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
@@ -82,11 +85,11 @@ $(function() {
 
 function initializeGraph() 
 {
-    jsonnodes=[];
-    jsonlinks=[];
+    globalNodes=[];
+    globalLinks=[];
     lastNodeId = -1;
     lastLinkId = -1;
-    nodeslinkmap={};
+    globalNodeLinkMap={};
 
     force = d3.layout.force()
         .size([svgWidth, svgHeight])
@@ -130,7 +133,7 @@ function getLinkPathD(d){
     var valence1 = d.source.id + "-" + d.target.id;
     var valence2 = d.target.id + "-" + d.source.id;
 
-    var tmpMap = lastDrawData ? lastDrawData.map : nodeslinkmap; //Use the lastest map that only has the visible links
+    var tmpMap = lastDrawData ? lastDrawData.map : globalNodeLinkMap; //Use the lastest map that only has the visible links
 
     if ((valence1 in tmpMap) && (valence2 in tmpMap)) {
         return 'M' + x(sourceX) + ',' + y(sourceY) + 'A' + (dist) * getScaleRatio()+ ',' + (dist)* getScaleRatio() + ' 0 0,1 ' + x(targetX) + ',' + y(targetY);
@@ -237,7 +240,7 @@ function updateNodeElement (nodesData) {
         .attr('d', function(d) { return getNodeShape(d.type); });
 }
 
-//Render all SVG Elements based on jsonnodes, jsonlinks
+//Render all SVG Elements based on globalNodes, globalLinks
 function restart(startForce,getNewData) {
     if(startForce == null)
         startForce = true;
@@ -367,9 +370,9 @@ function exportGraph() {
 
 function clearGraph() {
     // todo - add disappearance effect here...
-    jsonnodes = [];
-    jsonlinks = [];
-    nodeslinkmap = {};
+    globalNodes = [];
+    globalLinks = [];
+    globalNodeLinkMap = {};
     lastGraphId = -1;
     lastNodeId = -1;
     lastLinkId = -1;
@@ -445,5 +448,17 @@ function toggleFreeze (newValue) {
     
     d3.select('#unfreezeButton')
         .classed('off', isFrozen);
+}
+
+function detectBrowserType () {
+    var agent = window.navigator.userAgent;
+    if(agent.indexOf("Firefox")>-1)
+        currentBrowser = BrowserTypes.Firefox;
+    else if (agent.indexOf("Chrome")>-1)
+        currentBrowser = BrowserTypes.Chrome;
+    else if (agent.indexOf("Safari")>-1)
+        currentBrowser = BrowserTypes.Safari;
+    else
+        currentBrowser = BrowserTypes.Other;
 }
 

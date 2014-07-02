@@ -24,14 +24,14 @@ THE SOFTWARE.
 
 //Atomic CLONE operation for cut, copy, paste, duplicate
 //Clone node and links and redirect links to connect new nodes
-function cloneNodeLinks (nodes,links, willKeepSameID) {             
+function cloneNodeLinks (nodes,links, willKeepSameId) {             
      var nodeIdDict = {}; // {orignal node id: new node}
     
     var result = {nodes: [], links: []};
     var oldLastNodeId = lastNodeId, oldLastLinkId = lastLinkId;
     nodes.forEach(function  (d) {
         var nd = addNode(d.name, d.shortName, lastGraphId,true);
-        if(willKeepSameID)
+        if(willKeepSameId)
             nd.id = d.id;
         nd.x = d.x;
         nd.y = d.y;
@@ -39,7 +39,7 @@ function cloneNodeLinks (nodes,links, willKeepSameID) {
         nodeIdDict[d.id] = nd;
     })
 
-    if(willKeepSameID)
+    if(willKeepSameId)
         lastNodeId = oldLastNodeId;
 
     if(links==null)
@@ -55,12 +55,12 @@ function cloneNodeLinks (nodes,links, willKeepSameID) {
 
         var nd = addLink(newSource,newTarget,d.name,d.left,d.right,d.isRelation,d.shortName,true);
 
-        if(willKeepSameID)
+        if(willKeepSameId)
             nd.id = d.id;
         result.links.push(nd);
     })    
 
-    if(willKeepSameID)
+    if(willKeepSameId)
         lastLinkId = oldLastLinkId;
 
     return result;
@@ -71,14 +71,14 @@ function copyObjectsToClipBoard(nodesToCopy, linksToCopy) {
    clipBoard = cloneNodeLinks(nodesToCopy,linksToCopy,true);
 }
 
-function pasteFrom(source, willKeepSameID)
+function pasteFrom(source, willKeepSameId)
 {   
     //Clone new copies from clipboard to support multiple paste.
-    var res = cloneNodeLinks(source.nodes,source.links,willKeepSameID);
+    var res = cloneNodeLinks(source.nodes,source.links,willKeepSameId);
 
     //Add nodes and links to the global arrays
-    jsonnodes = jsonnodes.concat(res.nodes);
-    jsonlinks = jsonlinks.concat(res.links);
+    globalNodes = globalNodes.concat(res.nodes);
+    globalLinks = globalLinks.concat(res.links);
     res.links.forEach(function(d) { addLinkToMap(d.source,d.target,d);});
 }
 

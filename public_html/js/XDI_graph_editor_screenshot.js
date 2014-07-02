@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 function exportToPNG () {
-  var isChrome = window.navigator.userAgent.indexOf("Chrome") > -1;
+  var isChrome = currentBrowser===BrowserTypes.Chrome
   if(!isChrome)
   {
       var confirmRes = confirm("Export as *.png is only permitted in Chrome.\n *.svg will be exported instead.\n Do you wish to continue?");

@@ -82,7 +82,7 @@ function createNodeByClick () {
     if(nodename === null)
         return;
     
-    var nodeFound = findNode(jsonnodes, nodename, lastGraphId);
+    var nodeFound = findNode(globalNodes, nodename, lastGraphId);
     if (nodeFound) {
         if (nodename !== "")
         // Name already taken
@@ -246,7 +246,7 @@ function setFoldNode (node,newValue,isDirectDescendantsOnly) {
 }
 
 function expandAllNodes(){
-    jsonnodes.forEach(function  (d) {
+    globalNodes.forEach(function  (d) {
         d.isFolded = false;
     })
     restart();
@@ -322,7 +322,7 @@ function initializeCommands(){
 function backup(){
     backupData = backupData.slice(0,currentBackupPos + 1);
     
-    var res = cloneNodeLinks(jsonnodes,jsonlinks);
+    var res = cloneNodeLinks(globalNodes,globalLinks);
     backupData.push(res);
     currentBackupPos = backupData.length - 1;
     updateUndoRedoMenu();
@@ -331,9 +331,9 @@ function backup(){
 function restoreTo(backupPos){
     if(_.isEmpty(backupData))
         return;
-    jsonnodes = [];
-    jsonlinks = [];
-    nodeslinkmap = {};
+    globalNodes = [];
+    globalLinks = [];
+    globalNodeLinkMap = {};
     pasteFrom(backupData[backupPos]);
     updateUndoRedoMenu();
     restart();

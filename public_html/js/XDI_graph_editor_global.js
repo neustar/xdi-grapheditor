@@ -22,8 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+//Browser
+var BrowserTypes = {
+	Chrome:'Chrome',
+	Firefox:'Firefox',
+	Safari:'Safari',
+	Other:'Other'
+}
+
+var currentBrowser=null;
 
 // Global D3/SVG vars
+
 //SVG Dimensions
 var svgMargin = {top:0,left:0,right:0,bottom:0}
 var svgWidth = 0;
@@ -80,8 +90,8 @@ var isFrozen = false;
 //Model
 var STORAGE_PREFIX = "XDI_GRAPH_EDITOR_";
 var lastNodeId = 0,lastLinkId = 0;
-var nodeslinkmap = {};
-var jsonnodes = null, jsonlinks = null;
+var globalNodeLinkMap = {};
+var globalNodes = null, globalLinks = null;
 var lastDrawData = null;
 
 var lastGraphId = -1;

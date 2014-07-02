@@ -34,7 +34,8 @@ html{
 
 }
 body{
-  font-family: "Helvetica Neue","Helvetica";
+  /*font-family: "Open Sans",sans-serif;*/
+  font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
   height:100%;
   width:98%;
   margin:0% 1%;
@@ -63,6 +64,7 @@ body{
   
   box-shadow:0px 0px 30px 3px rgba(0,0,0,0.3);
 
+   -moz-user-select: none;
   -webkit-user-select:none;
 }
 #mainCanvas {    
@@ -119,7 +121,8 @@ body{
 }
 
 .menu li{
-  -webkit-transition:background 0.2s;
+  -moz-transition:background 0.2s, opacity 0.2s;
+  -webkit-transition:background 0.2s, opacity 0.2s;
 }
 
 .menu span {
@@ -129,7 +132,8 @@ body{
   border-radius: 0px;
   
   font-size: 1em;
-  font-family: "Helvetica Neue";
+  /*font-family: "Open Sans",sans-serif;*/
+  font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
    font-weight:200;
   
   letter-spacing:1px;
@@ -159,13 +163,17 @@ body{
 }
     
 .sub-menu {
-  opacity: 0;
-  pointer-events:none;
   position: absolute; 
   top: 100%;
-  -webkit-transition: opacity 0.5s;
-  background: rgba(17,83,56,0.7);
   padding: 0.3em 0;
+  
+  background: rgba(17,83,56,0.7);
+  opacity: 0;
+
+  pointer-events:none;
+
+  -moz-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
 }
 
 
@@ -241,6 +249,7 @@ body{
   font-weight:200;
   letter-spacing:1px;
 
+  -moz-transition:background 0.2s,opacity 0.2s;
   -webkit-transition:background 0.2s,opacity 0.2s;
 }
 
@@ -270,12 +279,14 @@ body{
    border: 1px solid rgba(100,100,100,0.3);
    
    font-size: 1em;
-   font-family: "Helvetica Neue";
+   /*font-family: "Open Sans",sans-serif;*/
+   font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
    font-weight:200;
    letter-spacing:1px;
    
    cursor: pointer;
 
+   -moz-transition:background 0.2s, opacity 0.2s;
    -webkit-transition:background 0.2s, opacity 0.2s;
 }
 
@@ -321,6 +332,7 @@ body{
   
   text-align:left;
   
+  -moz-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
   -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
 }
 
@@ -335,6 +347,7 @@ body{
   padding:0em 0.5em;
   height:85%;
 
+  -moz-transition:opacity 0.5s;
   -webkit-transition:opacity 0.5s;
 }
 
@@ -388,6 +401,7 @@ body{
 
   cursor: pointer;
 
+  -moz-transition: background 0.2s;
   -webkit-transition: background 0.2s;
 }
 
@@ -409,8 +423,10 @@ body{
 }
 
 #searchText{
+  -moz-appearance:none;
   -webkit-appearance:none;
-  font-family: "Helvetica Neue";
+  /*font-family: "Open Sans",sans-serif;*/
+  font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
   font-size: 14px;
   font-weight:200;
   letter-spacing:1px;
@@ -449,6 +465,7 @@ body{
   font-size: 14px;
   cursor:pointer;
 
+  -moz-transition:background 0.2s, opacity 0.5s;
   -webkit-transition:background 0.2s, opacity 0.5s;
 }
 
@@ -536,6 +553,8 @@ body{
     stroke: rgba(50,50,50,1);
     stroke-width: 3px;
     cursor: pointer;
+    
+    -moz-transition:fill 0.2s,stroke 0.2s,opacity 0.2s;
     -webkit-transition:fill 0.2s,stroke 0.2s,opacity 0.2s;
 }
 
@@ -610,8 +629,11 @@ body{
   fill: #000;
   stroke-width: 0px;
   opacity: 1;
-  -webkit-transition:opacity 0.2s,font-size 0.2s;
+  
   pointer-events:none;
+  
+  -moz-transition:opacity 0.2s,font-size 0.2s;
+  -webkit-transition:opacity 0.2s,font-size 0.2s;
 }
 
 .node:hover text {
@@ -628,6 +650,8 @@ body{
     stroke-width: 4px;
     fill:none;
     cursor: default;
+    
+    -moz-transition:stroke 0.2s,opacity 0.2s;
     -webkit-transition:stroke 0.2s,opacity 0.2s;
 }
 
@@ -637,6 +661,7 @@ body{
 }
 
 .link path{
+  -moz-transition:opacity 0.2s;
   -webkit-transition:opacity 0.2s;
 }
 
@@ -707,6 +732,8 @@ body{
     pointer-events:none;
 
     opacity: 1;
+    
+    -moz-transition:opacity 0.2s, font-size 0.2s; 
     -webkit-transition:opacity 0.2s, font-size 0.2s; 
     
 }

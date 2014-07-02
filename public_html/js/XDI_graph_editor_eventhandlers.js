@@ -238,7 +238,13 @@ function mousedownOnLinkHandler(d) {
 function windowResizeHandler () {
     svgHeight = d3.select('#mainCanvas').node().offsetHeight;
     svgWidth = d3.select('#mainCanvas').node().offsetWidth;
-    
+    if(svgHeight == undefined || svgWidth == undefined) //This happens in Firefox
+    {
+        svgHeight = d3.select('#drawing').node().offsetHeight;
+        svgWidth = d3.select('#drawing').node().offsetWidth;
+    }
+
+
     force.size([svgWidth, svgHeight]);
     updateViewPortRect();
 }

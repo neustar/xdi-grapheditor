@@ -108,6 +108,7 @@ function initializeMenu(){
     var item = $('.menu-item');
 
     header.click(function(e) { 
+      e.stopPropagation();
       menu.toggleClass('active'); 
     })
     header.mouseenter(function() { header.removeClass('active'); $(this).addClass('active'); })

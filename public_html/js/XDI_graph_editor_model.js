@@ -75,7 +75,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
     });
 
     if(willFoldRoot)
-        jsonnodes.forEach(function (d) {
+        globalNodes.forEach(function (d) {
             d.isFolded = d.isRoot();
         });
 
@@ -96,10 +96,10 @@ function isRootToCheck(d)
 }
 
 function getDrawData2(root){
-   return {nodes:jsonnodes,links:jsonlinks,map:nodeslinkmap};
+   return {nodes:globalNodes,links:globalLinks,map:globalNodeLinkMap};
 }
 function getDrawData(root){
-    if (jsonnodes == null || jsonnodes.length === 0)
+    if (globalNodes == null || globalNodes.length === 0)
         return {nodes:[],links:[]};
 
     console.log("getDrawData");
@@ -111,13 +111,13 @@ function getDrawData(root){
         rootsToCheck = [root];
     else
     {    
-        jsonnodes.forEach(function(d){
+        globalNodes.forEach(function(d){
             if(isRootToCheck(d))
                 rootsToCheck.push(d);
         });
     }
-    if (rootsToCheck.length === 0 && jsonnodes != null && jsonnodes.length > 0)
-        rootsToCheck = [jsonnodes[0]];//Every node has parent.
+    if (rootsToCheck.length === 0 && globalNodes != null && globalNodes.length > 0)
+        rootsToCheck = [globalNodes[0]];//Every node has parent.
     
     var resNodes = [];
     var resLinks = [];
@@ -200,13 +200,13 @@ function addStatement(subject, predicate, object, isRelation, statement, willJoi
     var isLiteral = predicate === null;
     if (predicate === null)
         predicate = "&";
-    var nodeFound = findNode(jsonnodes, subject, targetGraphId);
+    var nodeFound = findNode(globalNodes, subject, targetGraphId);
     if (nodeFound == null) {
         subjectnode = addNode(subject,null, lastGraphId);
     } else
         subjectnode = nodeFound;
     
-    nodeFound = findNode(jsonnodes, object, targetGraphId);
+    nodeFound = findNode(globalNodes, object, targetGraphId);
     if (nodeFound == null) {
         objectnode = addNode(object, statement.object()._string, lastGraphId);
     } else
@@ -224,7 +224,7 @@ function addNode(name, shortName, graphId, isCloning){
     var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphId);
     
     if(!isCloning)
-        jsonnodes.push(newNode);
+        globalNodes.push(newNode);
     
     return newNode;
 }
@@ -246,7 +246,7 @@ function addLink(sourceNode,targetNode,name,isLeft,isRight,isRelation,shortName,
     
     if(!isCloning)
     {
-        jsonlinks.push(newlink);
+        globalLinks.push(newlink);
         addLinkToMap(sourceNode, targetNode, newlink);
     }
     return newlink;
@@ -277,27 +277,27 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     return link;
 }
 
-//Atomic ADD operation for nodeslinkmap
+//Atomic ADD operation for globalNodeLinkMap
 function addLinkToMap(source, target,linkObject) {
     var key = source.id + '-' + target.id;
-    if (!(key in nodeslinkmap)) {
-        nodeslinkmap[key] = linkObject;
+    if (!(key in globalNodeLinkMap)) {
+        globalNodeLinkMap[key] = linkObject;
         return true;
     }
     //if link exists, return false;
     return false;
 }
 
-//Atomic REMOVE operation for nodeslinkmap
+//Atomic REMOVE operation for globalNodeLinkMap
 function delLinkfromMap(source, target) {
     var key = source.id + '-' + target.id;
-    delete nodeslinkmap[key];
+    delete globalNodeLinkMap[key];
 }
 
-//Atomic SEARCH operation for nodeslinkmap
+//Atomic SEARCH operation for globalNodeLinkMap
 function findLink(source,target){
     var key = source.id + '-' + target.id;
-    return nodeslinkmap[key]; //if exist, return value, else return null;
+    return globalNodeLinkMap[key]; //if exist, return value, else return null;
 }
 
 // Returns the position/index in node collection of the node with name value name
@@ -329,7 +329,7 @@ function removeNode(nodeToRemove) {
     };
     
     //Find and remove the node
-    jsonnodes.splice(jsonnodes.indexOf(nodeToRemove), 1);
+    globalNodes.splice(globalNodes.indexOf(nodeToRemove), 1);
     
 }
 
@@ -348,7 +348,7 @@ function removeLink(linkToRemove){
         source.children.splice(source.children.indexOf(target), 1);
     }
     target.parents.splice(target.parents.indexOf(source),1);
-    var spliceret = jsonlinks.splice(jsonlinks.indexOf(linkToRemove), 1);
+    var spliceret = globalLinks.splice(globalLinks.indexOf(linkToRemove), 1);
     if (spliceret.length !== 1) 
         console.log("Link do not exists.");
     delLinkfromMap(source, target);
@@ -356,9 +356,9 @@ function removeLink(linkToRemove){
 
 // //Recursively remove all links of a node.
 // function removeLinksOfNode(victim) {
-//     var linkFound = findLinkToNode(jsonlinks, victim);
+//     var linkFound = findLinkToNode(globalLinks, victim);
 //     if (linkFound) {
-//         var gone = jsonlinks.splice(linkFound, 1);
+//         var gone = globalLinks.splice(linkFound, 1);
 //         delLinkfromMap(gone[0].source, gone[0].target);
 //         removeLinksOfNode(victim);
 //     }
@@ -506,7 +506,7 @@ function graphToString() {
     var graphstr = "";
 
     // generating the list of triples
-    $.each(jsonlinks, function(i, d) {
+    $.each(globalLinks, function(i, d) {
         var source = d.source;
         var target = d.target;
         var subject, predicate, object;
