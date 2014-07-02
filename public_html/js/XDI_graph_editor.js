@@ -55,7 +55,6 @@ $(function() {
 
     //Only For Debug purpose
     //initializeGraphWithXDI(attributeSingletons);
-    var initdata = null;
     if (inputurl.length > 1) {
         $.get(inputurl, "", function(data, textStatus, jqXHR) {
             if(jqXHR.getResponseHeader("Content-Type").match(/^text/))
