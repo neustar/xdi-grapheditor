@@ -24,15 +24,18 @@ THE SOFTWARE.
 
 function initializeDragSelect () {
 	dragSelectBrush = d3.svg.brush()
-	.x(x)
-	.y(y)
-	.on('brushstart',brushstart)
-	.on('brush',brushmove)
-	.on('brushend',brushend)
+		.x(x)
+		.y(y)
+		.on('brushstart',brushstart)
+		.on('brush',brushmove)
+		.on('brushend',brushend);
 
 	d3.select('#dragSelectCanvas')
-	.attr('class', 'brush')
-	.call(dragSelectBrush);
+		.attr('class', 'brush')
+		.call(dragSelectBrush);
+
+	d3.select('#dragSelectCanvas .background')
+		.style('cursor', 'inherit');
 }
 
 
@@ -44,12 +47,15 @@ function brushstart (d) {
 function brushend (d) {
 	// console.log("brushend")
 	var selectedNodes = d3.selectAll('.node.selected').data();
-	clearSelectedLinks();
+	var selectedLinks = d3.selectAll('.link.selected').data();
+	
 	setSelectedNodes(selectedNodes);
+	setSelectedLinks(selectedLinks);
+
 	updateSelectionClass();
 
 	dragSelectBrush.clear();
-	d3.select('#dragSelectCanvas').call(dragSelectBrush)
+	d3.select('#dragSelectCanvas').call(dragSelectBrush);
 }
 
 function brushmove (d) {
@@ -57,8 +63,10 @@ function brushmove (d) {
 	var extent = dragSelectBrush.extent();
 	
 	d3.selectAll('.node')
-	.classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);})
-
+		.classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);});
+	
+	d3.selectAll('.link')
+		.classed('selected',function(d) {return d.isSelected = isInExtent(d.source,extent)&&isInExtent(d.target,extent);});
 	// updateSelectionClass("node");
 }
 
@@ -74,6 +82,6 @@ function isInExtent (d,extent) {
 
 function setDragSelectAbility (canSelect) {
 	d3.select(".brush")
-	.style("pointer-events",canSelect? "all":"none");
+		.style("pointer-events",canSelect? "all":"none");
 }
 

@@ -23,77 +23,24 @@ THE SOFTWARE.
 */
 
 
-
-
-// some UI management...
-var dlg;
-
-
 $(function() {
     
-    //Define the dialog for Import XDI
-    dlg = $('#dialog-form').dialog({
-        autoOpen: false,
-        height: 600,
-        width: 600,
-        modal: true,
-        buttons: {
-            "Graph it!": function() {
-                var importedXDI = $('#XDIsource').val();
-                var willClearGraph = $('#clearGraphCheckBox').prop('checked');
-                var willJoinGraph = $('#joinGraphCheckBox').prop('checked');
-                $(this).dialog('close')
-                isDialogVisible = false;
-                if(!_.isEmpty(importedXDI))
-                    initializeGraphWithXDI(importedXDI,willClearGraph,willJoinGraph);
-            },
-            Cancel: function() {
-                $(this).dialog('close')
-                isDialogVisible = false;
-                
-            }
-        },
-    });
-    
-/*
-    //Define event handler for sliders
-    var $linkdistslider = $('input[name="linkdistslider"]');
-    var $chargeslider = $('input[name="chargeslider"]');
-    var $gravityslider = $('input[name="gravityslider"]');
-    
-    $linkdistslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val());
-        updateSim(val, null, null);
-    });
-    $chargeslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val());
-        updateSim(null, val, null);
-    });
-    $gravityslider.bind('change', function(e) {
-        e.preventDefault();
-        var val = parseInt($(this).val())/10;
-        updateSim(null, null , val);
-    });
-*/
+    initializeDialogs();
 
     //Initialize SVG
     svg = d3.select("#drawing #mainCanvas")
-        // .attr("width", "100%")//totalWidth)
-        // .attr("height", "100%")//totalHeight)
         .on('mousedown', mousedownOnSVG) //event handlers has to be set within javascript. Otherwise d3.event will be null in handler
         .on('mousemove', mousemoveOnSVG)
         .on('mouseup', mouseupOnSVG)
-        .on('mousewheel',mousewheelOnSVG)
+        .on('mousewheel',mousewheelOnSVG);
 
 
     d3.select("body")
         .on("keydown", keydownOnSVG)
         .on('keyup', keyupOnSVG);
 
-    // d3.select(window)
-    //     .on('resize',windowResizeHandler)
+    d3.select(window)
+        .on('resize',windowResizeHandler);
 
     //Initialize SVG Components
 
@@ -102,21 +49,28 @@ $(function() {
     x = d3.scale.linear().domain([0,window.screen.availWidth]).range([0,window.screen.availWidth]);
     y = d3.scale.linear().domain([0,window.screen.availHeight]).range([0,window.screen.availHeight]);
 
-
-    // initializeGraphWithString("{\"treeData\":{},\"relData\":{}}");
     initializeGraph();
+    
     clearGraph();
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons)
-
+    //initializeGraphWithXDI(attributeSingletons);
+    if (inputurl.length > 1) {
+        $.get(inputurl, "", function(data, textStatus, jqXHR) {
+            if(jqXHR.getResponseHeader("Content-Type").match(/^text/))
+                initializeGraphWithXDI(data);
+        });
+    } else {
+        initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
+    }
+    
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@emailemailemailemailemailemailemailemailemailemailemailemail.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
-    // searchOperation("=");
+    
 });
 
 
@@ -134,11 +88,12 @@ function initializeGraph()
     lastLinkId = -1;
     nodeslinkmap={};
 
-     force = d3.layout.force()
+    force = d3.layout.force()
         .size([svgWidth, svgHeight])
-        .on("tick", tickEventHandler)
+        .on("tick", forceTickEventHandler)
+        .on('end',forceEndEventHandler);
 
-    drag_line=svg.select("#drag_line")
+    drag_line=svg.select("#drag_line");
 
     initializeSelection();
 
@@ -146,12 +101,11 @@ function initializeGraph()
     mousedown_node = null;
     mouseup_node = null;
     
-    node = d3.select("#nodeCanvas").selectAll(".node");
-    link = d3.select("#linkCanvas").selectAll(".link");
-    labels = d3.select("#labelsCanvas").selectAll(".label");
-
     initializeZoom();
     initializeDragSelect();
+    windowResizeHandler();
+    initializeMenu();
+    initializeCommands();
 
     restart();
 }
@@ -162,16 +116,17 @@ function getLinkPathD(d){
         dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
         normX = deltaX / dist,
         normY = deltaY / dist,
-        sourcePadding = d.left ? 17 : 12,
-        targetPadding = d.right ? 17 : 12,
+        sourcePadding = d.left ? 17 : 2,
+        targetPadding = d.right ? 17 : 2;
 
-        sourcePadding =  sourcePadding / zoom.scale();
-        targetPadding = targetPadding / zoom.scale();
+    sourcePadding =  sourcePadding / zoom.scale();
+    targetPadding = targetPadding / zoom.scale();
 
-        sourceX = d.source.x + (sourcePadding * normX),
-        sourceY = d.source.y + (sourcePadding * normY),
-        targetX = d.target.x - (targetPadding * normX),
-        targetY = d.target.y - (targetPadding * normY);
+    sourceX = d.source.x + (sourcePadding * normX);
+    sourceY = d.source.y + (sourcePadding * normY);
+    targetX = d.target.x - (targetPadding * normX);
+    targetY = d.target.y - (targetPadding * normY);
+
     var valence1 = d.source.id + "-" + d.target.id;
     var valence2 = d.target.id + "-" + d.source.id;
 
@@ -185,58 +140,45 @@ function getLinkPathD(d){
     }
 }
 
-function tickEventHandler() {
-    
-    
-    node = svg.selectAll(".node");
-    node.attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
-            .classed("selected", function(d) { return (d.isSelected); });
+function forceTickEventHandler() {
+    svg.selectAll(".node")
+        .attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
+        .classed("selected", function(d) { return (d.isSelected); });
 
-    linkPath = svg.selectAll(".link path");
-    linkPath.attr('d', getLinkPathD);
+    var linkPath = svg.selectAll(".link path");
+    linkPath.attr('d', getLinkPathD)
+    .each(function  (d) {
+        d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
+    });
 
-    labels = svg.selectAll(".link text");
-    labels.attr("x", function(d) {
-                return x(d.source.x) + (x(d.target.x)-x(d.source.x))/3*1;
-            })
-            .attr("y", function(d) {
-                return y(d.source.y) + (y(d.target.y)-y(d.source.y))/3*1;
-            })
+    svg.selectAll(".link text")
+        .attr("x", function(d) {return d.textPoint.x;})
+        .attr("y", function(d) {return d.textPoint.y;})
+        .attr("dx", function(d) {return d.source.y < d.target.y ? 12:-12;})
+        .style("text-anchor",function(d) { return d.source.y < d.target.y ? "start":"end"; })
             
     updateDragLine();
+    updateViewPortRect(); //Remove this if the refresh of navigator make it slow;
 }
 
-//Render all SVG Elements based on jsonnodes, jsonlinks
-function restart(startForce,getNewData) {
-    if(startForce == null)
-        startForce = true;
-    if(getNewData == null)
-        getNewData = true;
 
+function forceEndEventHandler () {
+    updateViewPortRect();
+}
 
-    var drawData = null;
-    if(getNewData || lastDrawData == null)
-    {
-        lastDrawData = getDrawData();
-    }
-    drawData = lastDrawData;
-
-    //
-    // Links
-    //
-
+function updateLinkElement (linksData) {
     //// Add new elements
     var linkCanvas = d3.select('#linkCanvas');
-    link = linkCanvas.selectAll(".link")
-        .data(drawData.links, function(d) { return d.id; });
+    var linkGs = linkCanvas.selectAll(".link")
+        .data(linksData, function(d) { return d.id; });
     
-    link.exit().remove();
+    linkGs.exit().remove();
    
-    var newLinkGs = link.enter().append("g")
+    var newLinkGs = linkGs.enter().append("g")
         .attr("class", "link selectable")
         .on('mousedown', mousedownOnLinkHandler)
         .on('mouseenter',mouseenterOnLinkHandler)
-        .on('mouseleave',mouseleaveOnLinkHandler)
+        .on('mouseleave',mouseleaveOnLinkHandler);
     
     newLinkGs.append("svg:path")
         .append("title")
@@ -249,51 +191,69 @@ function restart(startForce,getNewData) {
         });  
 
     //// Adjust Classes
-    link.classed('selected', function(d) {return d.isSelected;})
-        .classed('relation', function(d) {return d.isRel === true;})
-        .classed('literal', function(d) {return d.target.type === "literal";})
+    linkGs.classed('selected', function(d) {return d.isSelected;})
+        .classed('relation', function(d) {return d.isRelation;})
+        .classed('literal', function(d) {return d.target.type === xdi.constants.nodetypes.LITERAL;})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
+}
 
-    //
-    // Nodes
-    //
-
+function updateNodeElement (nodesData) {
     //// Add new elements
     var nodeCanvas = d3.select('#nodeCanvas');
-    node = nodeCanvas.selectAll(".node")
-        .data(drawData.nodes, function(d) {return d.id;});
+    var nodeGs = nodeCanvas.selectAll(".node")
+        .data(nodesData, function(d) {return d.id;});
             
-    node.exit().remove();
+    nodeGs.exit().remove();
 
-    var newNodes = node.enter().append("svg:g")
-            .attr("class", "node selectable")
-            .on('mouseenter',mouseenterOnNodeHandler)
-            .on('mouseleave',mouseleaveOnNodeHandler)
+    var newNodes = nodeGs.enter().append("g")
+        .on('mouseenter',mouseenterOnNodeHandler)
+        .on('mouseleave',mouseleaveOnNodeHandler)
 
-    newNodes.append("svg:circle")
-        .attr('r', NODE_RADIUS)
+    newNodes.append("path")
         .on('mousedown', mousedownOnNodeHandler)
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
-        .each(function(d) {if(d.isRoot){d.x = svgWidth/2; d.y = svgHeight/2;}}) //move root to the middle of the screen only when it is created
+        .each(function(d) {if(d.isRoot()){d.x = window.innerWidth/2 + Math.random()*100; d.y = window.innerHeight/2;}}) //move root to the middle of the screen only when it is created. The random avoids overlaps.
         .append("title")
         .text(function(d){return d.name});
         
     newNodes.append("svg:text")
         .attr('class', "textLabel")
         .attr("dx", 12)
-        .attr("dy", ".35em")
+        .attr("dy", ".35em");
 
     //// Adjust Classes    
-    node.classed("selected", function(d) { return (d.isSelected); })
-        .classed("root", function(d) {return d.isRoot;})
-        .classed("literal", function(d) {return (d.type === "literal");})
+    nodeGs
+        .attr("class", function(d) { return "node selectable " + d.type;})
+        .classed("selected", function(d) { return (d.isSelected); })
         .classed("folded",function(d){return d.isFolded;})
-        .classed("fixed",function(d){return d._fixed;}) //_fixed is set when a node is fixed by user.
+        .classed("fixed",function(d){return d._fixed;}); //_fixed is set when a node is fixed by user.
 
-    node.select("text")
+    nodeGs.select("text")
         .text(function(d){return trimString(d.shortName,NODE_TEXT_MAX_LENGTH);});
+
+    nodeGs.select("path")
+        .attr('d', function(d) { return getNodeShape(d.type); });
+}
+
+//Render all SVG Elements based on jsonnodes, jsonlinks
+function restart(startForce,getNewData) {
+    if(startForce == null)
+        startForce = true;
+    if(getNewData == null)
+        getNewData = true;
+
+    var drawData = null;
+    if(getNewData || lastDrawData === null)
+    {
+        lastDrawData = getDrawData();
+    }
+    drawData = lastDrawData;
+
+    updateLinkElement(drawData.links); 
+
+    updateNodeElement(drawData.nodes);    
 
     //
     // Layout
@@ -304,32 +264,82 @@ function restart(startForce,getNewData) {
         startDrag();
     }    
 
+    updateMenuItemAbility();
 }
 
-function updateStatus(statusMessage, isOK,isEditing){
+function getNodeShape (type) {
+    var symbol = d3.svg.symbol();
+    switch(type){
+        case xdi.constants.nodetypes.LITERAL:
+            symbol.type("square").size(500);
+            break;
+        case xdi.constants.nodetypes.CONTEXT:
+        case xdi.constants.nodetypes.ROOT:
+        case xdi.constants.nodetypes.ENTITY:
+            symbol.type("circle").size(500);
+            break;
+        
+        case xdi.constants.nodetypes.ATTRIBUTE:
+        case xdi.constants.nodetypes.VALUE:
+            symbol.type("diamond").size(400);
+            break;
+    }
+    return symbol();
+}
+
+function updateSyntaxStatus(statusMessage, isOK,isEditing){
     var indicator = svg.select("#statusIndicator");
 
     if(isOK != null) //When isOK is not passed, the corresponding class will remains the same 
         indicator
             .classed("ok",isOK)
-            .classed("error",!isOK)
+            .classed("error",!isOK);
     
-    if(isEditing != null)
-    {
-        indicator
-            .classed("edit",isEditing)
-            .classed("browse",!isEditing)
-        var modeMessage = isEditing? "Edit Mode":"Browse Mode";
-        svg.select("#modeMessage")
-            .text(modeMessage);   
-    }
+    
+    
     if(statusMessage != null)
     {
         svg.select("#statusMessage")
             .text(statusMessage);
     }
-    
 
+    if(isEditing != null)
+    {
+        var modeMessage = isEditing? "Edit Mode":"Browse Mode";
+        svg.select("#modeMessage")
+            .text(modeMessage);   
+    }
+}
+
+function updateMode (newMode) {
+    var modeMessage = newMode;
+    svg.select("#modeMessage")
+        .text(modeMessage);
+
+    var cursor = "default";
+    switch(newMode)
+    {
+        case Mode.BROWSE:
+            cursor = "default";
+            break;
+        case Mode.EDIT:
+            cursor = "crosshair";
+            break;
+        case Mode.VIEW:
+            cursor = "-webkit-grab";
+            break;
+        case Mode.ZOOM_IN:
+            cursor = "-webkit-zoom-in";
+            break;
+        case Mode.ZOOM_OUT:
+            cursor = "-webkit-zoom-out";
+            break;
+        case Mode.PAN:
+            cursor = "-webkit-grabbing";
+            break;
+    }
+    d3.select('#mainCanvas')
+        .style('cursor', cursor);
 }
 
 //
@@ -357,12 +367,6 @@ function exportGraph() {
 
 function clearGraph() {
     // todo - add disappearance effect here...
-    // while(jsonnodes.length !== 0) {
-    //     var vic = jsonnodes[0];
-    //     removeNode(vic);
-    //     // removeLinksOfNode(vic);
-    // }
-
     jsonnodes = [];
     jsonlinks = [];
     nodeslinkmap = {};
@@ -370,8 +374,12 @@ function clearGraph() {
     lastNodeId = -1;
     lastLinkId = -1;
     lastDrawData = null;
-    updateStatus("Syntax OK",true);
+    updateSyntaxStatus("Syntax OK",true);
     restart();
+}
+
+function isGraphEmpty () {
+    return _.isEmpty(d3.selectAll('.selectable').node());//.node() is necessary. .selectAll() produce an array with an empty array in it
 }
 
 function help() {
@@ -379,8 +387,7 @@ function help() {
 }
 
 function importXDI() {
-    isDialogVisible = true;
-    $('#dialog-form').dialog("open");
+    openImportDialog();
 }
 
 function setNodeLabelsVisibility(newValue){
@@ -400,6 +407,7 @@ function toggleNodeLabelsVisibility(){
 function toggleLinkLabelsVisibility(){
     var value = d3.select('#linkCanvas').classed("hide_text");
     setLinkLabelsVisibility(!value)
+
     d3.select('#toggleLinkButton').classed("off",!value);
 }
 
@@ -407,11 +415,12 @@ function toggleVisibility (button) {
     var name = d3.select(button).attr("name");
 
     var value = d3.select("#mainCanvas")
-    .classed("hide_"+name)
+        .classed("hide_"+name);
     
     d3.select("#mainCanvas")
-    .classed("hide_"+name,!value);
-    d3.select(button).classed("off",!value)
+        .classed("hide_"+name,!value);
+    
+    d3.select(button).classed("off",!value);
 }
 
 function trimString(string,length){
@@ -419,6 +428,7 @@ function trimString(string,length){
 
     if(str.length<string.length)
         str = str+ "..."
+
     return str;
 }
 
@@ -426,14 +436,14 @@ function toggleFreeze (newValue) {
     if(newValue != null)
         isFrozen = newValue;
     else
-        isFrozen = ! isFrozen;
+        isFrozen = !isFrozen;
 
     restart(true,false);
 
     d3.select('#freezeButton')
-    .classed('off', !isFrozen)
+        .classed('off', !isFrozen);
     
     d3.select('#unfreezeButton')
-    .classed('off', isFrozen)    
+        .classed('off', isFrozen);
 }
 

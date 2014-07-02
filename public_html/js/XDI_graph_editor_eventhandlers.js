@@ -35,11 +35,11 @@ function mousemoveOnSVG() {
     if(isDraggingLine)
         updateDragLine();
     else if (isPanning)
-        updatePanView([curMousePos.x,curMousePos.y])
+        updatePanView([curMousePos.x,curMousePos.y]);
 }
 
 function mousedownOnSVG() {
-    if(!d3.event.button == 0 ) //Only react to left click
+    if(!d3.event.button === 0 ) //Only react to left click
         return;
 
     lastMousePos = d3.mouse(svg.node());
@@ -53,7 +53,7 @@ function mousedownOnSVG() {
         return;
     }
 
-    if(d3.event.srcElement == svg.node())
+    if(d3.event.srcElement === svg.node())
     {
         if(d3.event.shiftKey)
         {
@@ -76,33 +76,30 @@ function mouseupOnSVG() {
 
 
 function mousewheelOnSVG () {  
-    if(d3.event==null || !d3.event.altKey)
+    if(d3.event===null || !d3.event.altKey)
         return;
-    var currentScale = zoom.scale()
+    var currentScale = zoom.scale();
     
     if(d3.event.wheelDelta > 0)
         currentScale += MOUSE_WHEEL_SCALE_DELTA;
     else if (d3.event.wheelDelta < 0)
         currentScale -= MOUSE_WHEEL_SCALE_DELTA;
     
-    mousePos = d3.mouse(svg.node())
-    scaleView(mousePos,currentScale)
+    mousePos = d3.mouse(svg.node());
+    scaleView(mousePos,currentScale);
 }
 
 
 
 function keydownOnSVG() {
-    
     // Ignore if dialog box is displayed.
     if (isDialogVisible)
         return;
     
-
-    if(d3.event.srcElement == d3.select("#searchText").node())
+    if(d3.event.srcElement === d3.select("#searchText").node())
         return;
     
     lastKeyDown = d3.event.keyCode;
-
 
     switch (d3.event.keyCode) {
         case 8: // backspace
@@ -112,10 +109,12 @@ function keydownOnSVG() {
             break;
             
         case 16://shift
-            updateStatus(null,null,true);
+            updateMode(Mode.EDIT);
             setDragSelectAbility(false);
             break;
+            
         case 18://opt/alt
+            updateMode(Mode.VIEW);
             setDragSelectAbility(false);
             break;
 
@@ -149,11 +148,12 @@ function keyupOnSVG() {
     switch(d3.event.keyCode){
         case 16:
             startDrag();
-            updateStatus(null,null,false);
+            updateMode(Mode.BROWSE);
             setDragSelectAbility(true);
             break;
         case 18://opt/alt
             setDragSelectAbility(true);
+            updateMode(Mode.BROWSE);
             break;
     }
 }
@@ -220,7 +220,7 @@ function mouseleaveOnNodeHandler (d) {
 }
 
 function dblclickOnNodeHandler(d){
-    toggleFoldNode(d);   
+    toggleFoldNode(d,d3.event.shiftKey);   
 }
 
 
@@ -235,7 +235,10 @@ function mousedownOnLinkHandler(d) {
     updateSelectionClass();
 }
 
-// function windowResizeHandler () {
-//     svgWidth = window.innerWidth;
-//     svgHeight = window.innerHeight;
-// }
+function windowResizeHandler () {
+    svgHeight = d3.select('#mainCanvas').node().offsetHeight;
+    svgWidth = d3.select('#mainCanvas').node().offsetWidth;
+    
+    force.size([svgWidth, svgHeight]);
+    updateViewPortRect();
+}

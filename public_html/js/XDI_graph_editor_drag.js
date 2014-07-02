@@ -33,8 +33,8 @@ function dragmove() {
     	if(!canDrag())
     		return;
       selected_nodes.forEach(function(d) { 
-        d.px += d3.event.dx/getScaleRatio(),d.py += d3.event.dy/getScaleRatio()
-       })
+        d.px += d3.event.dx/getScaleRatio(),d.py += d3.event.dy/getScaleRatio();
+       });
       
       force.resume();
 }
@@ -42,12 +42,12 @@ function dragmove() {
 function d3_layout_forceDragstart() {
     selected_nodes.forEach(function(d) { 
     d.fixed |= 2; //temporily make a node fix, but don't overide the orinal value of d.fixed
-  })
+  });
 }
 function d3_layout_forceDragend() {
   selected_nodes.forEach(function(d) { 
     d.fixed &= ~6;      // make a node move again
-  })
+  });
 }
 function d3_layout_forceMouseover(d) {
     d.fixed |= 4;      //temporily make a node fix
@@ -62,7 +62,7 @@ function canDrag(){
   if(d3.event instanceof MouseEvent)
     mouseevent = d3.event;
   else
-    mouseevent = d3.event.sourceEvent
+    mouseevent = d3.event.sourceEvent;
 
 
   return !mouseevent.shiftKey&&!mouseevent.altKey;

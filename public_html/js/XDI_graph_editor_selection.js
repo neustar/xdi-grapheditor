@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 
-//Atomic Operation for add a new selection (link or node)
+//Atomic ADD Operation for add a new selection (link or node)
 function addNewSelection (objToAdd, selectionSet) {
 	if(selectionSet!=null&&!objToAdd.isSelected)
 	{
@@ -32,27 +32,32 @@ function addNewSelection (objToAdd, selectionSet) {
 	}
 }
 
-//Atomic Operation for clear selection set
+//Atomic CLEAR Operation for clear selection set
 function clearSelectionSet (selectionSet) {
 	if(selectionSet!=null)
-		selectionSet.forEach(function(d) { d.isSelected=false; })
+		selectionSet.forEach(function(d) { d.isSelected=false; });
 	selectionSet = [];
 	return selectionSet;
 }
 
-//Atomic Operation for checking emptiness
+//Atomic HAS Operation for checking emptiness
 function hasSelections (selectionSet) {
 	return selectionSet != null && selectionSet.length > 0;
 }
 
 
+
+
 function setSelectedNodes (nodeSet) {
 	selected_nodes = nodeSet;
+	selected_nodes.forEach(function(d) { return d.isSelected = true; });
+	updateMenuItemAbility();
 }
 function setSelectedLinks (linkSet) {
 	selected_links = linkSet;
+	selected_links.forEach(function(d) { return d.isSelected = true; });
+	updateMenuItemAbility();
 }
-//Interfaces for global use
 
 function initializeSelection () {
 	clearAllSelection();
@@ -60,10 +65,12 @@ function initializeSelection () {
 
 function addSeletedNode (nodeToAdd) {
 	addNewSelection(nodeToAdd,selected_nodes);
+	updateMenuItemAbility();
 }
 
 function addSeletedLink (linkToAdd) {
 	addNewSelection(linkToAdd,selected_links);
+	updateMenuItemAbility();
 }
 
 function clearAllSelection () {
@@ -73,10 +80,12 @@ function clearAllSelection () {
 
 function clearSelectedNodes (){
 	selected_nodes = clearSelectionSet(selected_nodes);
+	updateMenuItemAbility();
 }
 
 function clearSelectedLinks () {
 	selected_links = clearSelectionSet(selected_links);
+	updateMenuItemAbility();
 }
 
 function hasSelectedNodes () {
@@ -92,6 +101,8 @@ function updateSelectionClass (className) {
 		className = "." + className;
 	else
 		className = "";
+	
 	d3.selectAll(".selectable"+className)
-	.classed("selected",function(d) { return d.isSelected; })
+		.classed("selected",function(d) { return d.isSelected; });
 }
+

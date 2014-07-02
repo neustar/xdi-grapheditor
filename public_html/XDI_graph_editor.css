@@ -40,20 +40,21 @@ body{
   margin:0% 1%;
 }
 
-.controlContainer{
-  height: 5%;
-  width: 100%;
+.menuContainer{
+  position:absolute;
+  z-index:2;
+  
+  width: 98%;
+  background: rgba(66,124,102,1);
 }
 
-.buttonContaiter{
-  padding:0% 0;
-}
 .parameterContainer{
   padding:1% 0;
 }
 
 #drawing{
   position: relative;
+  top:5%;
   overflow: hidden;
   height: 90%;
   width: 100%;
@@ -69,46 +70,155 @@ body{
     width:100%;
     height: 100%;
 }
+/********* Instruction *********/
 
-/********* HTML Components *********/
+.instruction{
+  position: absolute;
+  top: 95%;
+  color:#666;
+  font-weight:200;
+  opacity: 0.9;
+}
 
-.button {
-   background: rgba(66,124,102,1);//#67917A;
-   padding: 0.6em 1.5em;
-   border-radius: 0px;
-   margin: 0;
-/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.2); */
-   
-   color: white;
-   font-size: 1em;
-   font-family: "Helvetica Neue";
-   font-weight:100;
-   letter-spacing:1px;
+.instruction b{
+  color:#444;
+}
+
+/********* Dialog *********/
+
+.dialog p{
+  margin:1em 0;
+}
+
+.dialog textarea{
+  border: 1px solid #999;
+  padding:0.5em;
+}
+#error-dialog p:last-of-type{
+  margin:1em 2em;
+}
+/****************** HTML Layout ******************/
+
+/********* Menu *********/
+
+.menuContainer ul {
+  list-style: none;
+/*   display: inline-table; */
+
+}
+
+.menuContainer ul:after {
+  content: ""; clear: both; display: block;
+}
+
+.menu {
+  position: relative;
+
+  /*For the opacity transition bug in Safari*/
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.menu li{
+  -webkit-transition:background 0.2s;
+}
+
+.menu span {
+  background:transparent;
+  color: rgba(255,255,255,0.9);
+
+  border-radius: 0px;
+  
+  font-size: 1em;
+  font-family: "Helvetica Neue";
+   font-weight:200;
+  
+  letter-spacing:1px;
    
   cursor: pointer;
-
-   -webkit-transition:background 0.5s, box-shadow 0.5s;
    
 }
    
-.button:hover {
-   background: rgba(106,172,78,1);
-/*    box-shadow: 0 0 0px 4px rgba(0,0,0,0.3); */
-}
-   
-.button:active {
-   border-top-color: #1B676B;
-   background: #dce007;
+
+.menu-header {
+  float: left;
+  background: rgba(66,124,102,1);
+  
 }
 
-.button:focus {
-  outline: 0px;
+.menu-header:hover{
+  background:rgba(79,149,101,1);
+}
+
+.menu.active .menu-header.active{
+  background:rgba(89,166,101,1);
+}
+
+.menu-header > span{
+  padding: 0.5em 1.5em;
+  display:block;
+}
+    
+.sub-menu {
+  opacity: 0;
+  pointer-events:none;
+  position: absolute; 
+  top: 100%;
+  -webkit-transition: opacity 0.5s;
+  background: rgba(17,83,56,0.7);
+  padding: 0.3em 0;
 }
 
 
-.button.off{
-  background: rgba(120,120,120,0.4);
+
+.menu.active .menu-header.active > .sub-menu{
+  opacity: 1;
+  pointer-events:auto;
 }
+
+.menu-item {
+  float: none;  
+  position: relative;
+  padding:0.1em 1em 0.1em 1.5em;
+}
+
+.menu-item:hover{
+  background: rgba(190,213,117,0.5);
+}
+
+.menu-item:active{
+  background: #dce007;
+}
+
+.menu-item.disabled{
+  pointer-events:none;
+  opacity: 0.3;
+}
+
+.menu-item span {
+  text-align:left;
+  display:inline-block;
+} 
+.menu-item span:first-of-type{
+  min-width:9em;
+}
+.menu-item span.shortcut{
+  color:rgbA(255,255,255,0.6);
+  text-align:right;
+  min-width:3em;
+}
+
+.section-line{
+  background:rgba(118,180,105,1);
+  height:1px;
+  margin:0.2em 0;
+}
+
+
+
+
+/****************** Graph Components ******************/
+
+/********* Legend *********/
 
 .legendContainer{
   position: absolute;
@@ -192,6 +302,7 @@ body{
   border-bottom-right-radius:5px;
 }
 
+/********* Search *********/
 
 .searchContainer{
   position: absolute;
@@ -356,22 +467,8 @@ body{
   outline: 0px;
 }
 
-.instruction{
-  color:#666;
-  font-weight:200;
-  opacity: 0.9;
-}
-
-.instruction b{
-  color:#444;
-}
-
-
-
-/****************** Graph Components ******************/
-
 #statusIndicator{
-    stroke-width: 2px;
+    stroke-width: 0px;
     pointer-events: none;
 }
 
@@ -395,6 +492,7 @@ body{
     font-size: 15px;
     fill: #999;
     font-weight: 200;
+    text-transform: capitalize;
 }
 
 #navSVG{
@@ -402,14 +500,19 @@ body{
   position: absolute;
   right: 0%;
   bottom: 0%;
-  pointer-events:none;
-  background: rgba(255,255,255,0.5);
+  background: rgba(200,200,200,0.5);
+
+  cursor: -webkit-grab;
+}
+
+#navSVG:active{
+ cursor: -webkit-grabbing; 
 }
 
 #zoomText{
   position: absolute;
-  right: 1em;
-  bottom: 1em;
+  right: 0.1em;
+  bottom: 0.1em;
   font-weight: 200;
 }
 
@@ -421,7 +524,7 @@ body{
 #navSVG #viewRect{
   fill:none;
   stroke:rgba(100,100,100,0.8);
-  stroke-width:2;
+  stroke-width:1;
 }
 
 /****************** Inside SVG ******************/
@@ -430,8 +533,7 @@ body{
 /********* Nodes *********/
 
 .node {
-    fill: #ccc;
-    stroke: rgba(0,0,0,0.4);
+    stroke: rgba(50,50,50,1);
     stroke-width: 3px;
     cursor: pointer;
     -webkit-transition:fill 0.2s,stroke 0.2s,opacity 0.2s;
@@ -442,33 +544,38 @@ body{
   pointer-events:none;
 }
 
-.node.fixed:hover,
-.node.matched:hover,
 .node:hover{
-  fill:#79BD9A;
-}
-
-.node.selected {
-    stroke: rgba(23,178,119,1);//#3B8686;
-    stroke-width: 4px;
-}
-
-.node.fixed {
-    fill: #777;
+  fill:#79BD9A !important;
 }
 
 .node.root {
-    stroke: #E97F02;
+  fill:#eee;
 }
 
 .node.literal {
-    stroke: #7D9A64;    
+  fill:#eee;
+  stroke: #7D9A64;
 }
 
-.node.selected {
-    stroke: rgba(23,178,119,1);//#3B8686;
-    stroke-width: 4px;
+.node.entity{
+  fill:#555;
 }
+
+.node.attribute{
+  fill:#555;
+}
+
+.node.value{
+  fill:#eee;
+}
+
+
+
+.node.fixed {
+  fill:rgba(0,0,0,1);
+}
+
+
 
 .hide_literal .node.literal{
   opacity: 0;
@@ -476,13 +583,17 @@ body{
 }
 
 .node.folded{
-  stroke:#490A3D;
+  stroke:rgba(196,77,88,1);
   /*stroke-width:4px;*/
 }
 
+.node.selected {
+  stroke: rgba(23,178,119,1);//#3B8686;
+}
+
 .node.matched{
-  /*stroke:#556270;*/
-  fill:rgba(23,178,119,1);
+  
+  stroke:rgba(64,192,203,1);//rgba(78,205,196,1);
 }
 
 .hide_node_label .node text{
@@ -495,12 +606,12 @@ body{
 }
 
 .node text {
-    font-size: 15px;
-    fill: #000;
-    stroke-width: 0px;
-    opacity: 1;
-    -webkit-transition:opacity 0.2s,font-size 0.2s;
-    pointer-events:none;
+  font-size: 15px;
+  fill: #000;
+  stroke-width: 0px;
+  opacity: 1;
+  -webkit-transition:opacity 0.2s,font-size 0.2s;
+  pointer-events:none;
 }
 
 .node:hover text {
@@ -513,7 +624,9 @@ body{
 /********* Links *********/
 
 .link {
-    stroke: #999;
+    stroke: #333;
+    stroke-width: 4px;
+    fill:none;
     cursor: default;
     -webkit-transition:stroke 0.2s,opacity 0.2s;
 }
@@ -524,8 +637,6 @@ body{
 }
 
 .link path{
-  stroke-width: 4px;
-  fill:none;
   -webkit-transition:opacity 0.2s;
 }
 
@@ -541,7 +652,7 @@ body{
 
 .link.relation {
     stroke: #C02942;
-    stroke-dasharray: 8, 8;
+    stroke-dasharray: 8, 2;
 }
 
 .hide_rel_link .link.relation{
@@ -559,7 +670,7 @@ body{
 
 .link.literal {
     stroke: #7D9A64;
-    stroke-dasharray: 8, 8;
+    stroke-dasharray: 4,4;
 }
 
 .hide_literal .link.literal{
@@ -584,13 +695,13 @@ body{
 
 
 .link.matched{
-  stroke:rgba(23,178,119,1);
+  stroke:rgba(64,192,203,1);
   opacity: 1;
 }
 
 .link text{
     font-size: 15px;
-    fill: #036564;
+    fill: #999;
     stroke:transparent;
     stroke-width:0px;
     pointer-events:none;
@@ -624,6 +735,7 @@ body{
 .link:hover text, .hide_link_label .link:hover text, .hide_rel_label .link:hover text{
   opacity: 1;
   font-size: 1.5em;
+  fill:#333;
 }
 
 /********* Drag Line *********/

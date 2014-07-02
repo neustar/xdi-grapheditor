@@ -31,15 +31,22 @@ function XDIElement () {
 	this.shortName = "";
 }
 
-function XDINode (id, name, shortName, type, graphID) {
+function XDINode (id, name, shortName, type, graphId) {
 	this.id = id;
 	this.name = name;
 	this.shortName = shortName;
 	this.type = type;
-	this.isRoot = false;
+	// this.isRoot = false;
 	this.parents = [];
 	this.children = [];
-	this.graphID = graphID;
+	this.graphId = graphId;
+
+	this.isRoot = function(){return this.type === xdi.constants.nodetypes.ROOT;};
+	this.isCommonRoot = function() { return this.name.length === 0; };
+	this.isLiteral = function(){return this.type === xdi.constants.nodetypes.LITERAL;};
+	this.clone = function(){
+		return new XDINode(this.id,this.name,this.type,this.graphId);
+	}
 }
 XDINode.prototype = new XDIElement();
 
@@ -52,7 +59,10 @@ function XDILink (id,name,shortName, left, right, source, target)
 	this.right = right;
 	this.source = source;
 	this.target = target;
-	this.isRel = false;
+	this.isRelation = false;
+	this.clone = function() { 
+		return new XDILink(this.id, this.name,this.shortName, this.left, this.right, this.source, this.target); 
+	}
 }
 XDILink.prototype = new XDIElement();
 
