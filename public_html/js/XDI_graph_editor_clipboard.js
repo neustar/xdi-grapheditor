@@ -81,11 +81,16 @@ function pasteFrom(source, willKeepSameId)
     globalNodes = globalNodes.concat(res.nodes);
     globalLinks = globalLinks.concat(res.links);
     res.links.forEach(function(d) { addLinkToMap(d.source,d.target,d);});
+    return res;
 }
 
 function pasteFromClipBoard () {
     lastGraphId ++;
-    pasteFrom(clipBoard)
+    var newElements = pasteFrom(clipBoard);
+    newElements.nodes.forEach(function (d) {
+        d.x += NEW_ELEMENT_POS_DELTA;
+        d.y += NEW_ELEMENT_POS_DELTA;
+    })
 }
 
 function duplicateObjects (nodesToCopy,linksToCopy) {

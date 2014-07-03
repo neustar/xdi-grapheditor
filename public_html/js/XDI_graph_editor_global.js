@@ -67,8 +67,6 @@ var Mode = {
 var currentMode = Mode.BROWSE;
 
 // mouse event vars
-var MOUSE_WHEEL_SCALE_DELTA = 0.02;
-
 var mousedown_link = null,
     mousedown_node = null,
     mouseup_node = null,
@@ -106,6 +104,9 @@ var lastTransition = null;
 var zoomToFitMargin = 30;
 var navDrag = null;
 var isViewRectStatic = false; //whether #viewRect is static in the navigator
+var MOUSE_WHEEL_SCALE_DELTA = 0.02;
+var ZOOM_COMMAND_SCALE_DELTA = 0.1;
+
 //Search
 var lastQuery = null;
 
@@ -118,3 +119,4 @@ var dragSelectBrush = null;
 
 //Copy & Paste
 var clipBoard = {nodes: [], links: []};
+var NEW_ELEMENT_POS_DELTA = 100;

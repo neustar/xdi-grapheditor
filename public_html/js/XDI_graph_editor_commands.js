@@ -27,6 +27,12 @@ function initializeCommands(){
     updateUndoRedoMenu();
 }
 
+function clearGraphCommand () {
+    if(_.isEmpty(globalNodes)&&_.isEmpty(globalLinks))
+        return;
+    backup();
+    clearGraph();
+}
 
 function deleteCommand () {
     var performed = hasSelectedLinks()||hasSelectedNodes();
@@ -187,6 +193,14 @@ function setRelationCommand () {
     }
 }
 
+function zoomInCommand () {
+    zoomByScaleDelta(ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
+}
+
+function zoomOutCommand () {
+    zoomByScaleDelta(-ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
+}
+
 
 
 
@@ -345,10 +359,6 @@ function restoreTo(backupPos){
     pasteFrom(backupData[backupPos]);
     updateUndoRedoMenu();
     restart();
-
-    force.stop();
-    forceTickEventHandler();
-    force.resume();
 }
 
 function backup(){

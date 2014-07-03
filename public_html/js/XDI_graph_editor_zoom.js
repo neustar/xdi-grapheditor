@@ -263,9 +263,26 @@ function zoomToElementCollection (collection) {
 	zoomTo([(minX+maxX)/2,(minY+maxY)/2,r*svgWidth+2*zoomToFitMargin]); //The margin doesn't equal to the margin between graph edge and svg edge, which depends on the final scale value.
 }
 
-function resetZoom(){
+function zoomToActualSize(){
 	zoomTo([svgWidth/2,svgHeight/2,svgWidth]);
 }
+
+function zoomByScaleDelta (delta,centerPos,withTransition) {
+    var currentScale = zoom.scale();
+        currentScale += delta;
+	
+	var scaleExtent = zoom.scaleExtent();
+	var maxScale = d3.max(scaleExtent);
+	var minScale = d3.min(scaleExtent);
+	if(currentScale > maxScale || currentScale <= minScale)
+		return;
+
+    if(withTransition)
+		zoomTo([centerPos[0],centerPos[1],svgWidth/currentScale]);
+	else
+    	scaleView(centerPos,currentScale);   
+}
+
 
 function navDragged () {
 	var newTranslate = zoom.translate();

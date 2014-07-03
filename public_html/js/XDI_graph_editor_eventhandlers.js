@@ -78,17 +78,18 @@ function mouseupOnSVG() {
 function mousewheelOnSVG () {  
     if(d3.event===null || !d3.event.altKey)
         return;
-    var currentScale = zoom.scale();
+    
+    var mousePos = d3.mouse(svg.node());
+    
+    var delta = 0;
     
     if(d3.event.wheelDelta > 0)
-        currentScale += MOUSE_WHEEL_SCALE_DELTA;
+        delta = MOUSE_WHEEL_SCALE_DELTA;
     else if (d3.event.wheelDelta < 0)
-        currentScale -= MOUSE_WHEEL_SCALE_DELTA;
-    
-    mousePos = d3.mouse(svg.node());
-    scaleView(mousePos,currentScale);
-}
+        delta = -MOUSE_WHEEL_SCALE_DELTA;
 
+    zoomByScaleDelta(delta,mousePos);
+}
 
 
 function keydownOnSVG() {
@@ -100,7 +101,8 @@ function keydownOnSVG() {
         return;
 
     lastKeyDown = d3.event.keyCode;
-    console.log(lastKeyDown)
+    // console.log(lastKeyDown)
+    // console.log(d3.mouse(svg.node()))
     switch (d3.event.keyCode) {
         case 8: // backspace
         case 46: // delete
@@ -163,6 +165,18 @@ function keydownOnSVG() {
             break;
         case 78: //N
             createNodeByClick();
+            break;
+        case 57: //9
+            zoomToFit();
+            break;
+        case 48: //0
+            zoomToActualSize();
+            break;
+        case 187: //+
+            zoomInCommand();
+            break;
+        case 189: //-
+            zoomOutCommand();
             break;
 
     }
