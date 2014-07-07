@@ -24,12 +24,12 @@ THE SOFTWARE.
 
 /*Function copyed from d3.js in order to make conditional drag*/
 
-nodeDrag = function() {
-      if (!drag) drag = d3.behavior.drag().origin(function(d){return d;}).on("dragstart.force", d3_layout_forceDragstart).on("drag.force", dragmove).on("dragend.force", d3_layout_forceDragend);
+nodeForceDrag = function() {
+      if (!drag) drag = d3.behavior.drag().origin(function(d){return d;}).on("dragstart.force", d3_layout_forceDragstart).on("drag.force", force_dragmove).on("dragend.force", d3_layout_forceDragend);
       if (!arguments.length) return drag;
       this.on("mouseover.force", d3_layout_forceMouseover).on("mouseout.force", d3_layout_forceMouseout).call(drag);
     };
-function dragmove() {
+function force_dragmove() {
     	if(!canDrag())
     		return;
       selected_nodes.forEach(function(d) { 

@@ -42,7 +42,7 @@ var svgHeight = 0;
 
 //SVG Components
 var svg = null;
-var force = null;
+
 var x = null,y = null;
 var zoom = null;
 var drag = null;
@@ -120,3 +120,17 @@ var dragSelectBrush = null;
 //Copy & Paste
 var clipBoard = {nodes: [], links: []};
 var NEW_ELEMENT_POS_DELTA = 100;
+
+//Screenshot
+var SCREENSHOT_MARGIN = 50;
+var SCREENSHOT_CHARACTER_WIDTH = 10;
+
+//Layout
+var force = null;
+var partition = null;
+var Layouts = {
+	Force: "force",
+	Tree: "tree"
+}
+var currentLayout = Layouts.Force;
+var HALF_CIRCLE_RANGE = 0.3;

@@ -58,7 +58,7 @@ function updateNavSize () {
 }
 
 function zoomEventHandler(){
-    forceTickEventHandler();
+    updateLayout();
 	updateViewPortRect();
 	updateZoomText();
 

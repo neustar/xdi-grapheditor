@@ -145,6 +145,19 @@ function getLinkPathD(d){
     }
 }
 
+function updateLayout () {
+    switch(currentLayout)
+    {
+        case Layouts.Force:
+            forceTickEventHandler();
+            break;
+        case Layouts.Tree:
+            updateTreeLayout();
+            break;
+    }
+    
+}
+
 function forceTickEventHandler() {
     svg.selectAll(".node")
         .attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
@@ -250,9 +263,9 @@ function updateNodeElement () {
 }
 
 //Render all SVG Elements based on globalNodes, globalLinks
-function restart(startForce,getNewData,centerRootNodes) {
-    if(startForce == null)
-        startForce = true;
+function restart(startLayout,getNewData,centerRootNodes) {
+    if(startLayout == null)
+        startLayout = true;
     if(getNewData == null)
         getNewData = true;
 
@@ -270,7 +283,7 @@ function restart(startForce,getNewData,centerRootNodes) {
     //
     // Layout
     //
-    if(startForce)
+    if(startLayout)
     {
         initializeLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
         startDrag();

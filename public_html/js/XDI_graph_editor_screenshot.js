@@ -37,10 +37,12 @@ function exportToPNG () {
   newSVG.select('#dragSelectCanvas').remove();
   newSVG.select('#status').remove();
 
-  var minX = x(d3.min(lastDrawData.nodes,function(d) { return d.x; }))-50;
-  var minY = y(d3.min(lastDrawData.nodes,function(d) { return d.y; }))-50;
-  var maxX = x(d3.max(lastDrawData.nodes,function(d) { return d.x; }))+50;
-  var maxY = y(d3.max(lastDrawData.nodes,function(d) { return d.y; }))+50;
+  var minX = d3.min(lastDrawData.nodes,function(d) { return x(d.x); })-SCREENSHOT_MARGIN;
+  var minY = d3.min(lastDrawData.nodes,function(d) { return y(d.y); })-SCREENSHOT_MARGIN;
+  var maxX = d3.max(lastDrawData.nodes,function(d) { 
+    return x(d.x)+ Math.min(d.shortName.length,NODE_TEXT_MAX_LENGTH)*SCREENSHOT_CHARACTER_WIDTH; 
+  })+SCREENSHOT_MARGIN;
+  var maxY = d3.max(lastDrawData.nodes,function(d) { return y(d.y); })+SCREENSHOT_MARGIN;
   var dx = maxX -  minX, dy = maxY - minY;
   newSVG
     .attr('height', dy)

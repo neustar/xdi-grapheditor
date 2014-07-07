@@ -217,7 +217,6 @@ function addStatement(subject, predicate, object, isRelation, statement, willJoi
 function addNode(name, shortName, graphId, isCloning){
     if (shortName == null)
         shortName = name;
-
     var nodeType = xdi.util.getNodeType(name);
     var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphId);
     
