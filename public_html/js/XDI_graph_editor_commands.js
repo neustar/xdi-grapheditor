@@ -233,17 +233,8 @@ function endDragLine(){
 }
 
 function startDrag(){
-    var nodes = d3.selectAll('.node');
-    switch(currentLayout)
-    {
-        case Layouts.Force:
-            nodes.call(nodeForceDrag);
-            break;
-        case Layouts.Tree:
-            nodes.call(nodeTreeDrag);
-            break;
-    }
-    
+    d3.selectAll('.node')
+        .call(currentLayout.drag);
 }
 
 function showShortName (HTMLElement) {

@@ -132,5 +132,5 @@ var Layouts = {
 	Force: "force",
 	Tree: "tree"
 }
-var currentLayout = Layouts.Force;
-var HALF_CIRCLE_RANGE = 0.3;
+var currentLayout = null//ForceLayout;
+var HALF_CIRCLE_RANGE = 0.1;

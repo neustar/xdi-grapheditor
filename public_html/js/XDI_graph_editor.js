@@ -67,11 +67,11 @@ $(function() {
         initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
 
-    // initializeGraphWithXDI(attributeSingletons);
+    initializeGraphWithXDI(attributeSingletons);
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
@@ -92,11 +92,10 @@ function initializeGraph()
     lastNodeId = -1;
     lastLinkId = -1;
     globalNodeLinkMap={};
-
-    force = d3.layout.force()
-        .size([svgWidth, svgHeight])
-        .on("tick", forceTickEventHandler)
-        .on('end',forceEndEventHandler);
+    
+    ForceLayout.initialize();
+    TreeLayout.initialize();
+    currentLayout = TreeLayout;
 
     drag_line=svg.select("#drag_line");
 
@@ -114,77 +113,6 @@ function initializeGraph()
 
     restart();
 }
-
-function getLinkPathD(d){
-    var deltaX = d.target.x - d.source.x,
-        deltaY = d.target.y - d.source.y,
-        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-        normX = deltaX / dist,
-        normY = deltaY / dist,
-        sourcePadding = d.left ? 17 : 2,
-        targetPadding = d.right ? 17 : 2;
-
-    sourcePadding =  sourcePadding / zoom.scale();
-    targetPadding = targetPadding / zoom.scale();
-
-    sourceX = d.source.x + (sourcePadding * normX);
-    sourceY = d.source.y + (sourcePadding * normY);
-    targetX = d.target.x - (targetPadding * normX);
-    targetY = d.target.y - (targetPadding * normY);
-
-    var valence1 = d.source.id + "-" + d.target.id;
-    var valence2 = d.target.id + "-" + d.source.id;
-
-    var tmpMap = lastDrawData ? lastDrawData.map : globalNodeLinkMap; //Use the lastest map that only has the visible links
-
-    if ((valence1 in tmpMap) && (valence2 in tmpMap)) {
-        return 'M' + x(sourceX) + ',' + y(sourceY) + 'A' + (dist) * getScaleRatio()+ ',' + (dist)* getScaleRatio() + ' 0 0,1 ' + x(targetX) + ',' + y(targetY);
-    }
-    else {
-        return 'M' + x(sourceX) + ',' + y(sourceY) + 'L' + x(targetX) + ',' + y(targetY);
-    }
-}
-
-function updateLayout () {
-    switch(currentLayout)
-    {
-        case Layouts.Force:
-            forceTickEventHandler();
-            break;
-        case Layouts.Tree:
-            updateTreeLayout();
-            break;
-    }
-    
-}
-
-function forceTickEventHandler() {
-    svg.selectAll(".node")
-        .attr("transform", function(d) {return "translate(" + x(d.x) + "," + y(d.y) + ")";})
-        .classed("selected", function(d) { return (d.isSelected); });
-
-    var linkPath = svg.selectAll(".link path");
-    linkPath.attr('d', getLinkPathD)
-    .each(function  (d) {
-        d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
-    });
-
-    svg.selectAll(".link text")
-        .attr("x", function(d) {return d.textPoint.x;})
-        .attr("y", function(d) {return d.textPoint.y;})
-        .attr("dx", function(d) {return d.source.y < d.target.y ? 12:-12;})
-        .style("text-anchor",function(d) { return d.source.y < d.target.y ? "start":"end"; })
-            
-    updateDragLine();
-    updateViewPortRect(); //Remove this if the refresh of navigator make it slow;
-}
-
-
-function forceEndEventHandler () {
-    updateViewPortRect();
-}
-
-
 
 function updateLinkElement () {
     if(lastDrawData==null || lastDrawData.links == null)
@@ -285,7 +213,8 @@ function restart(startLayout,getNewData,centerRootNodes) {
     //
     if(startLayout)
     {
-        initializeLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
+        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
+        // initializeLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
         startDrag();
     }    
 
