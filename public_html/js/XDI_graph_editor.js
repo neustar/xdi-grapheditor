@@ -93,9 +93,7 @@ function initializeGraph()
     lastLinkId = -1;
     globalNodeLinkMap={};
     
-    ForceLayout.initialize();
-    TreeLayout.initialize();
-    currentLayout = TreeLayout;
+    currentLayout = new ForceLayout();
 
     drag_line=svg.select("#drag_line");
 

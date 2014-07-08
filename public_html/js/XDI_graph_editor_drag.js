@@ -36,7 +36,7 @@ function force_dragmove() {
         d.px += d3.event.dx/getScaleRatio(),d.py += d3.event.dy/getScaleRatio();
        });
       
-      force.resume();
+      currentLayout.force.resume();
 }
     
 function d3_layout_forceDragstart() {

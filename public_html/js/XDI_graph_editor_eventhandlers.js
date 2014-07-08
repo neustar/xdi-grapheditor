@@ -285,6 +285,6 @@ function windowResizeHandler () {
     }
 
 
-    force.size([svgWidth, svgHeight]);
+    currentLayout.setLayoutSize(svgWidth, svgHeight);
     updateViewPortRect();
 }
