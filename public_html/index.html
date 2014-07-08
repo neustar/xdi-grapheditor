@@ -69,6 +69,10 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>View</span>
                     <ul class="sub-menu">
+                        <li class="menu-item need-content checked" id="forceLayoutCommand" onclick="changeLayoutCommand(Layouts.Force)"><span class="check">✓</span><span>Force Layout</span></li>
+                        <li class="menu-item need-content" id="treeLayoutCommand" onclick="changeLayoutCommand(Layouts.Tree)"><span class="check">✓</span><span>Tree Layout</span></li>
+                        <li class="menu-item need-content" onclick="resetLayoutCommand()"><span>Reset Layout</span></li>
+                        <li class="section-line"></li>
                         <li class="menu-item need-content" onclick="zoomToActualSize()"><span>Actual Size</span><span class="shortcut">0</span></li>
                         <li class="menu-item need-content" onclick="zoomToFit()"><span>Zoom to Fit</span><span class="shortcut">9</span></li>
                         <li class="menu-item need-content" onclick="zoomInCommand()"><span>Zoom In</span><span class="shortcut">+</span></li>

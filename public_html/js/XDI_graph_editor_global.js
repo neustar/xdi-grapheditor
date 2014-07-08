@@ -134,3 +134,4 @@ var Layouts = {
 }
 var currentLayout = null//ForceLayout;
 var HALF_CIRCLE_RANGE = 0.1;
+var LAYOUT_TRANSITION_DURATION = 1000;

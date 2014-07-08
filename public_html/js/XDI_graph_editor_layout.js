@@ -42,6 +42,9 @@ function ForceLayout (){
         .size([svgWidth, svgHeight])
         .on("tick", this.updateElementPos)
         .on('end',updateViewPortRect);
+
+    d3.select('#forceLayoutCommand')
+    .classed('checked',true);
 }
 
 ForceLayout.prototype = new GraphLayout();
@@ -139,6 +142,14 @@ ForceLayout.prototype.setLayoutSize = function (width,height) {
     this.force.size([width,height]);
 }
 
+ForceLayout.prototype.exit = function () {
+    this.force.stop();
+    this.force = null;
+
+    d3.select('#forceLayoutCommand')
+    .classed('checked',false);
+}
+
 
 function TreeLayout() {
     this.name = "Tree";
@@ -150,6 +161,9 @@ function TreeLayout() {
         .sort(function  (a,b) {
             return a.id - b.id;
         })
+
+    d3.select('#treeLayoutCommand')
+    .classed('checked',true);
 }
 
 TreeLayout.prototype = new GraphLayout();
@@ -182,11 +196,31 @@ TreeLayout.prototype.updateLayout = function (nodes,links) {
         d.children = d._children;
     })
 
-    this.updateElementPos();
+    this.updateElementPos(true);
 }
-TreeLayout.prototype.updateElementPos = function () {
-    svg.selectAll('.node')
-        .attr('transform', function(d) { return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; });
+TreeLayout.prototype.updateElementPos = function (hasTransition) {
+    if(hasTransition){
+        svg.selectAll('.node')
+            .transition()
+            .duration(LAYOUT_TRANSITION_DURATION)
+            .attr('transform', function(d) { 
+                return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
+            });
+
+        svg.select('#linkCanvas')
+            .attr('opacity', 0)
+            .transition()
+            .duration(LAYOUT_TRANSITION_DURATION)
+            .delay(LAYOUT_TRANSITION_DURATION)
+            .attr('opacity', 1)
+    }
+    else{
+        svg.selectAll('.node')
+            .attr('transform', function(d) { 
+                return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
+            });
+    }
+
 
     svg.selectAll('.link path')
         .attr('d', this.getLinkPathData)
@@ -279,4 +313,11 @@ TreeLayout.prototype.recurse = function (node) {
 
 TreeLayout.prototype.setLayoutSize = function (width,height) {
     this.partition.size([width,height]);
+}
+
+TreeLayout.prototype.exit = function () {
+    this.partition = null;
+
+    d3.select('#treeLayoutCommand')
+    .classed('checked',false);
 }

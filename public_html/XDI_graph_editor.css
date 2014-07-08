@@ -205,7 +205,23 @@ body{
 .menu-item span {
   text-align:left;
   display:inline-block;
-} 
+}
+
+.menu-item span.check{
+  position:absolute;
+  left:0%;
+  padding:0 0.4em;
+  visibility: hidden;
+  pointer-events:none;
+}
+
+.menu-item.checked span.check{
+  position:absolute;
+  left:0%;
+  padding:0 0.4em;
+  visibility: visible;
+}
+
 .menu-item span:first-of-type{
   min-width:9em;
 }

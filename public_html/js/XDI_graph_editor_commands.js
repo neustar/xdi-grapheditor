@@ -202,6 +202,27 @@ function zoomOutCommand () {
 }
 
 
+function changeLayoutCommand (newLayout) {
+    if(currentLayout!=null)
+        currentLayout.exit();
+    
+    switch (newLayout){
+        case Layouts.Force:
+            currentLayout = new ForceLayout();
+            break;
+        case Layouts.Tree:
+            currentLayout = new TreeLayout();
+            break;
+        default:
+            console.log("Change Layout Error")
+    }
+
+    restart(true,false);
+}
+
+function resetLayoutCommand () {
+    restart(true,false);
+}
 
 
 function startDragLine(){
@@ -255,7 +276,7 @@ function toggleNodeFixed (node) {
 
 function setNodeFixed (node, newValue) {
     node._fixed = newValue; //Record the fixed is set intentionally
-    node.fixed =newValue;
+    node.fixed = newValue;
     restart(false,false);
 }
 
