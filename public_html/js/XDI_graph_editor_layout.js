@@ -184,7 +184,7 @@ function TreeLayout() {
 
 TreeLayout.prototype = new GraphLayout();
 TreeLayout.prototype.initialize = function () {
-    
+
 }
 TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasNodeTransition) {
     if(_.isEmpty(nodes)&&_.isEmpty(links))
@@ -211,6 +211,11 @@ TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasNod
         t = d.dx; d.dx = d.dy; d.dy = t;
         d.children = d._children;
     })
+
+    svg.selectAll('.link text')
+        .attr('dx','0.5em')
+        .attr('dy','-0.5em')
+        .style('text-anchor','start')
 
     this.updateElementPos(hasNodeTransition);
 }
