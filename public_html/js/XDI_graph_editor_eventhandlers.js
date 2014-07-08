@@ -284,7 +284,8 @@ function windowResizeHandler () {
         svgWidth = d3.select('#drawing').node().offsetWidth;
     }
 
-
-    currentLayout.setLayoutSize(svgWidth, svgHeight);
+    if(currentLayout)
+        currentLayout.setLayoutSize(svgWidth, svgHeight);
+    
     updateViewPortRect();
 }

@@ -27,12 +27,38 @@ function GraphLayout(){
     this.name = "Layout";
 }
 
-GraphLayout.prototype.hasOverlapLink = function (linkD) {
-    return (!findLink(linkD.target,linkD.source)||!findLink(linkD.source,linkD.target))
+GraphLayout.prototype.hasOverlapLink = function (d) {
+    var valence1 = d.source.id + "-" + d.target.id;
+    var valence2 = d.target.id + "-" + d.source.id;
+
+    var tmpMap = lastDrawData ? lastDrawData.map : globalNodeLinkMap; //Use the lastest map that only has the visible links
+    
+    return (valence2 in tmpMap) && (valence1 in tmpMap);
 }
 
 GraphLayout.prototype.isLayoutRoot = function (nodeD) {
     return nodeD.isCommonRoot();
+}
+
+GraphLayout.prototype.alignTargetPoint = function (d) {
+    var deltaX = d.target.x - d.source.x,
+        deltaY = d.target.y - d.source.y,
+        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+        normX = deltaX / dist,
+        normY = deltaY / dist,
+        sourcePadding = d.left ? LINK_ARROW_PADDING : LINK_END_PADDING,
+        targetPadding = d.right ? LINK_ARROW_PADDING : LINK_END_PADDING;
+
+    sourcePadding =  sourcePadding / zoom.scale();
+    targetPadding = targetPadding / zoom.scale();
+
+    var newPos = {};
+    newPos.sourceX = d.source.x + (sourcePadding * normX);
+    newPos.sourceY = d.source.y + (sourcePadding * normY);
+    newPos.targetX = d.target.x - (targetPadding * normX);
+    newPos.targetY = d.target.y - (targetPadding * normY);
+    newPos.dist = dist;
+    return newPos;
 }
 
 function ForceLayout (){
@@ -65,6 +91,9 @@ ForceLayout.prototype.updateLayout = function(nodes,links,centerRootNodes) {
         {
             item.x = window.innerWidth/2 + Math.random()*100; item.y = window.innerHeight/2;
         }
+        //clear previous force data, void rapid jumping, the values can be undefined.
+        item.px = item.x;
+        item.py = item.y;
      });                             
 
 
@@ -109,28 +138,13 @@ ForceLayout.prototype.updateElementPos = function() {
     updateViewPortRect(); 
 }
 ForceLayout.prototype.getLinkPathData = function (d) {
-    var deltaX = d.target.x - d.source.x,
-        deltaY = d.target.y - d.source.y,
-        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-        normX = deltaX / dist,
-        normY = deltaY / dist,
-        sourcePadding = d.left ? 17 : 2,
-        targetPadding = d.right ? 17 : 2;
-
-    sourcePadding =  sourcePadding / zoom.scale();
-    targetPadding = targetPadding / zoom.scale();
-
-    sourceX = d.source.x + (sourcePadding * normX);
-    sourceY = d.source.y + (sourcePadding * normY);
-    targetX = d.target.x - (targetPadding * normX);
-    targetY = d.target.y - (targetPadding * normY);
-
-    var valence1 = d.source.id + "-" + d.target.id;
-    var valence2 = d.target.id + "-" + d.source.id;
-
-    var tmpMap = lastDrawData ? lastDrawData.map : globalNodeLinkMap; //Use the lastest map that only has the visible links
-
-    if ((valence1 in tmpMap) && (valence2 in tmpMap)) {
+    var newPos = currentLayout.alignTargetPoint(d);
+    var sourceX = newPos.sourceX,
+        sourceY = newPos.sourceY,
+        targetX = newPos.targetX,
+        targetY = newPos.targetY,
+        dist = newPos.dist;
+    if(currentLayout.hasOverlapLink(d)){
         return 'M' + x(sourceX) + ',' + y(sourceY) + 'A' + (dist) * getScaleRatio()+ ',' + (dist)* getScaleRatio() + ' 0 0,1 ' + x(targetX) + ',' + y(targetY);
     }
     else {
@@ -145,6 +159,8 @@ ForceLayout.prototype.setLayoutSize = function (width,height) {
 ForceLayout.prototype.exit = function () {
     this.force.stop();
     this.force = null;
+
+
 
     d3.select('#forceLayoutCommand')
     .classed('checked',false);
@@ -170,11 +186,10 @@ TreeLayout.prototype = new GraphLayout();
 TreeLayout.prototype.initialize = function () {
     
 }
-TreeLayout.prototype.updateLayout = function (nodes,links) {
+TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasNodeTransition) {
     if(_.isEmpty(nodes)&&_.isEmpty(links))
-    return;
-
-    
+        return;
+    this.setLayoutSize(svgWidth,svgHeight);
 
     nodes.forEach(function(d) { 
         d._children = d.children;
@@ -190,29 +205,31 @@ TreeLayout.prototype.updateLayout = function (nodes,links) {
 
     this.partition.nodes(globalRoot);
 
+    //Partition layout can only generate horizontal layout. Therefore, x and y, width and height should be swapped.
     nodes.forEach(function(d) { 
         var t = d.x;d.x = d.y;d.y = t; 
         t = d.dx; d.dx = d.dy; d.dy = t;
         d.children = d._children;
     })
 
-    this.updateElementPos(true);
+    this.updateElementPos(hasNodeTransition);
 }
-TreeLayout.prototype.updateElementPos = function (hasTransition) {
-    if(hasTransition){
+TreeLayout.prototype.updateElementPos = function (hasNodeTransition) {
+    if(hasNodeTransition){
         svg.selectAll('.node')
             .transition()
             .duration(LAYOUT_TRANSITION_DURATION)
             .attr('transform', function(d) { 
                 return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
             });
-
+        
         svg.select('#linkCanvas')
             .attr('opacity', 0)
             .transition()
-            .duration(LAYOUT_TRANSITION_DURATION)
-            .delay(LAYOUT_TRANSITION_DURATION)
+            .duration(LAYOUT_TRANSITION_DURATION/2)
+            .delay(LAYOUT_TRANSITION_DURATION/2)
             .attr('opacity', 1)
+        
     }
     else{
         svg.selectAll('.node')
@@ -221,13 +238,28 @@ TreeLayout.prototype.updateElementPos = function (hasTransition) {
             });
     }
 
+    // if(hasLinkTransition)
+    // {
+    //     svg.selectAll('.link path')
+    //         .transition()
+    //         .duration(LAYOUT_TRANSITION_DURATION)
+    //         .attr('d', this.getLinkPathData)
+    //         .each(function(d) { 
+    //             if(!d.textPoint)
+    //                 d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
+    //         })
+    // }
+    // else
+    // {
+        svg.selectAll('.link path')
+            .attr('d', this.getLinkPathData)
+            .each(function(d) { 
+                if(!d.textPoint)
+                    d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
+            })
+    // }
 
-    svg.selectAll('.link path')
-        .attr('d', this.getLinkPathData)
-        .each(function(d) { 
-            if(!d.textPoint)
-                d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
-        })
+
 
     svg.selectAll('.link text')
         .attr('x',function(d) { return d.textPoint? d.textPoint.x: 0; })
@@ -245,12 +277,18 @@ TreeLayout.prototype.getLinkPathData = function (d) {
     var dx = Math.abs(tx-sx);
     var dy = Math.abs(ty-sy);
 
+    var padding = LINK_ARROW_PADDING / zoom.scale();
+
     if(!d.isRelation)
     {
         if(d.isIllegal)
-            return 'M' + x(sx) + ',' + y(sy) + 'L' + x(tx) + ',' + y(ty);   
+        {
+            var pos = currentLayout.alignTargetPoint(d);
+            return 'M' + x(pos.sx) + ',' + y(pos.sy) + 'L' + x(pos.tx) + ',' + y(pos.ty);   
+        }
         else
         {
+            tx += padding*Math.sign(sx-tx);
             d.textPoint = {x:x(sx),y:y(ty)};
             return 'M' + x(sx) + ',' + y(sy) + 'L' + x(sx) + ',' + y(ty) + 'L' + x(tx) + ',' + y(ty); 
         }
@@ -258,24 +296,32 @@ TreeLayout.prototype.getLinkPathData = function (d) {
 
     var sweep = 0
 
-    if(!findLink(d.source,d.target)||!findLink(d.target,d.source))
+    if(!currentLayout.hasOverlapLink(d))
         sweep = ty < sy ? 0:1;
     
     var rx = 0;
     var ry = 0; 
 
     if(dy/dx < HALF_CIRCLE_RANGE )
+    {
         rx = ry = Math.abs(tx - sx)/2;
+        ty += padding*Math.sign(sy-ty);
+    }
     else if(dx/dy < HALF_CIRCLE_RANGE)
+    {
         rx = ry = Math.abs(ty - sy)/2;
+        tx += padding*Math.sign(sx-tx);
+    }
     else
     {
         rx = Math.abs(sx - tx);
         ry =  Math.abs(sy - ty);
+        var pos = currentLayout.alignTargetPoint(d);
+        sx = pos.sourceX,sy = pos.sourceY,tx = pos.targetX,ty = pos.targetY;
     }
         
     return 'M' + x(sx) + ',' + y(sy)
-    + 'A' + (x(rx)-x(0)) + " "+ (y(ry)-y(0))+" 0 0"+ sweep + x(tx) + ',' + y(ty);
+    + 'A ' + (x(rx)-x(0)) + ","+ (y(ry)-y(0))+" 0 0,"+ sweep +" "+ x(tx) + ',' + y(ty);
 }
 TreeLayout.prototype.drag = null;
 TreeLayout.prototype.dragmove = function () {
@@ -287,7 +333,7 @@ TreeLayout.prototype.dragmove = function () {
     currentLayout.updateElementPos(); //Here "this" is the dragged element, not TreeLayout
 }
 TreeLayout.prototype.recurse = function (node) {
-    if(_.isEmpty(node._children))
+    if(_.isEmpty(node._children)||node.isFolded) //Do not include a folded node
         return;
 
     node._children.forEach(function (d) {
@@ -312,7 +358,8 @@ TreeLayout.prototype.recurse = function (node) {
 }
 
 TreeLayout.prototype.setLayoutSize = function (width,height) {
-    this.partition.size([width,height]);
+    //Partition layout can only generate horizontal layout. Therefore, x and y, width and height should be swapped.
+    this.partition.size([height,width]); 
 }
 
 TreeLayout.prototype.exit = function () {
@@ -320,4 +367,10 @@ TreeLayout.prototype.exit = function () {
 
     d3.select('#treeLayoutCommand')
     .classed('checked',false);
+}
+
+
+
+Math.sign = function (x) {
+    return x&&(x/Math.abs(x));
 }

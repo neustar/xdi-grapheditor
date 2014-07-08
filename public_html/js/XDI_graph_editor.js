@@ -93,7 +93,7 @@ function initializeGraph()
     lastLinkId = -1;
     globalNodeLinkMap={};
     
-    currentLayout = new ForceLayout();
+    currentLayout = new TreeLayout();
 
     drag_line=svg.select("#drag_line");
 
@@ -105,10 +105,9 @@ function initializeGraph()
     
     initializeZoom();
     initializeDragSelect();
-    windowResizeHandler();
     initializeMenu();
     initializeCommands();
-
+    windowResizeHandler();
     restart();
 }
 
@@ -211,7 +210,7 @@ function restart(startLayout,getNewData,centerRootNodes) {
     //
     if(startLayout)
     {
-        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
+        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes,true);
         // initializeLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
         startDrag();
     }    
@@ -326,6 +325,7 @@ function clearGraph() {
     lastNodeId = -1;
     lastLinkId = -1;
     lastDrawData = null;
+    clearAllSelection();
     updateSyntaxStatus("Syntax OK",true);
     restart();
 }
