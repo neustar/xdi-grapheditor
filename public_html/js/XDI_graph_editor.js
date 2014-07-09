@@ -93,7 +93,8 @@ function initializeGraph()
     lastLinkId = -1;
     globalNodeLinkMap={};
     
-    currentLayout = new TreeLayout();
+    currentLayout = new ForceLayout();
+    // currentLayout = new TreeLayout();
 
     drag_line=svg.select("#drag_line");
 
@@ -170,8 +171,8 @@ function updateNodeElement () {
         
     newNodes.append("svg:text")
         .attr('class', "textLabel")
-        .attr("dx", 12)
-        .attr("dy", ".35em");
+        .attr("dx", "1em")
+        .attr("dy", "0.35em");
 
     //// Adjust Classes    
     nodeGs
@@ -210,8 +211,7 @@ function restart(startLayout,getNewData,centerRootNodes) {
     //
     if(startLayout)
     {
-        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes,true);
-        // initializeLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes);
+        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes,true,false);
         startDrag();
     }    
 
