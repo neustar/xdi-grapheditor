@@ -525,7 +525,7 @@ function graphToString() {
         else if(d.name === "&" && d.target.isValue())
         {
                 subject = source.name;
-                object =target.name;
+                object =target.shortName;
                 newstatement = subject + "//" + object;
         }
         else {
