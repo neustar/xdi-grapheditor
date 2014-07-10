@@ -1059,12 +1059,14 @@
 
 					return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 				},
-                                
+
                                 getNodeType: function(nodelabel) {
                                     if ((nodelabel === "") || (nodelabel.match(/^\(.*\)$/) != null))
                                         return xdi.constants.nodetypes.ROOT;
-                                    if(nodelabel.match(/^".*"$/) != null)
-                                        return xdi.constants.nodetypes.LITERAL;
+                                     try {
+                                     	JSON.parse(nodelabel);
+                                     	return xdi.constants.nodetypes.LITERAL;
+                                     } catch(e) {}
                                     if(nodelabel.slice(-1) === "&")
                                         return xdi.constants.nodetypes.VALUE;
                                     if(nodelabel.match(/^<.*>$/) != null)
