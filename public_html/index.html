@@ -100,6 +100,13 @@ THE SOFTWARE.
                         
                     </ul>
                 </li>
+                <li class="menu-header"><span>Window</span>
+                    <ul class="sub-menu">
+                       <li class="menu-item checked" onclick="toggleWindowVisibility('#legend',this)"><span class="check">✓</span><span>Legend</span></li>
+                       <li class="menu-item checked" onclick="toggleWindowVisibility('#navigator',this)"><span class="check">✓</span><span>Navigator</span></li>
+                       <li class="menu-item checked" onclick="toggleWindowVisibility('#search',this)"><span class="check">✓</span><span>Search</span></li>
+                    </ul>
+                </li>
                 <li class="menu-header"><span>Help</span>
                     <ul class="sub-menu">
                         <li class="menu-item" onclick="help()"><span>Manual & Tutorial</span></li>
@@ -141,14 +148,16 @@ THE SOFTWARE.
                     <text id="statusMessage" class="statusText" x="30" y="20">OK</text>
                 </g>
             </svg>
-            <svg id="navSVG">
-                <g>
-                    <rect id="svgRect" width="0" height="0"></rect>
-                    <rect id="viewRect" width="0" height="0"></rect>
-                </g>
-            </svg>
-            <div id="zoomText">1.0x</div>
-            <div class="legendContainer">
+            <div id="navigator" class="window">
+                <svg id="navSVG">
+                    <g>
+                        <rect id="svgRect" width="0" height="0"></rect>
+                        <rect id="viewRect" width="0" height="0"></rect>
+                    </g>
+                </svg>
+                <div id="zoomText">1.0x</div>
+            </div>
+            <div id="legend" class="legendContainer window">
                     <div id="freezeButtonsContainer">
                         <button id="unfreezeButton" class="toggleButton" onclick="toggleFreeze(false)">Moving</button>
                         <button id="freezeButton" class="toggleButton off" onclick="toggleFreeze(true)">Fixed</button>
@@ -162,7 +171,7 @@ THE SOFTWARE.
                     <div class="legend" name="rel_label" onclick="toggleVisibility(this)">Relationship Label</div>
             </div>
             
-            <div class="searchContainer hidden">
+            <div id="search" class="window searchContainer folded">
                 <div class="searchControlContainer">
                     <input type="search" placeholder="Search" results="10" autocomplete="on" onkeyup="searchTextChanged();" id="searchText" >
                     <button class="searchDoneButton" onclick="searchDone();">Done</button>

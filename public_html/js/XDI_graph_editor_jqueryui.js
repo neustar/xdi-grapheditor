@@ -126,3 +126,9 @@ function initializeMenu(){
       }
     })
 }
+
+function toggleWindowVisibility (id,menuItem) {
+  $(id+".window").toggleClass("hidden");
+  var isHidden = $(id+".window").hasClass("hidden");
+  $(menuItem).toggleClass("checked",!isHidden);
+}

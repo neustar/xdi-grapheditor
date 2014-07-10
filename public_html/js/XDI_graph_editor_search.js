@@ -124,7 +124,7 @@ function searchTextChanged () {
 
 function searchDone () {
 	d3.select(".searchContainer")	
-		.classed("hidden", true);
+		.classed("folded", true);
 
 	d3.select('#searchText').node().value = "";
 	lastQuery = null;
@@ -133,7 +133,7 @@ function searchDone () {
 
 function searchStart () {
 	d3.select(".searchContainer")	
-		.classed("hidden", false);
+		.classed("folded", false);
 
 	// clearAllSelection();
 }

@@ -222,7 +222,7 @@ body{
   visibility: visible;
 }
 
-.menu-item span:first-of-type{
+.menu-item span{
   min-width:9em;
 }
 .menu-item span.shortcut{
@@ -352,7 +352,7 @@ body{
   -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
 }
 
-.searchContainer.hidden{
+.searchContainer.folded{
   right: -5%;
   top: -1%;
   height:35px;
@@ -367,7 +367,7 @@ body{
   -webkit-transition:opacity 0.5s;
 }
 
-.searchContainer.hidden .searchResult{
+.searchContainer.folded .searchResult{
   opacity: 0;
   pointer-events:none;
 }
@@ -485,7 +485,7 @@ body{
   -webkit-transition:background 0.2s, opacity 0.5s;
 }
 
-.searchContainer.hidden .searchDoneButton{
+.searchContainer.folded .searchDoneButton{
   opacity: 0;
   pointer-events:none;
 }
@@ -527,14 +527,13 @@ body{
     font-weight: 200;
     text-transform: capitalize;
 }
-
-#navSVG{
-  display: block;
+#navigator{
   position: absolute;
   right: 0%;
   bottom: 0%;
+}
+#navSVG{
   background: rgba(200,200,200,0.5);
-
   cursor: -webkit-grab;
 }
 
@@ -558,6 +557,19 @@ body{
   fill:none;
   stroke:rgba(100,100,100,0.8);
   stroke-width:1;
+}
+
+
+.window{
+  opacity: 1;
+  pointer-events: auto;
+  
+  -webkit-transition: opacity 0.5s;
+}
+
+.window.hidden{
+  opacity: 0;
+  pointer-events: none; 
 }
 
 /****************** Inside SVG ******************/
