@@ -252,7 +252,7 @@ function mouseleaveOnLinkHandler (d) {
 }
 
 function mouseenterOnNodeHandler (d) {
-    showShortName(this);   
+    showFullName(this);   
 }
 
 function mouseleaveOnNodeHandler (d) {

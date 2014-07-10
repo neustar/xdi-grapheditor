@@ -29,18 +29,25 @@ function exportToPNG () {
       if(!confirmRes) return;
   }
 
+  d3.selectAll('.node text')
+    .text(function(d) { return d.isLiteral()? d.shortName : d.name; })
+
   var oldSVG = d3.select('#mainCanvas');
   var newSVG = d3.select(oldSVG.node().cloneNode(true));
+
+  d3.selectAll('.node text')
+    .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); });
   
   //Setup new SVG and Remove unecessary elements
   newSVG.select('.drag_line').remove();
   newSVG.select('#dragSelectCanvas').remove();
   newSVG.select('#status').remove();
 
+
   var minX = d3.min(lastDrawData.nodes,function(d) { return x(d.x); })-SCREENSHOT_MARGIN;
   var minY = d3.min(lastDrawData.nodes,function(d) { return y(d.y); })-SCREENSHOT_MARGIN;
   var maxX = d3.max(lastDrawData.nodes,function(d) { 
-    return x(d.x)+ Math.min(d.shortName.length,NODE_TEXT_MAX_LENGTH)*SCREENSHOT_CHARACTER_WIDTH; 
+    return x(d.x)+ Math.min(d.name.length,NODE_TEXT_MAX_LENGTH)*SCREENSHOT_CHARACTER_WIDTH; 
   })+SCREENSHOT_MARGIN;
   var maxY = d3.max(lastDrawData.nodes,function(d) { return y(d.y); })+SCREENSHOT_MARGIN;
   var dx = maxX -  minX, dy = maxY - minY;

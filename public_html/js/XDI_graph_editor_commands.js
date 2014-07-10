@@ -258,14 +258,20 @@ function startDrag(){
         .call(currentLayout.drag);
 }
 
-function showShortName (HTMLElement) {
-    d3.select(HTMLElement)
+function showFullName (selector) {
+    d3.select(selector)
+        .select("text")
+        .text(function(d) { return d.name; });
+}
+
+function showShortName (selector) {
+    d3.select(selector)
         .select("text")
         .text(function(d) { return d.shortName; });
 }
 
-function showTrimmedName (HTMLElement) {
-    d3.select(HTMLElement)
+function showTrimmedName (selector) {
+    d3.select(selector)
         .select("text")
         .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); });
 }
