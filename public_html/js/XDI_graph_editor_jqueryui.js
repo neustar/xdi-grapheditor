@@ -132,3 +132,13 @@ function toggleWindowVisibility (id,menuItem) {
   var isHidden = $(id+".window").hasClass("hidden");
   $(menuItem).toggleClass("checked",!isHidden);
 }
+
+function showAllWindows () {
+  $(".window").removeClass("hidden");
+  $(".window-item").addClass("checked");
+}
+
+function hideAllWindows () {
+  $(".window").addClass("hidden");
+  $(".window-item").removeClass("checked");
+}

@@ -102,9 +102,13 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Window</span>
                     <ul class="sub-menu">
-                       <li class="menu-item checked" onclick="toggleWindowVisibility('#legend',this)"><span class="check">✓</span><span>Legend</span></li>
-                       <li class="menu-item checked" onclick="toggleWindowVisibility('#navigator',this)"><span class="check">✓</span><span>Navigator</span></li>
-                       <li class="menu-item checked" onclick="toggleWindowVisibility('#search',this)"><span class="check">✓</span><span>Search</span></li>
+                        <li class="menu-item" onclick="showAllWindows()"><span>Show All</span></li>
+                        <li class="menu-item" onclick="hideAllWindows()"><span>Hide All</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#layout-control',this)"><span class="check">✓</span><span>Layout Control</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#legend',this)"><span class="check">✓</span><span>Legend</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#navigator',this)"><span class="check">✓</span><span>Navigator</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#search',this)"><span class="check">✓</span><span>Search</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Help</span>
@@ -177,6 +181,27 @@ THE SOFTWARE.
                     <button class="searchDoneButton" onclick="searchDone();">Done</button>
                 </div>
                 <div class="searchResult" id="searchResult"></div>
+            </div>
+
+            <div id="layout-control" class="window layoutControl">
+                <section>
+                    <p>Link Distance</p>
+                    <input type="range" id="linkDistance" onchange="updateLayoutParameterCommand()">
+                    <span>Short</span>
+                    <span>Long</span>
+                </section>
+                <section>
+                    <p>Link Strength</p>
+                    <input type="range" id="linkStrength" onchange="updateLayoutParameterCommand()">
+                    <span>Less</span>
+                    <span>More</span>
+                </section>
+                <section>
+                    <p>Node Repulsion</p>
+                    <input type="range" id="nodeRepulsion" onchange="updateLayoutParameterCommand()">
+                    <span>Less</span>
+                    <span>More</span>
+                </section>
             </div>
             
         </div>

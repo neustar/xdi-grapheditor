@@ -246,8 +246,8 @@ body{
 
 .legendContainer{
   position: absolute;
-  bottom: 2%;
-  left: 1%;
+  bottom: 1em;
+  left: 1em;
 }
 
 .legend{
@@ -331,7 +331,7 @@ body{
 
 /********* Search *********/
 
-.searchContainer{
+.searchContainer.window{
   position: absolute;
   top: 0%;
   right: 0%;
@@ -348,8 +348,8 @@ body{
   
   text-align:left;
   
-  -moz-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
-  -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
+  -moz-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s,opacity 0.5s;
+  -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s,opacity 0.5s;
 }
 
 .searchContainer.folded{
@@ -559,6 +559,49 @@ body{
   stroke-width:1;
 }
 
+
+.layoutControl{
+  position:absolute;
+  top:3em;
+  left:1em;
+  
+  min-width:9em;
+  padding:0 0.5em;
+  
+  background: rgba(100,100,100,0.3);
+  border: 1px solid rgba(100,100,100,0.3);
+  
+}
+
+.layoutControl section{
+  clear:both;
+  margin:1em 0 2em 0; 
+  
+  font-weight:200;
+}
+
+.layoutControl p{
+  margin:1em 0 0.2em 0;
+  font-size:1em;
+  
+}
+.layoutControl input{
+  display:block;
+  width:100%;
+}
+
+.layoutControl span{
+  font-size:0.8em;
+  
+}
+
+.layoutControl span:first-of-type{
+  float:left;
+}
+
+.layoutControl span:last-of-type{
+  float:right;
+}
 
 .window{
   opacity: 1;

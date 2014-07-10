@@ -25,6 +25,7 @@ THE SOFTWARE.
 //Layout base class
 function GraphLayout(){
     this.name = "Layout";
+
 }
 
 GraphLayout.prototype.hasOverlapLink = function (d) {
@@ -61,6 +62,21 @@ GraphLayout.prototype.alignTargetPoint = function (d) {
     return newPos;
 }
 
+GraphLayout.prototype.updateLayoutParameter = function () {
+    
+}
+
+GraphLayout.prototype.resetLayout = function () {
+    
+}
+
+
+///
+/// Force Layout
+///
+
+
+
 function ForceLayout (){
     this.name = "Force";
     
@@ -68,6 +84,8 @@ function ForceLayout (){
         .size([svgWidth, svgHeight])
         .on("tick", this.updateElementPos)
         .on('end',updateViewPortRect);
+
+    this.userSettings = {linkStrength:1,linkDistance:1,nodeRepulsion:1};
 
     d3.select('#forceLayoutCommand')
     .classed('checked',true);
@@ -101,14 +119,14 @@ ForceLayout.prototype.updateLayout = function(nodes,links,centerRootNodes) {
         .gravity(0)
         .linkDistance(function(d) { 
                 // default is 20.
-                return 30 + 30*d.source.children.length;
+                return (30 + 30*d.source.children.length) * currentLayout.userSettings.linkDistance;
             })
         .linkStrength(function(d) {
                 // range is [0,1]
-                return d.isRelation ? 0.1 : 1;
+                return (d.isRelation ? 0.1 : 1) * currentLayout.userSettings.linkStrength;
             })
         .theta(0.1) // default is 0.8
-        .charge(-10*numberOfNodes)
+        .charge(-10*numberOfNodes * currentLayout.userSettings.nodeRepulsion)
         .chargeDistance(1000);
 
 
@@ -165,6 +183,29 @@ ForceLayout.prototype.exit = function () {
     d3.select('#forceLayoutCommand')
     .classed('checked',false);
 }
+ForceLayout.prototype.updateLayoutParameter = function () {
+    this.userSettings.linkDistance = this.getSliderValue("#linkDistance");
+    this.userSettings.linkStrength = this.getSliderValue("#linkStrength");
+    this.userSettings.nodeRepulsion = this.getSliderValue("#nodeRepulsion");
+    restart(true,false);
+}
+
+ForceLayout.prototype.getSliderValue = function (id) {
+    var v = d3.select(id).node().value;
+    return 0.1 + v/100 * (3-0.1);
+}
+
+ForceLayout.prototype.resetLayout = function () {
+    this.userSettings = {linkStrength:1,linkDistance:1,nodeRepulsion:1};
+    d3.select("#linkDistance").node().value = 50;
+    d3.select("#linkStrength").node().value = 50;
+    d3.select("#nodeRepulsion").node().value = 50;
+    restart(true,false);
+}
+
+///
+/// Tree Layout
+///
 
 
 function TreeLayout() {
@@ -394,6 +435,7 @@ TreeLayout.prototype.exit = function () {
     d3.select('#treeLayoutCommand')
     .classed('checked',false);
 }
+
 
 
 
