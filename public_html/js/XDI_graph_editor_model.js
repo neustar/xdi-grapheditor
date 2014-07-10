@@ -67,7 +67,8 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
             else if (xdistmt.isLiteralStatement()) {
                 var obj = xdistmt._string.replace(xdistmt.subject()._string, "");
                 obj = obj.slice(3); // removing /&/
-                addStatement(xdistmt.subject()._string, null , obj, false,xdistmt);
+                xdistmt._object = {_string:obj};
+                addStatement(xdistmt.subject()._string, null , xdistmt.subject()._string + obj, false,xdistmt);
             }
             else
                 console.log("Found a weird statement of unknown type.");
@@ -217,7 +218,7 @@ function addStatement(subject, predicate, object, isRelation, statement, willJoi
 function addNode(name, shortName, graphId, isCloning){
     if (shortName == null)
         shortName = name;
-    var nodeType = xdi.util.getNodeType(name);
+    var nodeType = xdi.util.getNodeType(shortName);
     var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphId);
     
     if(!isCloning)
@@ -515,17 +516,24 @@ function graphToString() {
         var subject, predicate, object;
         var newstatement = null;
         
-        if (isRelational(d)) {
+        if (d.isRelation) {
             predicate = d.name;
             subject = source.name;
             object = target.name;
             newstatement = subject + "/" + predicate + "/" + object;
-        } else {
+        } 
+        else if(d.name === "&" && d.target.isValue())
+        {
+                subject = source.name;
+                object =target.name;
+                newstatement = subject + "//" + object;
+        }
+        else {
             if (d.name === "&") {
-                    predicate = xdi.constants.xri_literal;
-                    subject = source.name;
-                    object = target.name;
-                    newstatement = subject + "/" + predicate + "/" + object;
+                predicate = xdi.constants.xri_literal;
+                subject = source.name;
+                object =target.shortName;
+                newstatement = subject + "/" + predicate + "/" + object;
             } else { // contextual statement
             subject = source.name;
             predicate = "";
@@ -539,13 +547,6 @@ function graphToString() {
             xdisdlgraph.push(newstatement);
     });
     return xdisdlgraph;
-}
-
-function isRelational(d) {
-    if (d.isRelation)
-        return true;
-    else
-        return false;
 }
 
 function isImplied(xdistatement) {
