@@ -109,6 +109,7 @@ THE SOFTWARE.
                         <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#legend',this)"><span class="check">✓</span><span>Legend</span></li>
                         <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#navigator',this)"><span class="check">✓</span><span>Navigator</span></li>
                         <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#search',this)"><span class="check">✓</span><span>Search</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#instruction',this)"><span class="check">✓</span><span>Instruction</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Help</span>
@@ -193,8 +194,8 @@ THE SOFTWARE.
                 <section>
                     <p>Link Strength</p>
                     <input type="range" id="linkStrength" onchange="updateLayoutParameterCommand()">
-                    <span>Less</span>
-                    <span>More</span>
+                    <span>Flexible</span>
+                    <span>Rigid</span>
                 </section>
                 <section>
                     <p>Node Repulsion</p>
@@ -205,7 +206,7 @@ THE SOFTWARE.
             </div>
             
         </div>
-        <div class="instruction">
+        <div id="instruction" class="instruction window">
             <!-- <b>Del/Backspace</b>: Remove a node or link.  -->
             <b>Hold option/alt</b>: Drag to pan; Scroll mouse wheel to scale.
             <!-- <b>R</b>: Set node as Root; Set link as Relationship.   -->
