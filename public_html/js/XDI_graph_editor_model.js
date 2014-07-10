@@ -58,20 +58,7 @@ function initializeGraphWithXDI(data,willClearGraph,willJoinGraph,willFoldRoot) 
     lines.forEach(function(d,i) {
         if (d.length > 0) {
             var xdistmt = xdi.parser.parseStatement(d);
-            if (xdistmt.isContextNodeStatement()) {
-                addStatement(xdistmt.subject()._string, xdistmt.object()._string, xdistmt.subject()._string + xdistmt.object()._string, false,xdistmt, willJoinGraph);
-            }
-            else if (xdistmt.isRelationStatement()) {
-                addStatement(xdistmt.subject()._string, xdistmt.predicate()._string, xdistmt.object()._string, true,xdistmt, willJoinGraph);
-            }
-            else if (xdistmt.isLiteralStatement()) {
-                var obj = xdistmt._string.replace(xdistmt.subject()._string, "");
-                obj = obj.slice(3); // removing /&/
-                xdistmt._object = {_string:obj};
-                addStatement(xdistmt.subject()._string, null , xdistmt.subject()._string + obj, false,xdistmt);
-            }
-            else
-                console.log("Found a weird statement of unknown type.");
+            addStatement(xdistmt,willJoinGraph);
         }
     });
 
@@ -191,27 +178,54 @@ function getDrawData(root){
     return {nodes:resNodes,links:resLinks,map:resMap};
 }
 
-
-
-function addStatement(subject, predicate, object, isRelation, statement, willJoinGraph) {
-    var subjectnode, objectnode;
+//Analyse one line of XDI statements, create or found subject node, object node and add link to them
+function addStatement(statement, willJoinGraph) {
     var targetGraphId = willJoinGraph? null:lastGraphId;
-    var isLiteral = predicate === null;
-    if (predicate === null)
-        predicate = "&";
-    var nodeFound = findNode(globalNodes, subject, targetGraphId);
-    if (nodeFound == null) {
-        subjectnode = addNode(subject,null, lastGraphId);
-    } else
-        subjectnode = nodeFound;
+    var subject = statement.subject();
+    var predicate = statement.predicate();
+    var object = statement.object();
+    var isRelation = statement.isRelationStatement();
     
-    nodeFound = findNode(globalNodes, object, targetGraphId);
-    if (nodeFound == null) {
-        objectnode = addNode(object, statement.object()._string, lastGraphId);
-    } else
-        objectnode = nodeFound;
+    //The xdi library returns only string for a literal
+    if(!(object instanceof xdi.Segment))
+    {
+        var s = "\""+object+"\"";
+        object = {_string:s,_subsegments:[{_string: s}]};
+    }
 
-    addLink(subjectnode,objectnode,predicate,false,true,isRelation);
+
+    var fullName = null; 
+    
+    fullName = subject._string;
+    var subjectNode = addSegment(fullName,subject,targetGraphId);
+
+
+    if(isRelation)
+        fullName = object._string;
+    else 
+        fullName = subject._string+predicate._string+object._string;
+    var objectNode = addSegment(fullName, object,targetGraphId);
+
+
+    var linkName = predicate._string;
+    if(_.isEmpty(linkName))
+        linkName = objectNode.shortName;
+
+    addLink(subjectNode,objectNode,linkName,false,true,isRelation);
+}
+
+//Analyse a segment in one statement. Found the corresponding node or create a new one.
+function addSegment (fullName,segment,targetGraphId) {
+    var nodeFound = null;
+    nodeFound = findNode(globalNodes, fullName, targetGraphId);
+    if(nodeFound)
+        return nodeFound;
+
+    var shortName = null
+    if(!_.isEmpty(segment._subsegments))
+        shortName = _.last(segment._subsegments)._string;
+    
+    return addNode(fullName,shortName,lastGraphId);    
 }
 
 //Atomic operation for add a node
@@ -261,14 +275,16 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     }
 
     if (targetNode.type === xdi.constants.nodetypes.LITERAL){
-        var innerNode = addNode(sourceNode.name + "&", null, Math.max(sourceNode.graphId,targetNode.graphId));
+        var innerNode = addNode(sourceNode.name + "&", "&", Math.max(sourceNode.graphId,targetNode.graphId));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
         link = linkToInnerNode;
+        targetNode.name = innerNode.name + "&" + targetNode.shortName;
     }
     else {
-        var linkName = targetNode.name.slice(sourceNode.name.length, targetNode.name.length);
+        var linkName = targetNode.shortName;
         link = addLink(sourceNode,targetNode,linkName, isLeft, isRight, false);
+        targetNode.name = sourceNode.name + targetNode.shortName;
     }
     checkLinkValidity(link);
 
@@ -525,7 +541,7 @@ function graphToString() {
         else if(d.name === "&" && d.target.isValue())
         {
                 subject = source.name;
-                object =target.shortName;
+                object = target.shortName;
                 newstatement = subject + "//" + object;
         }
         else {
