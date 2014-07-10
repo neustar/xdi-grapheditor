@@ -261,7 +261,7 @@ function startDrag(){
 function showFullName (selector) {
     d3.select(selector)
         .select("text")
-        .text(function(d) { return d.name; });
+        .text(function(d) { return d.fullName; });
 }
 
 function showShortName (selector) {

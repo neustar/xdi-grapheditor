@@ -229,11 +229,11 @@ function addSegment (fullName,segment,targetGraphId) {
 }
 
 //Atomic operation for add a node
-function addNode(name, shortName, graphId, isCloning){
+function addNode(fullName, shortName, graphId, isCloning){
     if (shortName == null)
-        shortName = name;
+        shortName = fullName;
     var nodeType = xdi.util.getNodeType(shortName);
-    var newNode = new XDINode(++lastNodeId,name,shortName,nodeType, graphId);
+    var newNode = new XDINode(++lastNodeId,fullName,shortName,nodeType, graphId);
     
     if(!isCloning)
         globalNodes.push(newNode);
@@ -242,14 +242,11 @@ function addNode(name, shortName, graphId, isCloning){
 }
 
 //Atomic operation for add a link
-function addLink(sourceNode,targetNode,name,isLeft,isRight,isRelation,shortName, isCloning){
-    if (shortName == null)
-        shortName = name;
-
+function addLink(sourceNode,targetNode,shortName,isLeft,isRight,isRelation,isCloning){
     if(!isCloning && findLink(sourceNode,targetNode))//if link exists, then don't add a new one.
         return;
 
-    var newlink = new XDILink(++lastLinkId,name,shortName,isLeft, isRight, sourceNode, targetNode);
+    var newlink = new XDILink(++lastLinkId,shortName,isLeft, isRight, sourceNode, targetNode);
     if (isRelation)
         newlink.isRelation = true;
     
@@ -275,16 +272,16 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
     }
 
     if (targetNode.type === xdi.constants.nodetypes.LITERAL){
-        var innerNode = addNode(sourceNode.name + "&", "&", Math.max(sourceNode.graphId,targetNode.graphId));
+        var innerNode = addNode(sourceNode.fullName + "&", "&", Math.max(sourceNode.graphId,targetNode.graphId));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
         link = linkToInnerNode;
-        targetNode.name = innerNode.name + "&" + targetNode.shortName;
+        targetNode.fullName = innerNode.fullName + "&" + targetNode.shortName;
     }
     else {
         var linkName = targetNode.shortName;
         link = addLink(sourceNode,targetNode,linkName, isLeft, isRight, false);
-        targetNode.name = sourceNode.name + targetNode.shortName;
+        targetNode.fullName = sourceNode.fullName + targetNode.shortName;
     }
     checkLinkValidity(link);
 
@@ -314,20 +311,16 @@ function findLink(source,target){
     return globalNodeLinkMap[key]; //if exist, return value, else return null;
 }
 
-// Returns the position/index in node collection of the node with name value name
-function findNode(nodeCollection, name, graphId) {
+// Returns the position/index in node collection of the node with fullName value fullName
+function findNode(nodeCollection, fullName, graphId) {
     return _.find(nodeCollection,function(d) { 
         if (graphId != null)
-            return d.name === name && d.graphId === graphId; 
+            return d.fullName === fullName && d.graphId === graphId; 
         else
-            return d.name === name;
+            return d.fullName === fullName;
     });
 }
 
-// Returns the position/index of the first link matching the provided node name
-// function findLinkToNode(linkCollection, node) {
-//     return _.find(linkCollection,function(d) { return d.source==node || d.target == node; })
-// }
 
 //Atomic REMOVE NODE
 function removeNode(nodeToRemove) {
@@ -360,8 +353,8 @@ function removeLink(linkToRemove){
     var source = linkToRemove.source;
     var target = linkToRemove.target;
     
-    source_name = source.name;
-    target_name = target.name;
+    source_name = source.fullName;
+    target_name = target.fullName;
     source_childnb = (source.children) ? source.children.length : 0;
     target_childnb = (target.children) ? target.children.length : 0;
     if (source_childnb !== 0) {
@@ -374,21 +367,12 @@ function removeLink(linkToRemove){
     delLinkfromMap(source, target);
 }
 
-// //Recursively remove all links of a node.
-// function removeLinksOfNode(victim) {
-//     var linkFound = findLinkToNode(globalLinks, victim);
-//     if (linkFound) {
-//         var gone = globalLinks.splice(linkFound, 1);
-//         delLinkfromMap(gone[0].source, gone[0].target);
-//         removeLinksOfNode(victim);
-//     }
-// }
 
 function checkLinkValidity(linkToCheck){
     // checking statement's validity
-    var subject = linkToCheck.source.name;
-    var predicate = linkToCheck.name;
-    var object = linkToCheck.target.name;
+    var subject = linkToCheck.source.fullName;
+    var predicate = linkToCheck.shortName;
+    var object = linkToCheck.target.fullName;
     var statement;
     var beginpred = predicate.charAt(0);
     if (beginpred === '#' || beginpred === '$') {
@@ -467,7 +451,7 @@ function setNodeIsRoot(nodeToSet,newValue){
     }
     else if (nodeToSet.type === xdi.constants.nodetypes.ROOT)
     {
-        nodeToSet.type = xdi.util.getNodeType(nodeToSet.name);
+        nodeToSet.type = xdi.util.getNodeType(nodeToSet.fullName);
         // nodeToSet.type = nodeToSet._type;
         // nodeToSet._type = null;
     }
@@ -477,18 +461,19 @@ function setNodeIsLiteral (nodeToSet,newValue) {
     if(newValue)
         nodeToSet.type = xdi.constants.nodetypes.LITERAL;
     else
-        nodeToSet.type = xdi.util.getNodeType(nodeToSet.name);
+        nodeToSet.type = xdi.util.getNodeType(nodeToSet.fullName);
 }
 
 function setLinkLabel(linkToSet,newValue){
     if (newValue) {
-        linkToSet.shortName = newValue; //TODO update the name as well
+        linkToSet.shortName = newValue;
     }       
 }
 
 function setNodeLabel(nodeToSet,newValue){
     if (newValue) {
          nodeToSet.shortName = newValue;
+         nodeToSet.fullName = _.first(nodeToSet.parents).fullName + newValue;
     }
 }
 
@@ -518,51 +503,24 @@ function inverseLinkDirection(linkToSet){
 }
 
 
+function graphToString () {
+    var statements = [];
+    globalLinks.forEach(function (d) {
+        var subject = d.source.fullName;
+        var predicate = "";
+        var object = d.target.shortName;
 
-
-function graphToString() {
-    var xdisdlgraph = [];
-    var xdisdlgraphforrel = [];
-    var graphstr = "";
-
-    // generating the list of triples
-    $.each(globalLinks, function(i, d) {
-        var source = d.source;
-        var target = d.target;
-        var subject, predicate, object;
-        var newstatement = null;
-        
-        if (d.isRelation) {
-            predicate = d.name;
-            subject = source.name;
-            object = target.name;
-            newstatement = subject + "/" + predicate + "/" + object;
-        } 
-        else if(d.name === "&" && d.target.isValue())
+        if(d.isRelation)
         {
-                subject = source.name;
-                object = target.shortName;
-                newstatement = subject + "//" + object;
+            predicate = d.shortName;
+            object = d.target.fullName;
         }
-        else {
-            if (d.name === "&") {
-                predicate = xdi.constants.xri_literal;
-                subject = source.name;
-                object =target.shortName;
-                newstatement = subject + "/" + predicate + "/" + object;
-            } else { // contextual statement
-            subject = source.name;
-            predicate = "";
-            object = target.name;
-            if (object.indexOf(subject) === 0)
-                object = object.replace(subject, "");
-            newstatement = subject + "/" + predicate + "/" + object;
-            }
-        }
-        if (newstatement !== null)
-            xdisdlgraph.push(newstatement);
-    });
-    return xdisdlgraph;
+        else if (d.isLiteral())
+            predicate = "&";
+
+        statements.push(subject+"/"+predicate+"/"+object);
+    })
+    return statements;
 }
 
 function isImplied(xdistatement) {

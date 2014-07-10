@@ -67,11 +67,11 @@ $(function() {
         initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
 
-    // initializeGraphWithXDI(attributeSingletons);
+    initializeGraphWithXDI(attributeSingletons);
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
-    initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
+    // initializeGraphWithXDI("=alice<#email>&/&/\"alice@email.com\"")
     // initializeGraphWithXDI("=alice<#email>&/&/32")
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
@@ -132,7 +132,7 @@ function updateLinkElement () {
     
     newLinkGs.append("svg:path")
         .append("title")
-        .text(function(d){return d.name});
+        .text(function(d){return d.shortName});
     
     newLinkGs.append("svg:text")
         .attr('class', "textLabel")
@@ -141,7 +141,7 @@ function updateLinkElement () {
     //// Adjust Classes
     linkGs.classed('selected', function(d) {return d.isSelected;})
         .classed('relation', function(d) {return d.isRelation;})
-        .classed('literal', function(d) {return d.target.type === xdi.constants.nodetypes.LITERAL;})
+        .classed('literal', function(d) {return d.isLiteral()})
         .classed('left',function(d){return d.left})
         .classed('right',function(d){return d.right});
     linkGs.select('text')
@@ -168,7 +168,7 @@ function updateNodeElement () {
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
         .append("title")
-        .text(function(d){return d.name});
+        .text(function(d){return d.fullName});
         
     newNodes.append("svg:text")
         .attr('class', "textLabel")
