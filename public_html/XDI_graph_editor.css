@@ -588,11 +588,38 @@ body{
 .layoutControl input{
   display:block;
   width:100%;
+  
+  -webkit-appearance:none;
+  height:5px;
+  margin:8px 0;
+  border-radius:5px;
+  border: 1px solid gray;
+  
+/*   -webkit-transition:background 0.3s; */
+}
+
+.layoutControl input::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  height:12px;
+  width:12px;
+  background:rgba(220,220,220,1);
+  border:1px solid gray;
+  border-radius:10px;
+}
+
+.layoutControl input::-webkit-slider-thumb:hover{
+  border-color:rgba(103,145,122,1);
+  border-width:2px;
+}
+
+
+.layoutControl input:focus {
+  outline: 0px;
 }
 
 .layoutControl span{
   font-size:0.8em;
-  
+
 }
 
 .layoutControl span:first-of-type{

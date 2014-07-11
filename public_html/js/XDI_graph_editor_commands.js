@@ -222,12 +222,19 @@ function changeLayoutCommand (newLayout) {
 
 function resetLayoutCommand () {
     if(currentLayout!=null)
-        currentLayout.resetLayout();
+    {
+        currentLayout.resetLayoutParameter();
+        restart(true,false);
+    }
 }
 
 function updateLayoutParameterCommand () {
     if(currentLayout!=null)
+    {
         currentLayout.updateLayoutParameter();
+        restart(true,false);
+    }
+    
 }
 
 

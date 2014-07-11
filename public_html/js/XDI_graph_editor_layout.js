@@ -62,14 +62,50 @@ GraphLayout.prototype.alignTargetPoint = function (d) {
     return newPos;
 }
 
+GraphLayout.prototype.initializeSettings = function () {
+    var control = d3.select('#layout-control')
+    
+    control.selectAll('section').remove();
+    
+    var section = control.selectAll('section')
+        .data(this.settingsName)
+        .enter()
+        .append('section')
+
+    section.append('p').text(function(d) { return d.name; });
+
+    section.append('input')
+        .attr('type', 'range')
+        .attr('id', function(d) { return d.id; })
+        .attr('onchange', 'updateLayoutParameterCommand()')
+
+    section.append('span').text(function(d) { return d.minName; });
+
+    section.append('span').text(function(d) { return d.maxName; });
+
+    this.resetLayoutParameter();
+
+}
+
 GraphLayout.prototype.updateLayoutParameter = function () {
+    this.settingsName.forEach(function (d) {
+        this.settings[d.id] = this.getSliderValue('#'+d.id);
+    },this);
     
 }
 
-GraphLayout.prototype.resetLayout = function () {
-    
+GraphLayout.prototype.resetLayoutParameter = function (){
+    this.settings = {};
+    this.settingsName.forEach(function (d) {
+        this.settings[d.id] = 1;
+        d3.select('#'+d.id).node().value = 50;
+    },this);
 }
 
+GraphLayout.prototype.getSliderValue = function (id) {
+    var v = d3.select(id).node().value;
+    return 0.1 + v/100 * 1.8; //ranging from 0.1 ~ 1.9, equals 1 when v = 50
+}
 
 ///
 /// Force Layout
@@ -85,7 +121,8 @@ function ForceLayout (){
         .on("tick", this.updateElementPos)
         .on('end',updateViewPortRect);
 
-    this.userSettings = {linkStrength:1,linkDistance:1,nodeRepulsion:1};
+    this.settingsName = forceLayoutSettings;
+    this.initializeSettings();
 
     d3.select('#forceLayoutCommand')
     .classed('checked',true);
@@ -119,14 +156,14 @@ ForceLayout.prototype.updateLayout = function(nodes,links,centerRootNodes) {
         .gravity(0)
         .linkDistance(function(d) { 
                 // default is 20.
-                return (30 + 30*d.source.children.length) * currentLayout.userSettings.linkDistance;
+                return (30 + 30*d.source.children.length) * currentLayout.settings.linkDistance;
             })
         .linkStrength(function(d) {
                 // range is [0,1]
-                return (d.isRelation ? 0.1 : 1) * currentLayout.userSettings.linkStrength;
+                return (d.isRelation ? 0.1 : 1) * currentLayout.settings.linkStrength;
             })
         .theta(0.1) // default is 0.8
-        .charge(-10*numberOfNodes * currentLayout.userSettings.nodeRepulsion)
+        .charge(-10*numberOfNodes * currentLayout.settings.nodeRepulsion)
         .chargeDistance(1000);
 
 
@@ -183,25 +220,7 @@ ForceLayout.prototype.exit = function () {
     d3.select('#forceLayoutCommand')
     .classed('checked',false);
 }
-ForceLayout.prototype.updateLayoutParameter = function () {
-    this.userSettings.linkDistance = this.getSliderValue("#linkDistance");
-    this.userSettings.linkStrength = this.getSliderValue("#linkStrength");
-    this.userSettings.nodeRepulsion = this.getSliderValue("#nodeRepulsion");
-    restart(true,false);
-}
 
-ForceLayout.prototype.getSliderValue = function (id) {
-    var v = d3.select(id).node().value;
-    return 0.1 + v/100 * (3-0.1);
-}
-
-ForceLayout.prototype.resetLayout = function () {
-    this.userSettings = {linkStrength:1,linkDistance:1,nodeRepulsion:1};
-    d3.select("#linkDistance").node().value = 50;
-    d3.select("#linkStrength").node().value = 50;
-    d3.select("#nodeRepulsion").node().value = 50;
-    restart(true,false);
-}
 
 ///
 /// Tree Layout
@@ -218,6 +237,9 @@ function TreeLayout() {
         .sort(function  (a,b) {
             return a.id - b.id;
         })
+
+    this.settingsName = treeLayoutSettings;
+    this.initializeSettings();
 
     this.updateElementPos();
 
@@ -426,8 +448,12 @@ TreeLayout.prototype.recurse = function (node) {
 
 TreeLayout.prototype.setLayoutSize = function (width,height) {
     //Partition layout can only generate horizontal layout. Therefore, x and y, width and height should be swapped.
-    this.partition.size([height,width]); 
+    
+    var newWidth = height * this.settings.verticalRatio;
+    var newHeight = width *  this.settings.horizontalRatio;
+    this.partition.size([newWidth,newHeight]); 
 }
+
 
 TreeLayout.prototype.exit = function () {
     this.partition = null;
