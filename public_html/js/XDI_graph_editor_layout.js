@@ -383,12 +383,12 @@ TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
     if(dy/dx < HALF_CIRCLE_RANGE )
     {
         rx = ry = Math.abs(tx - sx)/2;
-        ty += padding*Math.sign(sy-ty);
+        ty += padding*Math.sign(tx-sx);
     }
     else if(dx/dy < HALF_CIRCLE_RANGE)
     {
         rx = ry = Math.abs(ty - sy)/2;
-        tx += padding*Math.sign(sx-tx);
+        tx += padding*Math.sign(sy-ty);
     }
     else
     {
