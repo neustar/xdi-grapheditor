@@ -227,18 +227,24 @@ function zoomTo (to) {
 	zoomFromTo(res,to);
 }
 
-function zoomToElement(d){
+function zoomToElement(d,scale){
+	scale = scale || 2;
 	if(d.x!=null && d.y!=null)
 	{
-		zoomTo([d.x,d.y,svgWidth*0.5]);	
+		zoomTo([d.x,d.y,svgWidth/scale]);	
 	}
 	else if(d.source != null && d.target != null)
 	{
 		var zx = (d.source.x + d.target.x)/2;
 		var zy = (d.source.y + d.target.y)/2;
-		zoomTo([zx,zy,svgWidth*0.5]);	
+		zoomTo([zx,zy,svgWidth/scale]);	
 	}
 }
+
+function zoomElementToPos (d,newPos,scale) {
+	zoomTo([svgWidth/2 - newPos[0] + d.x, svgHeight/2 - newPos[1] + d.y, svgWidth/scale]);
+}
+
 
 function zoomToFit () {
 	if(!_.isEmpty(selected_nodes))
@@ -281,6 +287,11 @@ function zoomByScaleDelta (delta,centerPos,withTransition) {
 		zoomTo([centerPos[0],centerPos[1],svgWidth/currentScale]);
 	else
     	scaleView(centerPos,currentScale);   
+}
+
+function resetZoom () {
+	zoom.translate([0,0]);
+	zoom.scale(1);
 }
 
 

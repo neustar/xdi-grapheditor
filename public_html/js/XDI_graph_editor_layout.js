@@ -225,10 +225,13 @@ ForceLayout.prototype.exit = function () {
 
 function TreeLayout() {
     this.name = "Tree";
+    this.offsetXRatio = 0.04;
+    this.offsetYRatio = 0.05;
+
+
     this.drag = d3.behavior.drag()
         .on('drag',this.dragmove);
     this.partition = d3.layout.partition()
-        .size([svgHeight,svgWidth])
         .value(function(d) { return 1; })
         .sort(function  (a,b) {
             return a.id - b.id;
@@ -268,7 +271,9 @@ TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasTra
         var t = d.x;d.x = d.y;d.y = t; 
         t = d.dx; d.dx = d.dy; d.dy = t;
         d.children = d._children;
-    });
+        d.x += this.offsetXRatio * svgWidth;
+        d.y += this.offsetYRatio * svgHeight;
+    },this);
 
     svg.selectAll('.link text')
         .attr('dx','0.5em')

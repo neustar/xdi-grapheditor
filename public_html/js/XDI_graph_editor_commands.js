@@ -205,13 +205,15 @@ function zoomOutCommand () {
 function changeLayoutCommand (newLayout) {
     if(currentLayout!=null)
         currentLayout.exit();
-    
+    var r = getCommonRoots()[0];
     switch (newLayout){
         case Layouts.Force:
             currentLayout = new ForceLayout();
+            zoomElementToPos(r,[svgWidth/3,svgHeight/3],1);
             break;
         case Layouts.Tree:
             currentLayout = new TreeLayout();
+            resetZoom();
             break;
         default:
             console.log("Change Layout Error")

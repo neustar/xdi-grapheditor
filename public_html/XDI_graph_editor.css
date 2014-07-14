@@ -592,6 +592,9 @@ body{
   -webkit-appearance:none;
   height:5px;
   margin:8px 0;
+  
+  background:rgba(255,255,255,0.8);
+  
   border-radius:5px;
   border: 1px solid gray;
   

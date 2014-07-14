@@ -178,6 +178,11 @@ function getDrawData(root){
     return {nodes:resNodes,links:resLinks,map:resMap};
 }
 
+function getCommonRoots (nodeSet) {
+    nodeSet = nodeSet || globalNodes;
+    return nodeSet.filter(function(d) { return d.isCommonRoot(); });
+}
+
 //Analyse one line of XDI statements, create or found subject node, object node and add link to them
 function addStatement(statement, willJoinGraph) {
     var targetGraphId = willJoinGraph? null:lastGraphId;

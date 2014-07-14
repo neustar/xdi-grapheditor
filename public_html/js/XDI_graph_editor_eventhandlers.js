@@ -120,9 +120,9 @@ function keydownOnSVG() {
             setDragSelectAbility(false);
             break;
 
-        case 66: // B
-            setDoubleArrowCommand();
-            break;
+        // case 66: // B
+        //     setDoubleArrowCommand();
+        //     break;
             
         case 82: // R
             setRelationCommand();
