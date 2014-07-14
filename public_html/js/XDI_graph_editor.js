@@ -94,8 +94,8 @@ function initializeGraph()
     lastLinkId = -1;
     globalNodeLinkMap={};
     
-    currentLayout = new ForceLayout();
-    // currentLayout = new TreeLayout();
+    // currentLayout = new ForceLayout();
+    currentLayout = new TreeLayout();
 
     drag_line=svg.select("#drag_line");
 
@@ -212,7 +212,7 @@ function restart(startLayout,getNewData,centerRootNodes) {
     //
     if(startLayout)
     {
-        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes,true,false);
+        currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes,true,true);
         startDrag();
     }    
 

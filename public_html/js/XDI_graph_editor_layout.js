@@ -248,7 +248,7 @@ function TreeLayout() {
 }
 
 TreeLayout.prototype = new GraphLayout();
-TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasNodeTransition,hasLinkTransition) {
+TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasTransition) {
     if(_.isEmpty(nodes)&&_.isEmpty(links))
         return;
     this.setLayoutSize(svgWidth,svgHeight);
@@ -281,82 +281,70 @@ TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasNod
 
     // svg.selectAll('.node text')
     //     .attr('dx','1em' );
-
-    this.updateElementPos(hasNodeTransition,hasLinkTransition);
-}
-TreeLayout.prototype.updateElementPos = function (hasNodeTransition,hasLinkTransition) {
-    if(hasNodeTransition){
-        svg.selectAll('.node')
-            .transition()
-            .duration(LAYOUT_TRANSITION_DURATION)
-            .attr('transform', function(d) { 
-                return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
-            });
-        if(!hasLinkTransition)
-        {
-            svg.select('#linkCanvas')
-                .attr('opacity', 0)
-                .transition()
-                .duration(LAYOUT_TRANSITION_DURATION/2)
-                .delay(LAYOUT_TRANSITION_DURATION/2)
-                .attr('opacity', 1)
-        }
-        
-    }
-    else{
-        svg.selectAll('.node')
-            .attr('transform', function(d) { 
-                return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
-            });
-    }
-
-    if(hasLinkTransition)
-    {
-        svg.selectAll('.link path')
-            .transition()
-            .duration(LAYOUT_TRANSITION_DURATION)
-            // .attrTween('d',function(d) { 
-            //     var a = d3.select(this).attr('d')
-            //     var b = currentLayout.getLinkPathData(d);
-
-            //     return d3.interpolate(a,b);
-                // var curS = this.getPointAtLength(0);
-                // var curT = this.getPointAtLength(this.getTotalLength());
-                // var a = {sx:curS.x, sy:curS.y, tx: curT.x, ty: curT.y};
-                // var b = {sx:d.source.x, sy:d.source.y, tx: d.target.x, ty: d.target.y};
-                // var i = d3.interpolate(a,b)
-                // return function(t) { 
-                //     var tp = i(t);
-                //     var td = {isRelation: d.isRelation, isIllegal:d.isIllegal, source:{x:tp.sx,y:tp.sy},target:{x:tp.tx,y:tp.ty}};
-                //     return currentLayout.getLinkPathData(td);
-                // }
-            // })
-            .attr('d', this.getLinkPathData)
-            
-        svg.selectAll('.link path').each(function(d) { 
-                if(!d.textPoint)
-                    d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
-            })
-    }
+    if(hasTransition)
+        this.transitionToElementPos();
     else
-    {
-        svg.selectAll('.link path')
-            .attr('d', this.getLinkPathData)
-            .each(function(d) { 
-                if(!d.textPoint)
-                    d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
-            })
-    }
+        this.updateElementPos();
+}
+TreeLayout.prototype.updateElementPos = function () {
+    svg.selectAll('.node')
+        .attr('transform', function(d) { 
+            return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
+        });
 
 
-
+    svg.selectAll('.link path')
+        .attr('d', this.getLinkPathData)
     svg.selectAll('.link text')
-        .attr('x',function(d) { return d.textPoint? d.textPoint.x: 0; })
-        .attr('y',function(d) { return d.textPoint? d.textPoint.y: 0; })
+        .attr('x',function(d) { return d.textPoint.x; })
+        .attr('y',function(d) { return d.textPoint.y; })
 
     updateViewPortRect(); 
 }
-TreeLayout.prototype.getLinkPathData = function (d) {
+
+TreeLayout.prototype.transitionToElementPos = function (){
+    svg.selectAll('.node')
+        .transition()
+        .duration(LAYOUT_TRANSITION_DURATION)
+        .attr('transform', function(d) { 
+            return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
+        });
+
+    svg.selectAll('.link text')
+        .style('opacity', 0);
+
+    svg.selectAll('.link path')
+        .style('opacity',function(d) {return d3.select(this).attr('d')? null:0})// only hide the path that are newly created.
+        .transition()
+        .duration(LAYOUT_TRANSITION_DURATION)
+        .attrTween('d',this.getPathTween)
+        .each('end',this.pathTransitionEndHandler);
+}
+
+TreeLayout.prototype.getPathTween = function (d,i) {
+    var a = d3.select(this).attr('d') || "M0,0"; //if the current path data is empty, set to empty path
+    var b = currentLayout.getLinkPathData(d,i,this);
+    if(_.contains(a,'A')) //If is arc, set the sweep flag to be the same.
+    {
+        var ia = a.lastIndexOf(' ') - 1;
+        var ib = b.lastIndexOf(' ') - 1;
+        a = replaceAt(a,ia,b[ib]);
+    }
+    return d3.interpolate(a,b);
+}
+
+TreeLayout.prototype.pathTransitionEndHandler = function (d) {
+    //"this" is the path element
+    var parent = d3.select(this.parentNode)
+    parent.select('text')
+        .style('opacity', null) //Remove element's own opacity setting
+        .attr('x',function(d) { return d.textPoint.x; })
+        .attr('y',function(d) { return d.textPoint.y; });
+    parent.select('path')
+        .style('opacity', null);
+}
+
+TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
     d.textPoint = null;
     var sx = d.source.x,
         sy = d.source.y,
@@ -408,9 +396,19 @@ TreeLayout.prototype.getLinkPathData = function (d) {
         var pos = currentLayout.alignTargetPoint(d);
         sx = pos.sourceX,sy = pos.sourceY,tx = pos.targetX,ty = pos.targetY;
     }
+
+    if(!pathElement)
+        pathElement = this;
         
-    return 'M' + x(sx) + ',' + y(sy)
+    var newPathD = 'M' + x(sx) + ',' + y(sy)
     + ' A' + (x(rx)-x(0)) + ","+ (y(ry)-y(0))+" 0 0 "+ sweep +" "+ x(tx) + ',' + y(ty);
+
+    var oldPathD = pathElement.getAttribute('d')||"M0,0"; //if the old path data is empty, set to empty path
+    //Must update the d attribute first before using getTotalLength() and getPointAtLength()
+    pathElement.setAttribute('d',newPathD);
+    d.textPoint = pathElement.getPointAtLength(pathElement.getTotalLength()/2);
+    pathElement.setAttribute('d',oldPathD);
+    return newPathD;
 }
 TreeLayout.prototype.drag = null;
 TreeLayout.prototype.dragmove = function () {
@@ -463,7 +461,9 @@ TreeLayout.prototype.exit = function () {
 }
 
 
-
+function replaceAt (string, index, character) {
+    return string.substr(0, index) + character + string.substr(index+character.length);
+}
 
 Math.sign = function (x) {
     return x&&(x/Math.abs(x));
