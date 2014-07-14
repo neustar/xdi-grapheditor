@@ -51,10 +51,14 @@ var relData = null;
 // var node, link, labels;
 var drag_line = null, drag = null;
 
+var DEFAULT_NODE_RADIUS = 13;
 var NODE_RADIUS = 13;
 var NODE_TEXT_MAX_LENGTH = 20;
 var LINK_TEXT_MAX_LENGTH = 20;
 
+var globalLayoutSettings = {
+	nodeScale: 1
+}
 
 var Mode = {
 	BROWSE:'browse',
@@ -135,5 +139,3 @@ var Layouts = {
 var currentLayout = null//ForceLayout;
 var HALF_CIRCLE_RANGE = 0.1;
 var LAYOUT_TRANSITION_DURATION = 1000;
-var LINK_ARROW_PADDING = 17;
-var LINK_END_PADDING = 2;

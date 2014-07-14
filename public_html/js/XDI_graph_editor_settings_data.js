@@ -42,7 +42,14 @@ var forceLayoutSettings =
 		id:"nodeRepulsion",
 		minName:"Less",
 		maxName:"More"
+	},
+	{
+		name:"Node Size",
+		id:"nodeSize",
+		minName:"Small",
+		maxName:"Large"
 	}
+
 ]
 
 var treeLayoutSettings =
@@ -56,6 +63,12 @@ var treeLayoutSettings =
 	{
 		name:"Vertical Margin",
 		id:"verticalRatio",
+		minName:"Small",
+		maxName:"Large"
+	},
+	{
+		name:"Node Size",
+		id:"nodeSize",
 		minName:"Small",
 		maxName:"Large"
 	}

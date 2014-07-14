@@ -47,8 +47,8 @@ GraphLayout.prototype.alignTargetPoint = function (d) {
         dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
         normX = deltaX / dist,
         normY = deltaY / dist,
-        sourcePadding = d.left ? LINK_ARROW_PADDING : LINK_END_PADDING,
-        targetPadding = d.right ? LINK_ARROW_PADDING : LINK_END_PADDING;
+        sourcePadding = d.left ? NODE_RADIUS : 0,
+        targetPadding = d.right ? NODE_RADIUS : 0;
 
     sourcePadding =  sourcePadding / zoom.scale();
     targetPadding = targetPadding / zoom.scale();
@@ -125,7 +125,7 @@ function ForceLayout (){
     this.initializeSettings();
 
     d3.select('#forceLayoutCommand')
-    .classed('checked',true);
+        .classed('checked',true);
 }
 
 ForceLayout.prototype = new GraphLayout();
@@ -199,12 +199,10 @@ ForceLayout.prototype.getLinkPathData = function (d) {
         targetX = newPos.targetX,
         targetY = newPos.targetY,
         dist = newPos.dist;
-    if(currentLayout.hasOverlapLink(d)){
+    if(currentLayout.hasOverlapLink(d))
         return 'M' + x(sourceX) + ',' + y(sourceY) + 'A' + (dist) * getScaleRatio()+ ',' + (dist)* getScaleRatio() + ' 0 0,1 ' + x(targetX) + ',' + y(targetY);
-    }
-    else {
+    else 
         return 'M' + x(sourceX) + ',' + y(sourceY) + 'L' + x(targetX) + ',' + y(targetY);
-    }
 }
 ForceLayout.prototype.drag = nodeForceDrag;
 ForceLayout.prototype.setLayoutSize = function (width,height) {
@@ -215,10 +213,8 @@ ForceLayout.prototype.exit = function () {
     this.force.stop();
     this.force = null;
 
-
-
     d3.select('#forceLayoutCommand')
-    .classed('checked',false);
+        .classed('checked',false);
 }
 
 
@@ -263,7 +259,7 @@ TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasTra
             return;
         this.recurse(d);
         globalRoot.children.push(d);
-    },this)
+    },this);
 
     this.partition.nodes(globalRoot);
 
@@ -272,7 +268,7 @@ TreeLayout.prototype.updateLayout = function (nodes,links,centerRootNodes,hasTra
         var t = d.x;d.x = d.y;d.y = t; 
         t = d.dx; d.dx = d.dy; d.dy = t;
         d.children = d._children;
-    })
+    });
 
     svg.selectAll('.link text')
         .attr('dx','0.5em')
@@ -292,12 +288,12 @@ TreeLayout.prototype.updateElementPos = function () {
             return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
         });
 
-
     svg.selectAll('.link path')
-        .attr('d', this.getLinkPathData)
+        .attr('d', this.getLinkPathData);
+
     svg.selectAll('.link text')
         .attr('x',function(d) { return d.textPoint.x; })
-        .attr('y',function(d) { return d.textPoint.y; })
+        .attr('y',function(d) { return d.textPoint.y; });
 
     updateViewPortRect(); 
 }
@@ -354,7 +350,7 @@ TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
     var dx = Math.abs(tx-sx);
     var dy = Math.abs(ty-sy);
 
-    var padding = LINK_ARROW_PADDING / zoom.scale();
+    var padding = NODE_RADIUS / zoom.scale();
 
     if(!d.isRelation)
     {
@@ -371,7 +367,7 @@ TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
         }
     }
 
-    var sweep = 0
+    var sweep = 0;
 
     if(!currentLayout.hasOverlapLink(d))
         sweep = ty < sy ? 0:1;
@@ -397,13 +393,12 @@ TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
         sx = pos.sourceX,sy = pos.sourceY,tx = pos.targetX,ty = pos.targetY;
     }
 
-    if(!pathElement)
-        pathElement = this;
+    pathElement = pathElement || this;
         
     var newPathD = 'M' + x(sx) + ',' + y(sy)
     + ' A' + (x(rx)-x(0)) + ","+ (y(ry)-y(0))+" 0 0 "+ sweep +" "+ x(tx) + ',' + y(ty);
 
-    var oldPathD = pathElement.getAttribute('d')||"M0,0"; //if the old path data is empty, set to empty path
+    var oldPathD = pathElement.getAttribute('d') || "M0,0"; //if the old path data is empty, set to empty path
     //Must update the d attribute first before using getTotalLength() and getPointAtLength()
     pathElement.setAttribute('d',newPathD);
     d.textPoint = pathElement.getPointAtLength(pathElement.getTotalLength()/2);
@@ -436,7 +431,7 @@ TreeLayout.prototype.recurse = function (node) {
             else
                 node.children.push(d)
         }
-    })
+    });
 
     if(!(node.type === xdi.constants.nodetypes.VALUE&&node._children.length == 1))
         node.children.splice(1,0,{id:-1,isForLayout:true,parent:node});
@@ -457,7 +452,7 @@ TreeLayout.prototype.exit = function () {
     this.partition = null;
 
     d3.select('#treeLayoutCommand')
-    .classed('checked',false);
+       .classed('checked',false);
 }
 
 

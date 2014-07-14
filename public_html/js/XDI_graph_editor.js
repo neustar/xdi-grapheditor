@@ -221,19 +221,20 @@ function restart(startLayout,getNewData,centerRootNodes) {
 
 function getNodeShape (type) {
     var symbol = d3.svg.symbol();
+    var scale = currentLayout.settings.nodeSize || 1;
     switch(type){
         case xdi.constants.nodetypes.LITERAL:
-            symbol.type("square").size(500);
+            symbol.type("square").size(500 * scale);
             break;
         case xdi.constants.nodetypes.CONTEXT:
         case xdi.constants.nodetypes.ROOT:
         case xdi.constants.nodetypes.ENTITY:
-            symbol.type("circle").size(500);
+            symbol.type("circle").size(500 * scale);
             break;
         
         case xdi.constants.nodetypes.ATTRIBUTE:
         case xdi.constants.nodetypes.VALUE:
-            symbol.type("diamond").size(400);
+            symbol.type("diamond").size(400 * scale);
             break;
     }
     return symbol();
