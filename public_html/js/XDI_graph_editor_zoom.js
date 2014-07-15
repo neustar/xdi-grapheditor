@@ -26,7 +26,9 @@ function initializeZoom () {
 	    .x(x)
 	    .y(y)
 	    .scaleExtent([0,Infinity])
-	    .on("zoom",zoomEventHandler);
+	    .on("zoomstart", zoomStartEventHandler)
+	    .on("zoom",zoomEventHandler)
+	    .on("zoomend", zoomEndEventHandler)
 
     zoom(svg);
 
@@ -61,20 +63,33 @@ function updateNavSize () {
 
 var lastZoom = [0,0];
 
+function zoomStartEventHandler () {
+	captureMultiTouchEvents();
+	// console.log("zoomstart");
+}
+
+function preventEvents () {
+	var sourceEvent = d3.event.sourceEvent;
+		sourceEvent.stopPropagation();
+		sourceEvent.defaultPrevented = true;
+		sourceEvent.preventDefault();
+}
+
+function captureMultiTouchEvents () {
+	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length > 1)
+		preventEvents();
+}
+
+function zoomEndEventHandler () {
+	// console.log("zoomend");
+}
+
 function zoomEventHandler(){
+	console.log("zoom");
+
 	var sourceEvent = d3.event.sourceEvent;
 
-	if(sourceEvent instanceof TouchEvent && sourceEvent.touches.length < 2)
-	{
-		zoom.translate(lastTranslate);
-		return;
-	}
-	else
-		lastTranslate = zoom.translate();
-
-
-	// if (sourceEvent instanceof TouchEvent && sourceEvent.touches.length < 2)
-	// 	return;
+	captureMultiTouchEvents();
 
     currentLayout.updateElementPos();
 	updateViewPortRect();

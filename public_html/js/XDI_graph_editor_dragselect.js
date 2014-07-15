@@ -52,11 +52,19 @@ function initializeDragSelect () {
 
 
 function brushstart (d) {
-	console.log("brushstart");
+	// console.log("brushstart");
+	captureSingleTouchEvents();
+}
+
+function captureSingleTouchEvents () {
+	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length < 2)
+		preventEvents();
 }
 
 function brushend (d) {
 	// console.log("brushend")
+	captureSingleTouchEvents();
+	
 	var selectedNodes = d3.selectAll('.node.selected').data();
 	var selectedLinks = d3.selectAll('.link.selected').data();
 	
@@ -70,11 +78,7 @@ function brushend (d) {
 }
 
 function brushmove (d) {
-	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length > 1)
-	{
-		dragSelectBrush.clear();
-		d3.select('#dragSelectCanvas').call(dragSelectBrush);
-	}
+	captureSingleTouchEvents();
 	// console.log("brushmove")
 	var extent = dragSelectBrush.extent();
 	
