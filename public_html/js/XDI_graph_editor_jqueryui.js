@@ -113,7 +113,7 @@ function initializeMenu(){
     })
 
     header.mouseenter(function() { header.removeClass('active'); $(this).addClass('active'); })
-    header.on('touchstart',function(e) { 
+    header.on('touchend',function(e) { 
       e.stopPropagation();
       var hadClass = $(this).hasClass('active');
       header.removeClass('active'); 
@@ -131,6 +131,10 @@ function initializeMenu(){
       menu.removeClass('active'); 
       header.removeClass('active'); 
     });
+
+    item.each(function (index,element) {
+      $(element).on('touchend',element.onclick);
+    })
 
     $('body').mousedown(function(e) { 
       if(menu.has(e.toElement).length==0)

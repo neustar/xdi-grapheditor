@@ -77,7 +77,7 @@ $(function() {
     // initializeGraphWithXDI("[=]!:uuid:f642b891-4130-404a-925e-a65735bceed0/$all/")
 
     // initializeGraphWithXDI("=alice/#friend/=bob\n=bob/#friend/=alice")
-    
+    report("Loaded");
 });
 
 
@@ -415,3 +415,8 @@ function detectBrowserType () {
         currentBrowser = BrowserTypes.Other;
 }
 
+function report (text) {
+    // var log = d3.select('#log');
+    // var newText = log.html() + text + "<br>";
+    // log.html(newText);
+}

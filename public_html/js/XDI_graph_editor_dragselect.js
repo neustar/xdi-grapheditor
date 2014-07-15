@@ -53,16 +53,24 @@ function initializeDragSelect () {
 
 function brushstart (d) {
 	// console.log("brushstart");
+	report("brushstart");
 	captureSingleTouchEvents();
 }
 
 function captureSingleTouchEvents () {
 	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length < 2)
+	{
+		report('cap-single');
 		preventEvents();
+	}
+
 }
 
 function brushend (d) {
 	// console.log("brushend")
+	if(!dragSelectBrush)
+		return;
+	report("brushend");
 	captureSingleTouchEvents();
 	
 	var selectedNodes = d3.selectAll('.node.selected').data();
@@ -78,6 +86,7 @@ function brushend (d) {
 }
 
 function brushmove (d) {
+	// report("brushmove");
 	captureSingleTouchEvents();
 	// console.log("brushmove")
 	var extent = dragSelectBrush.extent();

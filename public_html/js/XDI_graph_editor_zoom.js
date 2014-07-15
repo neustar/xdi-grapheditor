@@ -64,31 +64,53 @@ function updateNavSize () {
 var lastZoom = [0,0];
 
 function zoomStartEventHandler () {
-	captureMultiTouchEvents();
 	// console.log("zoomstart");
+	if(d3.event && d3.event.sourceEvent instanceof TouchEvent)
+		report("zoomstart "+d3.event.sourceEvent.touches.length);
+	else
+		report("zoomstart "+d3.event);
+	captureMultiTouchEvents();
 }
 
 function preventEvents () {
 	var sourceEvent = d3.event.sourceEvent;
 		sourceEvent.stopPropagation();
-		sourceEvent.defaultPrevented = true;
+		// sourceEvent.defaultPrevented = true;
 		sourceEvent.preventDefault();
 }
 
 function captureMultiTouchEvents () {
 	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length > 1)
+	{
+		report('cap-multi');	
 		preventEvents();
+	}
 }
 
 function zoomEndEventHandler () {
 	// console.log("zoomend");
+	if(d3.event && d3.event.sourceEvent instanceof TouchEvent)
+		report("zoomend "+d3.event.sourceEvent.touches.length);
+	else
+		report("zoomend "+d3.event);
+
+	captureMultiTouchEvents();
 }
 
 function zoomEventHandler(){
 	// console.log("zoom");
+	captureMultiTouchEvents();
 
 	var sourceEvent = d3.event.sourceEvent;
-	captureMultiTouchEvents();
+
+	// if(sourceEvent instanceof TouchEvent && sourceEvent.touches.length < 2)
+ // 	{
+ // 		zoom.translate(lastTranslate);
+ // 		return;
+ // 	}
+ // 	else
+ // 		lastTranslate = zoom.translate();
+
     currentLayout.updateElementPos();
 	updateViewPortRect();
 	updateZoomText();
