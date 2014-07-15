@@ -230,6 +230,7 @@ function TreeLayout() {
 
 
     this.drag = d3.behavior.drag()
+        .on('dragstart',this.dragstart)
         .on('drag',this.dragmove);
     this.partition = d3.layout.partition()
         .value(function(d) { return 1; })
@@ -411,6 +412,7 @@ TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
     return newPathD;
 }
 TreeLayout.prototype.drag = null;
+TreeLayout.prototype.dragstart = function() { captureSingleTouchEvents(); }
 TreeLayout.prototype.dragmove = function () {
     if(!canDrag())
         return;

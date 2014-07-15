@@ -85,12 +85,10 @@ function zoomEndEventHandler () {
 }
 
 function zoomEventHandler(){
-	console.log("zoom");
+	// console.log("zoom");
 
 	var sourceEvent = d3.event.sourceEvent;
-
 	captureMultiTouchEvents();
-
     currentLayout.updateElementPos();
 	updateViewPortRect();
 	updateZoomText();

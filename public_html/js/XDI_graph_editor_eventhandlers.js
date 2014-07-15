@@ -39,6 +39,7 @@ function mousemoveOnSVG() {
 }
 
 function mousedownOnSVG() {
+    // console.log("mousedownOnNodeHandler");
     d3.event.stopPropagation();
     if(!d3.event.button === 0 ) //Only react to left click
         return;
@@ -200,8 +201,11 @@ function keyupOnSVG() {
 }
 
 function mousedownOnNodeHandler(d){
+    // console.log("mousedownOnNodeHandler");
+
     if (d3.event.altKey)
         return;
+
     mousedown_node = d;
     
     if(!d3.event.shiftKey&&!d.isSelected) //If shift not press and the nodes is not part of the selection

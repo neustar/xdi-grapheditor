@@ -40,6 +40,7 @@ function force_dragmove() {
 }
     
 function d3_layout_forceDragstart() {
+    captureSingleTouchEvents();
     selected_nodes.forEach(function(d) { 
     d.fixed |= 2; //temporily make a node fix, but don't overide the orinal value of d.fixed
   });
@@ -63,7 +64,6 @@ function canDrag(){
     mouseevent = d3.event;
   else
     mouseevent = d3.event.sourceEvent;
-
 
   return !mouseevent.shiftKey&&!mouseevent.altKey;
 

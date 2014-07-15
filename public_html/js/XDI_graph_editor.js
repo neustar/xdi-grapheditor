@@ -168,6 +168,7 @@ function updateNodeElement () {
         .on('mousedown', mousedownOnNodeHandler)
         .on('mouseup', mouseupOnNodeHandler)
         .on('dblclick',dblclickOnNodeHandler)
+        .on('touchstart',mousedownOnNodeHandler)
         .append("title")
         .text(function(d){return d.fullName});
         
