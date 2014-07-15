@@ -36,11 +36,23 @@ function initializeDragSelect () {
 
 	d3.select('#dragSelectCanvas .background')
 		.style('cursor', 'inherit');
+
+	// d3.select('#dragSelectCanvas')
+	// 	.on('touchstart',function (d) {
+	// 		console.log("touchstart")
+
+	// 		d3.select(this)
+	// 		.on("touchstart.brush",null)
+	// 		.on("brushstart",null)
+	// 		.on("brush",null);
+
+	// 		d3.event.stopPropagation();
+	// 	})	
 }
 
 
 function brushstart (d) {
-	// console.log("brushstart");
+	console.log("brushstart");
 }
 
 function brushend (d) {
@@ -58,6 +70,11 @@ function brushend (d) {
 }
 
 function brushmove (d) {
+	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length > 1)
+	{
+		dragSelectBrush.clear();
+		d3.select('#dragSelectCanvas').call(dragSelectBrush);
+	}
 	// console.log("brushmove")
 	var extent = dragSelectBrush.extent();
 	

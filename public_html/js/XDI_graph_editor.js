@@ -35,7 +35,8 @@ $(function() {
         .on('mousedown', mousedownOnSVG) //event handlers has to be set within javascript. Otherwise d3.event will be null in handler
         .on('mousemove', mousemoveOnSVG)
         .on('mouseup', mouseupOnSVG)
-        .on('mousewheel',mousewheelOnSVG);
+        .on('mousewheel',mousewheelOnSVG)
+        
 
 
     d3.select("body")

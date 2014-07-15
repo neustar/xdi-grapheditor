@@ -39,6 +39,7 @@ function mousemoveOnSVG() {
 }
 
 function mousedownOnSVG() {
+    d3.event.stopPropagation();
     if(!d3.event.button === 0 ) //Only react to left click
         return;
 

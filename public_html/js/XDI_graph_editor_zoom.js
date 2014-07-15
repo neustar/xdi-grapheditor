@@ -30,12 +30,14 @@ function initializeZoom () {
 
     zoom(svg);
 
+
     svg.on("mousedown.zoom", null);
 	svg.on("mousemove.zoom", null);
 	svg.on("dblclick.zoom", null);
 	svg.on("wheel.zoom", null);
 	svg.on("mousewheel.zoom", null);
 	svg.on("MozMousePixelScroll.zoom", null);
+
 
 	navDrag = d3.behavior.drag()
 		.on('drag',navDragged)
@@ -57,12 +59,28 @@ function updateNavSize () {
     	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')');
 }
 
+var lastZoom = [0,0];
+
 function zoomEventHandler(){
+	var sourceEvent = d3.event.sourceEvent;
+
+	if(sourceEvent instanceof TouchEvent && sourceEvent.touches.length < 2)
+	{
+		zoom.translate(lastTranslate);
+		return;
+	}
+	else
+		lastTranslate = zoom.translate();
+
+
+	// if (sourceEvent instanceof TouchEvent && sourceEvent.touches.length < 2)
+	// 	return;
+
     currentLayout.updateElementPos();
 	updateViewPortRect();
 	updateZoomText();
 
-	if(d3.event === null || !(d3.event.sourceEvent instanceof WheelEvent))
+	if(d3.event === null || !(sourceEvent instanceof WheelEvent))
 		return;
 	
 	if(d3.event.sourceEvent.wheelDelta > 0)
