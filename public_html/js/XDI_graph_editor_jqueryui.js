@@ -111,13 +111,27 @@ function initializeMenu(){
       e.stopPropagation();
       menu.toggleClass('active'); 
     })
+
     header.mouseenter(function() { header.removeClass('active'); $(this).addClass('active'); })
+    header.on('touchstart',function(e) { 
+      e.stopPropagation();
+      var hadClass = $(this).hasClass('active');
+      header.removeClass('active'); 
+      $(this).toggleClass('active',!hadClass);
+      menu.addClass('active');
+    });
+
+    header.on('touchend',function(e) { 
+      e.stopPropagation(); 
+      e.preventDefault();
+    })
 
     item.click(function(e) { 
       e.stopPropagation();
       menu.removeClass('active'); 
       header.removeClass('active'); 
     });
+
     $('body').mousedown(function(e) { 
       if(menu.has(e.toElement).length==0)
       {
