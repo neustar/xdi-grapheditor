@@ -306,11 +306,13 @@ TreeLayout.prototype.updateElementPos = function () {
 
 TreeLayout.prototype.transitionToElementPos = function (){
     svg.selectAll('.node')
+        .style('opacity',function(d) {return d3.select(this).attr('transform')? null:0})// only hide the path that are newly created.
         .transition()
         .duration(LAYOUT_TRANSITION_DURATION)
         .attr('transform', function(d) { 
             return 'translate(' + x(d.x) + ',' + y(d.y) + ')'; 
-        });
+        })
+        .each('end',function(d) { return d3.select(this).style('opacity',null); });
 
     svg.selectAll('.link text')
         .style('opacity', 0);
