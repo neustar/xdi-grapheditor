@@ -89,7 +89,8 @@ function zoomEventHandler(){
         }
     }   
     
-
+    lastTranslate = zoom.translate();
+    
     currentLayout.updateElementPos();
     updateViewPortRect();
     updateZoomText();
