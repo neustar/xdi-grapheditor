@@ -24,10 +24,10 @@ THE SOFTWARE.
 
 //Browser
 var BrowserTypes = {
-	Chrome:'Chrome',
-	Firefox:'Firefox',
-	Safari:'Safari',
-	Other:'Other'
+    Chrome:'Chrome',
+    Firefox:'Firefox',
+    Safari:'Safari',
+    Other:'Other'
 }
 
 var currentBrowser=null;
@@ -57,16 +57,16 @@ var NODE_TEXT_MAX_LENGTH = 20;
 var LINK_TEXT_MAX_LENGTH = 20;
 
 var globalLayoutSettings = {
-	nodeScale: 1
+    nodeScale: 1
 }
 
 var Mode = {
-	BROWSE:'browse',
-	EDIT:'edit',
-	VIEW:'view',
-	ZOOM_IN:'zoom in',
-	ZOOM_OUT:'zoom out',
-	PAN:'pan'
+    BROWSE:'browse',
+    EDIT:'edit',
+    VIEW:'view',
+    ZOOM_IN:'zoom in',
+    ZOOM_OUT:'zoom out',
+    PAN:'pan'
 }
 var currentMode = Mode.BROWSE;
 
@@ -133,8 +133,8 @@ var SCREENSHOT_CHARACTER_WIDTH = 10;
 var force = null;
 var partition = null;
 var Layouts = {
-	Force: "force",
-	Tree: "tree"
+    Force: "force",
+    Tree: "tree"
 }
 var currentLayout = null//ForceLayout;
 var HALF_CIRCLE_RANGE = 0.1;

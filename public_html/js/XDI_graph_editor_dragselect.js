@@ -23,93 +23,93 @@ THE SOFTWARE.
 */
 
 function initializeDragSelect () {
-	dragSelectBrush = d3.svg.brush()
-		.x(x)
-		.y(y)
-		.on('brushstart',brushstart)
-		.on('brush',brushmove)
-		.on('brushend',brushend);
+    dragSelectBrush = d3.svg.brush()
+        .x(x)
+        .y(y)
+        .on('brushstart',brushstart)
+        .on('brush',brushmove)
+        .on('brushend',brushend);
 
-	d3.select('#dragSelectCanvas')
-		.attr('class', 'brush')
-		.call(dragSelectBrush);
+    d3.select('#dragSelectCanvas')
+        .attr('class', 'brush')
+        .call(dragSelectBrush);
 
-	d3.select('#dragSelectCanvas .background')
-		.style('cursor', 'inherit');
+    d3.select('#dragSelectCanvas .background')
+        .style('cursor', 'inherit');
 
-	// d3.select('#dragSelectCanvas')
-	// 	.on('touchstart',function (d) {
-	// 		console.log("touchstart")
+    // d3.select('#dragSelectCanvas')
+    //  .on('touchstart',function (d) {
+    //      console.log("touchstart")
 
-	// 		d3.select(this)
-	// 		.on("touchstart.brush",null)
-	// 		.on("brushstart",null)
-	// 		.on("brush",null);
+    //      d3.select(this)
+    //      .on("touchstart.brush",null)
+    //      .on("brushstart",null)
+    //      .on("brush",null);
 
-	// 		d3.event.stopPropagation();
-	// 	})	
+    //      d3.event.stopPropagation();
+    //  })  
 }
 
 
 function brushstart (d) {
-	// console.log("brushstart");
-	// report("***brushstart***");
-	dragSelectBrush.clear();
+    // console.log("brushstart");
+    // report("***brushstart***");
+    dragSelectBrush.clear();
 }
 
 
 function brushend (d) {
-	// console.log("brushend")
-	// report("***brushend***");
-	if(!dragSelectBrush)
-		return;
-	
-	var selectedNodes = d3.selectAll('.node.selected').data();
-	var selectedLinks = d3.selectAll('.link.selected').data();
-	
-	setSelectedNodes(selectedNodes);
-	setSelectedLinks(selectedLinks);
+    // console.log("brushend")
+    // report("***brushend***");
+    if(!dragSelectBrush)
+        return;
+    
+    var selectedNodes = d3.selectAll('.node.selected').data();
+    var selectedLinks = d3.selectAll('.link.selected').data();
+    
+    setSelectedNodes(selectedNodes);
+    setSelectedLinks(selectedLinks);
 
-	updateSelectionClass();
+    updateSelectionClass();
 
-	dragSelectBrush.clear();
-	d3.select('#dragSelectCanvas').call(dragSelectBrush);
+    dragSelectBrush.clear();
+    d3.select('#dragSelectCanvas').call(dragSelectBrush);
 }
 
 function brushmove (d) {
-	// report("***brushmove***");
-	// console.log("brushmove")
-	
-	if(hasTouchZoomed)
-	{
-		hasTouchZoomed = false;
-		dragSelectBrush.clear();
-		d3.select('#dragSelectCanvas').call(dragSelectBrush);
-		return;
-	}
+    // report("***brushmove***");
+    // console.log("brushmove")
+    
+    if(hasTouchZoomed)
+    {
+        hasTouchZoomed = false;
+        dragSelectBrush.clear();
+        d3.select('#dragSelectCanvas').call(dragSelectBrush);
+        return;
+    }
 
 
-	var extent = dragSelectBrush.extent();
-	d3.selectAll('.node')
-		.classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);});
-	
-	d3.selectAll('.link')
-		.classed('selected',function(d) {return d.isSelected = isInExtent(d.source,extent)&&isInExtent(d.target,extent);});
-	// updateSelectionClass("node");
+    var extent = dragSelectBrush.extent();
+    d3.selectAll('.node')
+        .classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);});
+    
+    d3.selectAll('.link')
+        .classed('selected',function(d) {return d.isSelected = isInExtent(d.source,extent)&&isInExtent(d.target,extent);});
+    // updateSelectionClass("node");
 }
 
 function isInExtent (d,extent) {
-	var Rx = x.invert(NODE_RADIUS) - x.invert(0);
-	var Ry = y.invert(NODE_RADIUS) - y.invert(0);
-	return extent[0][0] - Rx  <= d.x && d.x < extent[1][0] + Rx
-		&& extent[0][1] - Ry <= d.y && d.y < extent[1][1] + Ry; 
+    var Rx = x.invert(NODE_RADIUS) - x.invert(0);
+    var Ry = y.invert(NODE_RADIUS) - y.invert(0);
+    return extent[0][0] - Rx  <= d.x && d.x < extent[1][0] + Rx
+        && extent[0][1] - Ry <= d.y && d.y < extent[1][1] + Ry; 
 
 }
 
 
 
 function setDragSelectAbility (canSelect) {
-	d3.select(".brush")
-		.style("pointer-events",canSelect? "all":"none");
+    d3.select(".brush")
+        .style("pointer-events",canSelect? "all":"none");
 }
 

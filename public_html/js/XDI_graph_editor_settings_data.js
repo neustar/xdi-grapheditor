@@ -25,51 +25,51 @@ THE SOFTWARE.
 
 var forceLayoutSettings = 
 [
-	{
-		name:"Link Distance",
-		id:"linkDistance",
-		minName:"Short",
-		maxName:"Long"
-	},
-	{
-		name:"Link Strength",
-		id:"linkStrength",
-		minName:"Flexible",
-		maxName:"Rigid"
-	},
-	{
-		name:"Node Repulsion",
-		id:"nodeRepulsion",
-		minName:"Less",
-		maxName:"More"
-	},
-	{
-		name:"Node Size",
-		id:"nodeSize",
-		minName:"Small",
-		maxName:"Large"
-	}
+    {
+        name:"Link Distance",
+        id:"linkDistance",
+        minName:"Short",
+        maxName:"Long"
+    },
+    {
+        name:"Link Strength",
+        id:"linkStrength",
+        minName:"Flexible",
+        maxName:"Rigid"
+    },
+    {
+        name:"Node Repulsion",
+        id:"nodeRepulsion",
+        minName:"Less",
+        maxName:"More"
+    },
+    {
+        name:"Node Size",
+        id:"nodeSize",
+        minName:"Small",
+        maxName:"Large"
+    }
 
 ]
 
 var treeLayoutSettings =
 [
-	{
-		name:"Horizontal Margin",
-		id:"horizontalRatio",
-		minName:"Small",
-		maxName:"Large"
-	},
-	{
-		name:"Vertical Margin",
-		id:"verticalRatio",
-		minName:"Small",
-		maxName:"Large"
-	},
-	{
-		name:"Node Size",
-		id:"nodeSize",
-		minName:"Small",
-		maxName:"Large"
-	}
+    {
+        name:"Horizontal Margin",
+        id:"horizontalRatio",
+        minName:"Small",
+        maxName:"Large"
+    },
+    {
+        name:"Vertical Margin",
+        id:"verticalRatio",
+        minName:"Small",
+        maxName:"Large"
+    },
+    {
+        name:"Node Size",
+        id:"nodeSize",
+        minName:"Small",
+        maxName:"Large"
+    }
 ]

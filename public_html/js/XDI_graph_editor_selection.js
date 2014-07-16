@@ -25,52 +25,52 @@ THE SOFTWARE.
 
 //Atomic ADD Operation for add a new selection (link or node)
 function addNewSelection (objToAdd, selectionSet) {
-	if(selectionSet!=null&&!objToAdd.isSelected)
-	{
-		selectionSet.push(objToAdd);
-		objToAdd.isSelected = true;
-	}
+    if(selectionSet!=null&&!objToAdd.isSelected)
+    {
+        selectionSet.push(objToAdd);
+        objToAdd.isSelected = true;
+    }
 }
 
 //Atomic CLEAR Operation for clear selection set
 function clearSelectionSet (selectionSet) {
-	if(selectionSet!=null)
-		selectionSet.forEach(function(d) { d.isSelected=false; });
-	selectionSet = [];
-	return selectionSet;
+    if(selectionSet!=null)
+        selectionSet.forEach(function(d) { d.isSelected=false; });
+    selectionSet = [];
+    return selectionSet;
 }
 
 //Atomic HAS Operation for checking emptiness
 function hasSelections (selectionSet) {
-	return selectionSet != null && selectionSet.length > 0;
+    return selectionSet != null && selectionSet.length > 0;
 }
 
 
 
 
 function setSelectedNodes (nodeSet) {
-	selected_nodes = nodeSet;
-	selected_nodes.forEach(function(d) { return d.isSelected = true; });
-	updateMenuItemAbility();
+    selected_nodes = nodeSet;
+    selected_nodes.forEach(function(d) { return d.isSelected = true; });
+    updateMenuItemAbility();
 }
 function setSelectedLinks (linkSet) {
-	selected_links = linkSet;
-	selected_links.forEach(function(d) { return d.isSelected = true; });
-	updateMenuItemAbility();
+    selected_links = linkSet;
+    selected_links.forEach(function(d) { return d.isSelected = true; });
+    updateMenuItemAbility();
 }
 
 function initializeSelection () {
-	clearAllSelection();
+    clearAllSelection();
 }
 
 function addSeletedNode (nodeToAdd) {
-	addNewSelection(nodeToAdd,selected_nodes);
-	updateMenuItemAbility();
+    addNewSelection(nodeToAdd,selected_nodes);
+    updateMenuItemAbility();
 }
 
 function addSeletedLink (linkToAdd) {
-	addNewSelection(linkToAdd,selected_links);
-	updateMenuItemAbility();
+    addNewSelection(linkToAdd,selected_links);
+    updateMenuItemAbility();
 }
 
 function clearAllSelection () {
@@ -79,30 +79,30 @@ function clearAllSelection () {
 }
 
 function clearSelectedNodes (){
-	selected_nodes = clearSelectionSet(selected_nodes);
-	updateMenuItemAbility();
+    selected_nodes = clearSelectionSet(selected_nodes);
+    updateMenuItemAbility();
 }
 
 function clearSelectedLinks () {
-	selected_links = clearSelectionSet(selected_links);
-	updateMenuItemAbility();
+    selected_links = clearSelectionSet(selected_links);
+    updateMenuItemAbility();
 }
 
 function hasSelectedNodes () {
-	return hasSelections(selected_nodes);
+    return hasSelections(selected_nodes);
 }
 
 function hasSelectedLinks () {
-	return hasSelections(selected_links);
+    return hasSelections(selected_links);
 }
 
 function updateSelectionClass (className) {
-	if(className != null)
-		className = "." + className;
-	else
-		className = "";
-	
-	d3.selectAll(".selectable"+className)
-		.classed("selected",function(d) { return d.isSelected; });
+    if(className != null)
+        className = "." + className;
+    else
+        className = "";
+    
+    d3.selectAll(".selectable"+className)
+        .classed("selected",function(d) { return d.isSelected; });
 }
 
