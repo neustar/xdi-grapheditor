@@ -414,7 +414,7 @@ TreeLayout.prototype.getLinkPathData = function (d,i,pathElement) {
     return newPathD;
 }
 TreeLayout.prototype.drag = null;
-TreeLayout.prototype.dragstart = function() { captureSingleTouchEvents(); }
+TreeLayout.prototype.dragstart = function() { stopTouchPropagation(); }
 TreeLayout.prototype.dragmove = function () {
     if(!canDrag())
         return;

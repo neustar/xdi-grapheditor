@@ -25,24 +25,25 @@ THE SOFTWARE.
 /*Function copyed from d3.js in order to make conditional drag*/
 
 nodeForceDrag = function() {
-      if (!drag) drag = d3.behavior.drag().origin(function(d){return d;}).on("dragstart.force", d3_layout_forceDragstart).on("drag.force", force_dragmove).on("dragend.force", d3_layout_forceDragend);
-      if (!arguments.length) return drag;
-      this.on("mouseover.force", d3_layout_forceMouseover).on("mouseout.force", d3_layout_forceMouseout).call(drag);
-    };
-function force_dragmove() {
-    	if(!canDrag())
-    		return;
-      selected_nodes.forEach(function(d) { 
-        d.px += d3.event.dx/getScaleRatio(),d.py += d3.event.dy/getScaleRatio();
-       });
-      
-      currentLayout.force.resume();
+  if (!drag) drag = d3.behavior.drag().origin(function(d){return d;}).on("dragstart.force", d3_layout_forceDragstart).on("drag.force", force_dragmove).on("dragend.force", d3_layout_forceDragend);
+  if (!arguments.length) return drag;
+  this.on("mouseover.force", d3_layout_forceMouseover).on("mouseout.force", d3_layout_forceMouseout).call(drag);
+};
+function force_dragmove() {    
+	if(!canDrag())
+		return;
+
+  selected_nodes.forEach(function(d) { 
+    d.px += d3.event.dx/getScaleRatio(),d.py += d3.event.dy/getScaleRatio();
+   });
+  
+  currentLayout.force.resume();
 }
     
 function d3_layout_forceDragstart() {
-    captureSingleTouchEvents();
-    selected_nodes.forEach(function(d) { 
-    d.fixed |= 2; //temporily make a node fix, but don't overide the orinal value of d.fixed
+  stopTouchPropagation();
+  selected_nodes.forEach(function(d) { 
+  d.fixed |= 2; //temporily make a node fix, but don't overide the orinal value of d.fixed
   });
 }
 function d3_layout_forceDragend() {
@@ -64,7 +65,15 @@ function canDrag(){
     mouseevent = d3.event;
   else
     mouseevent = d3.event.sourceEvent;
-
   return !mouseevent.shiftKey&&!mouseevent.altKey;
 
+}
+
+function stopTouchPropagation () {
+  var sourceEvent = d3.event.sourceEvent;
+  if(sourceEvent instanceof TouchEvent)
+  {
+    sourceEvent.stopPropagation();
+    sourceEvent.preventDefault();
+  }
 }

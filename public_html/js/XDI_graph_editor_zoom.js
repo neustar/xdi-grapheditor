@@ -61,61 +61,40 @@ function updateNavSize () {
     	.attr('transform', 'translate(' + navMargin + ',' + navMargin + ')');
 }
 
-var lastZoom = [0,0];
+var lastTranslate = [0,0], hasTouchZoomed = false;
 
 function zoomStartEventHandler () {
-	// console.log("zoomstart");
-	if(d3.event && d3.event.sourceEvent instanceof TouchEvent)
-		report("zoomstart "+d3.event.sourceEvent.touches.length);
-	else
-		report("zoomstart "+d3.event);
-	captureMultiTouchEvents();
+
 }
 
-function preventEvents () {
-	var sourceEvent = d3.event.sourceEvent;
-		sourceEvent.stopPropagation();
-		// sourceEvent.defaultPrevented = true;
-		sourceEvent.preventDefault();
-}
-
-function captureMultiTouchEvents () {
-	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length > 1)
-	{
-		report('cap-multi');	
-		preventEvents();
-	}
-}
 
 function zoomEndEventHandler () {
-	// console.log("zoomend");
-	if(d3.event && d3.event.sourceEvent instanceof TouchEvent)
-		report("zoomend "+d3.event.sourceEvent.touches.length);
-	else
-		report("zoomend "+d3.event);
-
-	captureMultiTouchEvents();
+	lastTranslate = zoom.translate();
 }
 
 function zoomEventHandler(){
-	// console.log("zoom");
-	captureMultiTouchEvents();
-
 	var sourceEvent = d3.event.sourceEvent;
-
-	// if(sourceEvent instanceof TouchEvent && sourceEvent.touches.length < 2)
- // 	{
- // 		zoom.translate(lastTranslate);
- // 		return;
- // 	}
- // 	else
- // 		lastTranslate = zoom.translate();
+	if(sourceEvent instanceof TouchEvent)
+ 	{ 		
+ 		if(sourceEvent.touches.length < 2)
+ 		{
+ 			zoom.translate(lastTranslate);
+ 			return;
+ 		}
+ 		else
+ 		{
+ 			sourceEvent.stopPropagation();
+ 			sourceEvent.preventDefault();
+ 			hasTouchZoomed = true;
+ 		}
+ 	}	
+	
 
     currentLayout.updateElementPos();
 	updateViewPortRect();
 	updateZoomText();
 
-	if(d3.event === null || !(sourceEvent instanceof WheelEvent))
+	if(!(sourceEvent instanceof WheelEvent))
 		return;
 	
 	if(d3.event.sourceEvent.wheelDelta > 0)
@@ -169,7 +148,7 @@ function scaleView(center,newScale)
 	var mx = center[0];
 	var my = center[1];
 	
-	currrentTranslation = zoom.translate();
+	var currrentTranslation = zoom.translate();
 	var tx0 = currrentTranslation[0];
 	var ty0 = currrentTranslation[1];
 

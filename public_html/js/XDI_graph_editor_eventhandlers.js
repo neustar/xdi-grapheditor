@@ -202,7 +202,6 @@ function keyupOnSVG() {
 
 function mousedownOnNodeHandler(d){
     // console.log("mousedownOnNodeHandler");
-
     if (d3.event.altKey)
         return;
 

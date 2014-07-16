@@ -53,25 +53,16 @@ function initializeDragSelect () {
 
 function brushstart (d) {
 	// console.log("brushstart");
-	report("brushstart");
-	captureSingleTouchEvents();
+	// report("***brushstart***");
+	dragSelectBrush.clear();
 }
 
-function captureSingleTouchEvents () {
-	if(d3.event.sourceEvent instanceof TouchEvent && d3.event.sourceEvent.touches.length < 2)
-	{
-		report('cap-single');
-		preventEvents();
-	}
-
-}
 
 function brushend (d) {
 	// console.log("brushend")
+	// report("***brushend***");
 	if(!dragSelectBrush)
 		return;
-	report("brushend");
-	captureSingleTouchEvents();
 	
 	var selectedNodes = d3.selectAll('.node.selected').data();
 	var selectedLinks = d3.selectAll('.link.selected').data();
@@ -86,11 +77,19 @@ function brushend (d) {
 }
 
 function brushmove (d) {
-	// report("brushmove");
-	captureSingleTouchEvents();
+	// report("***brushmove***");
 	// console.log("brushmove")
-	var extent = dragSelectBrush.extent();
 	
+	if(hasTouchZoomed)
+	{
+		hasTouchZoomed = false;
+		dragSelectBrush.clear();
+		d3.select('#dragSelectCanvas').call(dragSelectBrush);
+		return;
+	}
+
+
+	var extent = dragSelectBrush.extent();
 	d3.selectAll('.node')
 		.classed('selected',function(d) {return d.isSelected = isInExtent(d,extent);});
 	
