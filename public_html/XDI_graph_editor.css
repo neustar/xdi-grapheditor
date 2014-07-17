@@ -500,6 +500,8 @@ body{
   outline: 0px;
 }
 
+/********* Status *********/
+
 #statusIndicator{
     stroke-width: 0px;
     pointer-events: none;
@@ -527,6 +529,9 @@ body{
     font-weight: 200;
     text-transform: capitalize;
 }
+
+/********* Navigator *********/
+
 #navigator{
   position: absolute;
   right: 0%;
@@ -559,6 +564,7 @@ body{
   stroke-width:1;
 }
 
+/********* Layout Control *********/
 
 .layoutControl{
   position:absolute;
@@ -644,6 +650,32 @@ body{
   opacity: 0;
   pointer-events: none; 
 }
+
+/********* Message *********/
+
+#message{
+  position:absolute;
+  top:0;
+  left:0;
+
+  width:100%;
+  
+  text-align: center;
+  pointer-events:none;
+}
+
+#messageContent{
+  display:inline-block;
+  
+  margin:0 auto;
+  padding:0.5em;
+ 
+  background:rgba(0,0,0,0.6);
+  color:rgba(220,220,220,1);
+  
+  font-size:1em;
+}
+
 
 /****************** Inside SVG ******************/
 

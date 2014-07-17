@@ -160,3 +160,14 @@ function hideAllWindows () {
     $(".window").addClass("hidden");
     $(".window-item").removeClass("checked");
 }
+
+function showMessage (text,duration) {
+    if(_.isEmpty(text))
+        return;
+    duration = duration || 1000;
+    var message = $("#message");
+    message.find('p').text(text);
+    message.fadeIn(300)
+        .delay(duration)
+        .fadeOut(1000);
+}

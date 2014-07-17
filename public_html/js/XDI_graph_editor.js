@@ -417,7 +417,7 @@ function detectBrowserType () {
 }
 
 function report (text) {
-    var log = d3.select('#log');
-    var newText = log.html() + text + "<br>";
-    log.html(newText);
+    // var log = d3.select('#log');
+    // var newText = log.html() + text + "<br>";
+    // log.html(newText);
 }

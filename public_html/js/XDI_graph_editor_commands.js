@@ -87,6 +87,7 @@ function fixNodeCommand () {
     {
         backup();
         selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
+        showMessage("Position fixed/unfixed");
     }
 }
 
@@ -107,7 +108,7 @@ function createNodeByClick () {
     if (nodeFound) {
         if (nodename !== "")
         // Name already taken
-            alert("Node already exists!");
+            showMessage("Node already exists");
         return;
     }
     backup();
@@ -227,6 +228,7 @@ function resetLayoutCommand () {
     {
         currentLayout.resetLayoutParameter();
         restart(true,false);
+        showMessage("Layout Reseted");
     }
 }
 
@@ -242,6 +244,7 @@ function updateLayoutParameterCommand () {
 //Enter the edit mode user can drag from one node to another. No need to press Shift.
 function createNewLinkCommand () {
     isCreatingDragLine = true;
+    showMessage("Drag from one node to create link", 3000);
 }
 
 function startDragLine(){
