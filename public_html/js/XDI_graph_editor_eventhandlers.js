@@ -29,7 +29,7 @@ function resetMouseVars() {
 }
 
 function mousemoveOnSVG() {
-    var pos = d3.mouse(svg.node()); //use svg[0][0] to get the HTML element svg, instead of the d3 element of svg.
+    var pos = d3.mouse(svg.node()); 
     curMousePos = {x:pos[0],y:pos[1]};
     
     if(isDraggingLine)
@@ -37,6 +37,29 @@ function mousemoveOnSVG() {
     else if (isPanning)
         updatePanView([curMousePos.x,curMousePos.y]);
 }
+
+function touchmoveOnSVG(){
+    if(isDraggingLine && !_.isEmpty(d3.event.touches))
+    {
+        var pos = d3.touches(svg.node())[0]; 
+        curMousePos = {x:pos[0],y:pos[1]};
+        updateDragLine();
+    }
+}
+
+function touchendOnSVG () {
+    if(isDraggingLine && !_.isEmpty(d3.event.changedTouches))
+    {
+        var touch = d3.event.changedTouches[0];
+        var targetElement = document.elementFromPoint(touch.clientX,touch.clientY);
+        if(targetElement.tagName == "path")
+            mouseupOnNodeHandler.call(targetElement,d3.select(targetElement.parentNode).datum());
+        else
+            mouseupOnSVG();
+
+    }
+}
+
 
 function mousedownOnSVG() {
     // console.log("mousedownOnNodeHandler");
@@ -57,7 +80,7 @@ function mousedownOnSVG() {
 
     if(d3.event.srcElement === svg.node())
     {
-        if(d3.event.shiftKey)
+        if(d3.event.shiftKey||isCreatingDragLine)
         {
             createNodeByClick();
             setDragSelectAbility(true); //The window will not trigger shift key up events to enable drag select
@@ -213,8 +236,15 @@ function mousedownOnNodeHandler(d){
 
     updateSelectionClass();
 
-    if(d3.event.shiftKey)
+    if(d3.event.shiftKey||isCreatingDragLine)
+    {
+        if(d3.event instanceof TouchEvent)
+        {
+            var pos = d3.touches(svg.node())[0]; 
+            curMousePos = {x:pos[0],y:pos[1]};
+        }
         startDragLine();
+    }
     
 }
 

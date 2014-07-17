@@ -239,18 +239,21 @@ function updateLayoutParameterCommand () {
     
 }
 
+//Enter the edit mode user can drag from one node to another. No need to press Shift.
+function createNewLinkCommand () {
+    isCreatingDragLine = true;
+}
 
 function startDragLine(){
     // reposition drag line
     drag_line
-        .classed("hidden",false)
-        .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+        .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y) //+ 'L' + mousedown_node.x + ',' + mousedown_node.y)
+        .classed("hidden",false);
     isDraggingLine = true;
     restart(true,false);
 }
 
 function updateDragLine(){
-
     if(isDraggingLine && mousedown_node && curMousePos != null)
     {
         var startPos = {x:mousedown_node.x,y:mousedown_node.y};
@@ -265,6 +268,7 @@ function endDragLine(){
     if (isDraggingLine) {
         drag_line.classed("hidden",true)
         isDraggingLine = false;
+        isCreatingDragLine = false;
     }
 }
 

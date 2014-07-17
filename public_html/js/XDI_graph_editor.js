@@ -36,7 +36,8 @@ $(function() {
         .on('mousemove', mousemoveOnSVG)
         .on('mouseup', mouseupOnSVG)
         .on('mousewheel',mousewheelOnSVG)
-        
+        .on('touchmove',touchmoveOnSVG)
+        .on('touchend',touchendOnSVG);
 
 
     d3.select("body")
@@ -416,7 +417,7 @@ function detectBrowserType () {
 }
 
 function report (text) {
-    // var log = d3.select('#log');
-    // var newText = log.html() + text + "<br>";
-    // log.html(newText);
+    var log = d3.select('#log');
+    var newText = log.html() + text + "<br>";
+    log.html(newText);
 }
