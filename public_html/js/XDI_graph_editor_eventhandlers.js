@@ -56,7 +56,6 @@ function touchendOnSVG () {
             mouseupOnNodeHandler.call(targetElement,d3.select(targetElement.parentNode).datum());
         else
             mouseupOnSVG();
-
     }
 }
 
@@ -78,14 +77,8 @@ function mousedownOnSVG() {
         return;
     }
 
-    if(d3.event.srcElement === svg.node())
-    {
-        if(d3.event.shiftKey||isCreatingDragLine)
-        {
-            createNodeByClick();
-            setDragSelectAbility(true); //The window will not trigger shift key up events to enable drag select
-        }
-    }
+    if(d3.event.srcElement === svg.node() && currentMode === Mode.EDIT)
+        createNodeByClick();
 }
 
 
@@ -137,12 +130,10 @@ function keydownOnSVG() {
             
         case 16://shift
             updateMode(Mode.EDIT);
-            setDragSelectAbility(false);
             break;
             
         case 18://opt/alt
             updateMode(Mode.VIEW);
-            setDragSelectAbility(false);
             break;
 
         // case 66: // B
@@ -214,10 +205,10 @@ function keyupOnSVG() {
         case 16:
             startDrag();
             updateMode(Mode.BROWSE);
-            setDragSelectAbility(true);
+            // setDragSelectAbility(true);
             break;
         case 18://opt/alt
-            setDragSelectAbility(true);
+            // setDragSelectAbility(true);
             updateMode(Mode.BROWSE);
             break;
     }
@@ -236,7 +227,8 @@ function mousedownOnNodeHandler(d){
 
     updateSelectionClass();
 
-    if(d3.event.shiftKey||isCreatingDragLine)
+    if(currentMode == Mode.EDIT)
+    // if(d3.event.shiftKey||isCreatingDragLine)
     {
         if(isTouchScreen && d3.event instanceof TouchEvent)
         {

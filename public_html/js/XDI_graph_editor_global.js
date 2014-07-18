@@ -80,7 +80,7 @@ var mousedown_link = null,
 
 var isPanning = false;
 var isDraggingLine = false;
-var isCreatingDragLine = false; //Mostly use for touchscreen. If true, user can drag from one node to another without pressing shift. 
+// var isCreatingDragLine = false; //Mostly use for touchscreen. If true, user can drag from one node to another without pressing shift. 
 
 
 // suspending key listener when dialog box is displayed

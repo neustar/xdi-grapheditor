@@ -530,6 +530,29 @@ body{
     text-transform: capitalize;
 }
 
+#modeMessage{
+  position:absolute;
+  top:4px;
+  left:110px;
+  
+  padding:0.3em 0.5em;
+  min-width: 4em;
+
+
+  color: #333;
+  background:rgba(100,100,100,0.2);
+  
+  font-weight: 200;
+  text-transform: capitalize;
+  text-align: center;
+  
+  cursor: pointer;
+
+  border: 1px solid rgba(100,100,100,0.3);
+  
+  -webkit-transition: background 0.3s;
+}
+
 /********* Navigator *********/
 
 #navigator{

@@ -116,10 +116,12 @@ function createNodeByClick () {
     var point;
     if(d3.event instanceof MouseEvent)
         point = d3.mouse(svg.node());
+    else if (d3.event && isTouchScreen)
+        point = d3.touches(svg.node())[0];
     else
         point = [svgWidth/2,svgHeight/2];
-    newnode.x = point[0];
-    newnode.y = point[1];
+    newnode.x = x.invert(point[0]);
+    newnode.y = y.invert(point[1]);
     restart();
 
 }
@@ -243,9 +245,11 @@ function updateLayoutParameterCommand () {
 
 //Enter the edit mode user can drag from one node to another. No need to press Shift.
 function createNewLinkCommand () {
-    isCreatingDragLine = true;
+    // isCreatingDragLine = true;
+    updateMode(Mode.EDIT);
     showMessage("Drag from one node to create link", 3000);
 }
+
 
 function startDragLine(){
     // reposition drag line
@@ -271,7 +275,9 @@ function endDragLine(){
     if (isDraggingLine) {
         drag_line.classed("hidden",true)
         isDraggingLine = false;
-        isCreatingDragLine = false;
+        // isCreatingDragLine = false;
+        if(!isTouchScreen&&d3.event && !d3.event.shiftKey)
+            updateMode(Mode.BROWSE);
     }
 }
 

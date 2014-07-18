@@ -243,7 +243,7 @@ function getNodeShape (type) {
     return symbol();
 }
 
-function updateSyntaxStatus(statusMessage, isOK,isEditing){
+function updateSyntaxStatus(statusMessage, isOK){
     var indicator = svg.select("#statusIndicator");
 
     if(isOK != null) //When isOK is not passed, the corresponding class will remains the same 
@@ -259,17 +259,26 @@ function updateSyntaxStatus(statusMessage, isOK,isEditing){
             .text(statusMessage);
     }
 
-    if(isEditing != null)
-    {
-        var modeMessage = isEditing? "Edit Mode":"Browse Mode";
-        svg.select("#modeMessage")
-            .text(modeMessage);   
-    }
+    // if(isEditing != null)
+    // {
+    //     var modeMessage = isEditing? "Edit Mode":"Browse Mode";
+    //     svg.select("#modeMessage")
+    //         .text(modeMessage);   
+    // }
+}
+
+function toggleMode () {
+    if(currentMode!=Mode.EDIT)
+        updateMode(Mode.EDIT);
+    else
+        updateMode(Mode.BROWSE);
 }
 
 function updateMode (newMode) {
+    currentMode = newMode;
+
     var modeMessage = newMode;
-    svg.select("#modeMessage")
+    d3.select("#modeMessage")
         .text(modeMessage);
 
     var cursor = "default";
@@ -277,12 +286,15 @@ function updateMode (newMode) {
     {
         case Mode.BROWSE:
             cursor = "default";
+            setDragSelectAbility(true);
             break;
         case Mode.EDIT:
             cursor = "crosshair";
+            setDragSelectAbility(false);
             break;
         case Mode.VIEW:
             cursor = "-webkit-grab";
+            setDragSelectAbility(false);
             break;
         case Mode.ZOOM_IN:
             cursor = "-webkit-zoom-in";

@@ -65,7 +65,7 @@ function canDrag(){
         mouseevent = d3.event;
     else
         mouseevent = d3.event.sourceEvent;
-    return !mouseevent.shiftKey&&!mouseevent.altKey&&!isCreatingDragLine;
+    return !mouseevent.shiftKey&&!mouseevent.altKey&&currentMode!==Mode.EDIT;
 
 }
 
