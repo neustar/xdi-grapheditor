@@ -29,6 +29,7 @@ var BrowserTypes = {
     Safari:'Safari',
     Other:'Other'
 }
+var isTouchScreen = false;
 
 var currentBrowser=null;
 

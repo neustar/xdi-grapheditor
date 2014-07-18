@@ -414,6 +414,8 @@ function detectBrowserType () {
         currentBrowser = BrowserTypes.Safari;
     else
         currentBrowser = BrowserTypes.Other;
+
+    isTouchScreen = agent.indexOf("iPad")>-1;
 }
 
 function report (text) {

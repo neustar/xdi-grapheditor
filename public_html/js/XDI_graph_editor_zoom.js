@@ -74,7 +74,7 @@ function zoomEndEventHandler () {
 
 function zoomEventHandler(){
     var sourceEvent = d3.event.sourceEvent;
-    if(sourceEvent instanceof TouchEvent)
+    if(isTouchScreen && sourceEvent instanceof TouchEvent)
     {       
         if(sourceEvent.touches.length < 2)
         {

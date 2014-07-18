@@ -71,7 +71,7 @@ function canDrag(){
 
 function stopTouchPropagation () {
     var sourceEvent = d3.event.sourceEvent;
-    if(sourceEvent instanceof TouchEvent)
+    if(isTouchScreen && sourceEvent instanceof TouchEvent)
     {
         sourceEvent.stopPropagation();
         sourceEvent.preventDefault();

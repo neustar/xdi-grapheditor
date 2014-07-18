@@ -238,7 +238,7 @@ function mousedownOnNodeHandler(d){
 
     if(d3.event.shiftKey||isCreatingDragLine)
     {
-        if(d3.event instanceof TouchEvent)
+        if(isTouchScreen && d3.event instanceof TouchEvent)
         {
             var pos = d3.touches(svg.node())[0]; 
             curMousePos = {x:pos[0],y:pos[1]};
