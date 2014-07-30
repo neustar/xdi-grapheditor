@@ -532,16 +532,17 @@ body{
 
 #modeMessage{
   position:absolute;
-  top:4px;
-  left:110px;
+  top:0px;
+  left:109px;
   
-  padding:0.3em 0.5em;
+  padding:0.3em 0.1em;
   min-width: 4em;
 
 
   color: #333;
   background:rgba(100,100,100,0.2);
   
+  font-size:1em;
   font-weight: 200;
   text-transform: capitalize;
   text-align: center;
@@ -549,6 +550,7 @@ body{
   cursor: pointer;
 
   border: 1px solid rgba(100,100,100,0.3);
+  border-top:0px;
   
   -webkit-transition: background 0.3s;
 }
