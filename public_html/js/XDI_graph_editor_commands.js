@@ -192,16 +192,6 @@ function selectAll () {
 // View
 //
 
-//  Zoom
-
-function zoomInCommand () {
-    zoomByScaleDelta(ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
-}
-
-function zoomOutCommand () {
-    zoomByScaleDelta(-ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
-}
-
 //  Layout
 
 function changeLayoutCommand (newLayout) {
@@ -240,6 +230,26 @@ function updateLayoutParameterCommand () {
         restart(true,false);
     }
     
+}
+
+//  Zoom
+
+function zoomInCommand () {
+    zoomByScaleDelta(ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
+}
+
+function zoomOutCommand () {
+    zoomByScaleDelta(-ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
+}
+
+//  Rotation
+
+function rotateLeftCommand () {
+    rotateView(90,true);
+}
+
+function rotateRightCommand () {
+    rotateView(-90,true);
 }
 
 //

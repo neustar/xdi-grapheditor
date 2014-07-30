@@ -364,3 +364,69 @@ function navDragged () {
     }
     setScaleTranslation(null,newTranslate);
 }
+
+function rotateView (deg, hasTransition) {
+    // force.stop();
+    nodeData = d3.selectAll('.node')
+        .each(stashNodePosition)
+        .data();
+
+    //use invert to get the center of the screen before applying the scale.
+    var cx = x.invert(svgWidth/2),
+        cy = y.invert(svgHeight/2);
+
+
+    if(!hasTransition)
+    {
+        nodeData.forEach(function(d) {rotateNode(d,cx,cy,deg);});
+        currentLayout.updateElementPos();
+        return;
+    }
+    
+    var interpolate = d3.interpolate(0,deg);
+    svg
+        .transition()
+        .duration(1000)
+        .tween('rotation',function(d) { 
+            return function(t) {
+                nodeData.forEach(function(d) { 
+                    rotateNode(d,cx,cy,interpolate(t)); 
+                });
+                currentLayout.updateElementPos();
+            }; 
+        })    
+    
+    
+}
+
+
+function stashNodePosition(d){
+    d.x0 = d.x;
+    d.y0 = d.y;
+}
+
+function rotateNode (d,cx,cy,deg) {
+    var rad = deg * Math.PI / 180;
+    var x0 = d.x0, y0 = d.y0,
+        x1 = -1, y1 = -1;
+
+    var dist = Math.sqrt(Math.pow(cx-x0,2)+Math.pow(cy-y0,2));
+
+    if(!dist)
+        return;
+
+    var rad0 = Math.asin((cy-y0)/dist);
+    if(cx > x0)
+        rad0 = Math.sign(rad0) * Math.PI  - rad0;
+
+    rad += rad0;
+    x1 = Math.cos(rad)*dist + cx;
+    y1 = cy - Math.sin(rad)*dist;
+
+
+    //Must update px,py to avoid jump when force.start()
+    d.px = d.x = x1;
+    d.py = d.y = y1;
+}
+
+
