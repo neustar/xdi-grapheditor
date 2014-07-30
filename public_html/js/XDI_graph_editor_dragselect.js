@@ -36,31 +36,15 @@ function initializeDragSelect () {
 
     d3.select('#dragSelectCanvas .background')
         .style('cursor', 'inherit');
-
-    // d3.select('#dragSelectCanvas')
-    //  .on('touchstart',function (d) {
-    //      console.log("touchstart")
-
-    //      d3.select(this)
-    //      .on("touchstart.brush",null)
-    //      .on("brushstart",null)
-    //      .on("brush",null);
-
-    //      d3.event.stopPropagation();
-    //  })  
 }
 
 
 function brushstart (d) {
-    // console.log("brushstart");
-    // report("***brushstart***");
     dragSelectBrush.clear();
 }
 
 
 function brushend (d) {
-    // console.log("brushend")
-    // report("***brushend***");
     if(!dragSelectBrush)
         return;
     
@@ -77,9 +61,6 @@ function brushend (d) {
 }
 
 function brushmove (d) {
-    // report("***brushmove***");
-    // console.log("brushmove")
-    
     if(hasTouchZoomed)
     {
         hasTouchZoomed = false;
@@ -95,7 +76,6 @@ function brushmove (d) {
     
     d3.selectAll('.link')
         .classed('selected',function(d) {return d.isSelected = isInExtent(d.source,extent)&&isInExtent(d.target,extent);});
-    // updateSelectionClass("node");
 }
 
 function isInExtent (d,extent) {
@@ -105,7 +85,6 @@ function isInExtent (d,extent) {
         && extent[0][1] - Ry <= d.y && d.y < extent[1][1] + Ry; 
 
 }
-
 
 
 function setDragSelectAbility (canSelect) {

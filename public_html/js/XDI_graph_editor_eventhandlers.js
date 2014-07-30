@@ -203,7 +203,7 @@ function keyupOnSVG() {
     // shift
     switch(d3.event.keyCode){
         case 16:
-            startDrag();
+            bindDragToNodes();
             updateMode(Mode.BROWSE);
             // setDragSelectAbility(true);
             break;

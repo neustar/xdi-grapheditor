@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 
 $(function() {
+    report(window.navigator.standalone);
+
     detectBrowserType();
     if(currentBrowser!==BrowserTypes.Chrome && currentBrowser!==BrowserTypes.Safari)
         alert("Oops! Your are using " + currentBrowser + " to open XDI Graph Editor.\nFor best performance, we recommend you to use the latest Chrome or Safari broswer.")
@@ -31,8 +33,11 @@ $(function() {
     initializeDialogs();
 
     //Initialize SVG
+
+    //Event Handlers
+    //Event handlers has to be set within javascript. Otherwise d3.event will be null in handler
     svg = d3.select("#drawing #mainCanvas")
-        .on('mousedown', mousedownOnSVG) //event handlers has to be set within javascript. Otherwise d3.event will be null in handler
+        .on('mousedown', mousedownOnSVG) 
         .on('mousemove', mousemoveOnSVG)
         .on('mouseup', mouseupOnSVG)
         .on('mousewheel',mousewheelOnSVG)
@@ -58,7 +63,6 @@ $(function() {
     
     clearGraph();
 
-    //Only For Debug purpose
     
     if (inputurl.length > 1) {
         $.get(inputurl, "", function(data, textStatus, jqXHR) {
@@ -69,6 +73,7 @@ $(function() {
         initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
 
+    //Only For Debug purpose
     initializeGraphWithXDI(attributeSingletons);
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
@@ -82,12 +87,7 @@ $(function() {
 });
 
 
-
-//
-// Functions
-//
-
-
+//Initialize data structure and sub-components
 function initializeGraph() 
 {
     globalNodes=[];
@@ -115,10 +115,12 @@ function initializeGraph()
     restart();
 }
 
+//Redraw Links
 function updateLinkElement () {
     if(lastDrawData==null || lastDrawData.links == null)
         return;
     var linksData = lastDrawData.links;
+    
     //// Add new elements
     var linkCanvas = d3.select('#linkCanvas');
     var linkGs = linkCanvas.selectAll(".link")
@@ -139,7 +141,6 @@ function updateLinkElement () {
     newLinkGs.append("svg:text")
         .attr('class', "textLabel")
         
-
     //// Adjust Classes
     linkGs.classed('selected', function(d) {return d.isSelected;})
         .classed('relation', function(d) {return d.isRelation;})
@@ -150,10 +151,12 @@ function updateLinkElement () {
         .text(function(d) {return trimString(d.shortName,LINK_TEXT_MAX_LENGTH);});  
 }
 
+//Redraw Nodes
 function updateNodeElement () {
     if(lastDrawData==null || lastDrawData.nodes== null)
         return;
     var nodesData = lastDrawData.nodes;
+    
     //// Add new elements
     var nodeCanvas = d3.select('#nodeCanvas');
     var nodeGs = nodeCanvas.selectAll(".node")
@@ -192,36 +195,31 @@ function updateNodeElement () {
         .attr('d', function(d) { return getNodeShape(d.type); });
 }
 
-//Render all SVG Elements based on globalNodes, globalLinks
+//Redraw the whole graph: Render all SVG Elements based on globalNodes, globalLinks
 function restart(startLayout,getNewData,centerRootNodes) {
     if(startLayout == null)
         startLayout = true;
     if(getNewData == null)
         getNewData = true;
 
-    // var drawData = null;
     if(getNewData || lastDrawData === null)
-    {
         lastDrawData = getDrawData();
-    }
-    // drawData = lastDrawData;
-
+    
+    //Components
     updateLinkElement(); 
-
     updateNodeElement();    
 
-    //
-    // Layout
-    //
+    //Layout
     if(startLayout)
     {
         currentLayout.updateLayout(lastDrawData.nodes, lastDrawData.links,centerRootNodes,true,true);
-        startDrag();
+        bindDragToNodes();
     }    
 
     updateMenuItemAbility();
 }
 
+//Return the "path" value for nodes based on node type
 function getNodeShape (type) {
     var symbol = d3.svg.symbol();
     var scale = currentLayout.settings.nodeSize || 1;
@@ -243,6 +241,7 @@ function getNodeShape (type) {
     return symbol();
 }
 
+//Update indicator
 function updateSyntaxStatus(statusMessage, isOK){
     var indicator = svg.select("#statusIndicator");
 
@@ -250,23 +249,16 @@ function updateSyntaxStatus(statusMessage, isOK){
         indicator
             .classed("ok",isOK)
             .classed("error",!isOK);
-    
-    
-    
+        
     if(statusMessage != null)
     {
         svg.select("#statusMessage")
             .text(statusMessage);
     }
 
-    // if(isEditing != null)
-    // {
-    //     var modeMessage = isEditing? "Edit Mode":"Browse Mode";
-    //     svg.select("#modeMessage")
-    //         .text(modeMessage);   
-    // }
 }
 
+//Function for the mode toggle button
 function toggleMode () {
     if(currentMode!=Mode.EDIT)
         updateMode(Mode.EDIT);
@@ -274,6 +266,7 @@ function toggleMode () {
         updateMode(Mode.BROWSE);
 }
 
+//Interface for switching modes. 
 function updateMode (newMode) {
     currentMode = newMode;
 
@@ -310,9 +303,6 @@ function updateMode (newMode) {
         .style('cursor', cursor);
 }
 
-//
-// UI functions
-//
 
 function loadJson(event) {
     console.log("load JSON");
@@ -357,39 +347,6 @@ function help() {
 
 function importXDI() {
     openImportDialog();
-}
-
-function setNodeLabelsVisibility(newValue){
-    d3.select('#nodeCanvas').classed("hide_text",newValue);
-}
-
-function setLinkLabelsVisibility(newValue){
-    d3.select('#linkCanvas').classed("hide_text",newValue);   
-}
-
-function toggleNodeLabelsVisibility(){
-    var value = d3.select('#nodeCanvas').classed("hide_text");
-    setNodeLabelsVisibility(!value)
-
-    d3.select('#toggleNodeButton').classed("off",!value);
-}
-function toggleLinkLabelsVisibility(){
-    var value = d3.select('#linkCanvas').classed("hide_text");
-    setLinkLabelsVisibility(!value)
-
-    d3.select('#toggleLinkButton').classed("off",!value);
-}
-
-function toggleVisibility (button) {
-    var name = d3.select(button).attr("name");
-
-    var value = d3.select("#mainCanvas")
-        .classed("hide_"+name);
-    
-    d3.select("#mainCanvas")
-        .classed("hide_"+name,!value);
-    
-    d3.select(button).classed("off",!value);
 }
 
 function trimString(string,length){

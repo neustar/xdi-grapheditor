@@ -29,21 +29,23 @@ function exportToPNG () {
         if(!confirmRes) return;
     }
 
+    // Show all the labels
     d3.selectAll('.node text')
         .text(function(d) { return d.isLiteral()? d.shortName : d.fullName; })
 
+    //Clone current SVG content to a new SVG
     var oldSVG = d3.select('#mainCanvas');
     var newSVG = d3.select(oldSVG.node().cloneNode(true));
 
     d3.selectAll('.node text')
         .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); });
     
-    //Setup new SVG and Remove unecessary elements
+    //Remove unecessary elements
     newSVG.select('.drag_line').remove();
     newSVG.select('#dragSelectCanvas').remove();
     newSVG.select('#status').remove();
 
-
+    //Check Screenshot Boundary
     var minX = d3.min(lastDrawData.nodes,function(d) { return x(d.x); })-SCREENSHOT_MARGIN;
     var minY = d3.min(lastDrawData.nodes,function(d) { return y(d.y); })-SCREENSHOT_MARGIN;
     var maxX = d3.max(lastDrawData.nodes,function(d) { 
@@ -57,9 +59,7 @@ function exportToPNG () {
         .selectAll('#linkCanvas,#nodeCanvas')
         .attr('transform', 'translate(' + (-minX) + ',' + (-minY) + ')');
 
-    
-
-
+    //Copy CSS style to SVG element. Otherwise the exported graph will have no styling
     copyNodeStyle('.node',oldSVG,newSVG);
     copyNodeStyle('.node.root',oldSVG,newSVG);
     copyNodeStyle('.node.literal',oldSVG,newSVG);
@@ -111,7 +111,7 @@ function copyElementStyle (selector,oldSVG,newSVG,styleNames) {
         .style(styles);
 }
 
-
+//Create a picture with svg
 function screenshot(svgToShot, saveAsPNG){
     svgToShot
         .attr("version", 1.1)

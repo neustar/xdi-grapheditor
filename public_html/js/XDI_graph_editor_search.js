@@ -23,7 +23,6 @@ THE SOFTWARE.
 */
 
 //Atomic operation for search by string in a set
-
 function searchElement (targetString,elementSet) {
     var res;
     res = elementSet.filter(function (d) {
@@ -101,7 +100,10 @@ function updateSublist (outerlist,title,data) {
         });
 }
 
-
+function searchStart () {
+    d3.select(".searchContainer")   
+        .classed("folded", false);
+}
 
 function searchTextChanged () {
     searchStart();
@@ -131,12 +133,7 @@ function searchDone () {
     clearSearchList();
 }
 
-function searchStart () {
-    d3.select(".searchContainer")   
-        .classed("folded", false);
 
-    // clearAllSelection();
-}
 
 
 

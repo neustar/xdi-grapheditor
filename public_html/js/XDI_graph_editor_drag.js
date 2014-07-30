@@ -77,3 +77,8 @@ function stopTouchPropagation () {
         sourceEvent.preventDefault();
     }
 }
+
+function bindDragToNodes(){
+    d3.selectAll('.node')
+        .call(currentLayout.drag);
+}

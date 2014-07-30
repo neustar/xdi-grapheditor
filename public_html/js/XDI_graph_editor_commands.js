@@ -27,12 +27,111 @@ function initializeCommands(){
     updateUndoRedoMenu();
 }
 
+//
+// File
+//
+
 function clearGraphCommand () {
     if(_.isEmpty(globalNodes)&&_.isEmpty(globalLinks))
         return;
     backup();
     clearGraph();
 }
+
+//
+// Edit
+//
+
+//  Undo/Redo
+
+// Atomic operation for restore graph to a backed-up status
+function restoreTo(backupPos){
+    if(_.isEmpty(backupData))
+        return;
+    globalNodes = [];
+    globalLinks = [];
+    globalNodeLinkMap = {};
+    pasteFrom(backupData[backupPos]);
+    updateUndoRedoMenu();
+    restart();
+}
+
+// Atomic operation to create a backup of current status
+function backup(){
+    backupData = backupData.slice(0,currentBackupPos + 1);
+    backupData[currentBackupPos] = cloneNodeLinks(globalNodes,globalLinks);
+    backupData.push(null);
+    currentBackupPos = backupData.length - 1;
+    updateUndoRedoMenu();
+}
+
+
+function undo(){
+    if(currentBackupPos > 0)
+    {
+        if(backupData[currentBackupPos]==null)
+            backupData[currentBackupPos] = cloneNodeLinks(globalNodes,globalLinks);
+        currentBackupPos --;
+        restoreTo(currentBackupPos);
+    }
+    
+}
+
+function redo() {
+    if(currentBackupPos < backupData.length - 1)
+    {
+        currentBackupPos ++;
+        restoreTo(currentBackupPos);
+    }
+}
+
+
+function updateUndoRedoMenu () {
+    d3.select('#undoMenuItem').classed('disabled',currentBackupPos===0);
+    d3.select('#redoMenuItem').classed('disabled',currentBackupPos+1===backupData.length);
+}
+
+//  Copy & Paste
+
+function cutSelection () {
+    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
+        return;
+    backup();
+
+    cutObjectsToClipBoard(selected_nodes,selected_links);
+    clearAllSelection();
+    
+    restart();
+}
+
+function copySelection () {
+    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
+        return;
+
+    copyObjectsToClipBoard(selected_nodes,selected_links);
+    updateMenuItemAbility ();
+}
+
+function pasteToGraph () {
+    if(_.isEmpty(clipBoard.nodes)) //Cannot paste if there is no nodes. Links cannot be pasted if there is no nodes two.
+        return;
+    backup();
+
+    pasteFromClipBoard();
+    clearAllSelection();
+    
+    restart();
+}
+
+function duplicateSelection () {
+    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
+        return;
+    backup();
+    duplicateObjects(selected_nodes,selected_links);
+    restart();
+}
+
+//  Misc.
 
 function deleteCommand () {
     var performed = hasSelectedLinks()||hasSelectedNodes();
@@ -79,25 +178,73 @@ function editNameCommand(){
     }
 }
 
+function selectAll () {
+    if(!lastDrawData)
+        return;
+    
+    //Only select visible nodes
+    setSelectedNodes(lastDrawData.nodes);
+    setSelectedLinks(lastDrawData.links);
+    updateSelectionClass();
+}
 
+//
+// View
+//
 
+//  Zoom
 
-function fixNodeCommand () {
-    if(hasSelectedNodes())
+function zoomInCommand () {
+    zoomByScaleDelta(ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
+}
+
+function zoomOutCommand () {
+    zoomByScaleDelta(-ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
+}
+
+//  Layout
+
+function changeLayoutCommand (newLayout) {
+    if(currentLayout!=null)
+        currentLayout.exit();
+    var r = getCommonRoots()[0];
+    switch (newLayout){
+        case Layouts.Force:
+            currentLayout = new ForceLayout();
+            zoomElementToPos(r,[svgWidth/3,svgHeight/3],1);
+            break;
+        case Layouts.Tree:
+            currentLayout = new TreeLayout();
+            resetZoom();
+            break;
+        default:
+            console.log("Change Layout Error")
+    }
+
+    restart(true,false);
+}
+
+function resetLayoutCommand () {
+    if(currentLayout!=null)
     {
-        backup();
-        selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
-        showMessage("Position fixed/unfixed");
+        currentLayout.resetLayoutParameter();
+        restart(true,false);
+        showMessage("Layout Reseted");
     }
 }
 
-function foldNodeCommand (isDirectDescendantsOnly) {
-    if(hasSelectedNodes())
+function updateLayoutParameterCommand () {
+    if(currentLayout!=null)
     {
-        backup();
-        selected_nodes.forEach(function(d) { return toggleFoldNode(d,isDirectDescendantsOnly);})
+        currentLayout.updateLayoutParameter();
+        restart(true,false);
     }
+    
 }
+
+//
+// Node
+//
 
 function createNodeByClick () {
     var nodename = prompt("Please enter the node's name", "");
@@ -126,6 +273,61 @@ function createNodeByClick () {
 
 }
 
+function fixNodeCommand () {
+    if(hasSelectedNodes())
+    {
+        backup();
+        selected_nodes.forEach(function(d) {toggleNodeFixed(d);});
+        showMessage("Position fixed/unfixed");
+    }
+}
+
+function setNodeFixed (node, newValue) {
+    node._fixed = newValue; //Record the fixed is set intentionally
+    node.fixed = newValue;
+    restart(false,false);
+}
+
+function toggleNodeFixed (node) {
+    setNodeFixed(node,!node.fixed);
+}
+
+function foldNodeCommand (isDirectDescendantsOnly) {
+    if(hasSelectedNodes())
+    {
+        backup();
+        selected_nodes.forEach(function(d) { return toggleFoldNode(d,isDirectDescendantsOnly);})
+    }
+}
+
+function setFoldNode (node,newValue,isDirectDescendantsOnly) {
+    node.isFolded = newValue;
+
+    //Set all children folded if only expand direct descendants
+    if(isDirectDescendantsOnly && !node.isFolded && node.children != null)
+    {
+        node.children.forEach(function (d) {
+            if(!_.isEmpty(d.children)&&!findLink(node,d).isRelation)
+                d.isFolded = true;
+        })
+    }
+    
+    restart();    
+}
+
+function toggleFoldNode(node,isDirectDescendantsOnly){
+    setFoldNode(node,!node.isFolded,isDirectDescendantsOnly);
+}
+
+function expandAllNodes(){
+    backup();
+    globalNodes.forEach(function  (d) {
+        d.isFolded = false;
+    })
+    restart();
+}
+
+
 // Changing the Node type to literal or back to the default contextual 
 function setLiteralNodeCommand () {
     if (hasSelectedNodes()) {
@@ -137,7 +339,6 @@ function setLiteralNodeCommand () {
         restart();
     }
 }
-
 
 // Setting a node as root, updating graphics too.
 function setRootNodeCommand () {
@@ -151,7 +352,16 @@ function setRootNodeCommand () {
     }
 }
 
+//
+// Link
+//
 
+//Enter the edit mode user can drag from one node to another. No need to press Shift.
+function createNewLinkCommand () {
+    // isCreatingDragLine = true;
+    updateMode(Mode.EDIT);
+    showMessage("Drag from one node to create link", 3000);
+}
 
 // Inversing the link direction
 function invertLinkCommand () {
@@ -196,59 +406,7 @@ function setRelationCommand () {
     }
 }
 
-function zoomInCommand () {
-    zoomByScaleDelta(ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
-}
-
-function zoomOutCommand () {
-    zoomByScaleDelta(-ZOOM_COMMAND_SCALE_DELTA,[svgWidth/2,svgHeight/2],true);
-}
-
-
-function changeLayoutCommand (newLayout) {
-    if(currentLayout!=null)
-        currentLayout.exit();
-    var r = getCommonRoots()[0];
-    switch (newLayout){
-        case Layouts.Force:
-            currentLayout = new ForceLayout();
-            zoomElementToPos(r,[svgWidth/3,svgHeight/3],1);
-            break;
-        case Layouts.Tree:
-            currentLayout = new TreeLayout();
-            resetZoom();
-            break;
-        default:
-            console.log("Change Layout Error")
-    }
-
-    restart(true,false);
-}
-
-function resetLayoutCommand () {
-    if(currentLayout!=null)
-    {
-        currentLayout.resetLayoutParameter();
-        restart(true,false);
-        showMessage("Layout Reseted");
-    }
-}
-
-function updateLayoutParameterCommand () {
-    if(currentLayout!=null)
-    {
-        currentLayout.updateLayoutParameter();
-        restart(true,false);
-    }
-    
-}
-
-//Enter the edit mode user can drag from one node to another. No need to press Shift.
-function createNewLinkCommand () {
-    // isCreatingDragLine = true;
-    updateMode(Mode.EDIT);
-    showMessage("Drag from one node to create link", 3000);
-}
+//  Drag Line
 
 
 function startDragLine(){
@@ -281,10 +439,9 @@ function endDragLine(){
     }
 }
 
-function startDrag(){
-    d3.selectAll('.node')
-        .call(currentLayout.drag);
-}
+//
+// For Mouse Hover
+//
 
 function showFullName (selector) {
     d3.select(selector)
@@ -304,80 +461,9 @@ function showTrimmedName (selector) {
         .text(function(d) { return trimString(d.shortName,NODE_TEXT_MAX_LENGTH); });
 }
 
-function toggleNodeFixed (node) {
-    setNodeFixed(node,!node.fixed);
-}
-
-function setNodeFixed (node, newValue) {
-    node._fixed = newValue; //Record the fixed is set intentionally
-    node.fixed = newValue;
-    restart(false,false);
-}
-
-function toggleFoldNode(node,isDirectDescendantsOnly){
-    setFoldNode(node,!node.isFolded,isDirectDescendantsOnly);
-}
-
-function setFoldNode (node,newValue,isDirectDescendantsOnly) {
-    node.isFolded = newValue;
-
-    //Set all children folded if only expand direct descendants
-    if(isDirectDescendantsOnly && !node.isFolded && node.children != null)
-    {
-        node.children.forEach(function (d) {
-            if(!_.isEmpty(d.children)&&!findLink(node,d).isRelation)
-                d.isFolded = true;
-        })
-    }
-    
-    restart();    
-}
-
-function expandAllNodes(){
-    backup();
-    globalNodes.forEach(function  (d) {
-        d.isFolded = false;
-    })
-    restart();
-}
-
-function copySelection () {
-    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
-        return;
-
-    copyObjectsToClipBoard(selected_nodes,selected_links);
-    updateMenuItemAbility ();
-}
-
-function pasteToGraph () {
-    if(_.isEmpty(clipBoard.nodes)) //Cannot paste if there is no nodes. Links cannot be pasted if there is no nodes two.
-        return;
-    backup();
-
-    pasteFromClipBoard();
-    clearAllSelection();
-    
-    restart();
-}
-
-function duplicateSelection () {
-    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
-        return;
-    backup();
-    duplicateObjects(selected_nodes,selected_links);
-    restart();
-}
-
-function cutSelection () {
-    if(!hasSelectedNodes()) //Cannot copy links if there is no nodes
-        return;
-    backup();
-
-    cutObjectsToClipBoard(selected_nodes,selected_links);
-    clearAllSelection();
-    
-    restart();
-}
+//
+// Menu enable/disable
+//
 
 function setMenuItemAbility (classSelector,isEnabled) {
     d3.select(classSelector)
@@ -393,59 +479,39 @@ function updateMenuItemAbility () {
     d3.selectAll('.menu-item.need-content').classed('disabled',isGraphEmpty());
 }
 
-function selectAll () {
-    if(!lastDrawData)
-        return;
+//
+// Legend
+//
+
+function setNodeLabelsVisibility(newValue){
+    d3.select('#nodeCanvas').classed("hide_text",newValue);
+}
+
+function setLinkLabelsVisibility(newValue){
+    d3.select('#linkCanvas').classed("hide_text",newValue);   
+}
+
+function toggleNodeLabelsVisibility(){
+    var value = d3.select('#nodeCanvas').classed("hide_text");
+    setNodeLabelsVisibility(!value)
+
+    d3.select('#toggleNodeButton').classed("off",!value);
+}
+function toggleLinkLabelsVisibility(){
+    var value = d3.select('#linkCanvas').classed("hide_text");
+    setLinkLabelsVisibility(!value)
+
+    d3.select('#toggleLinkButton').classed("off",!value);
+}
+
+function toggleVisibility (button) {
+    var name = d3.select(button).attr("name");
+
+    var value = d3.select("#mainCanvas")
+        .classed("hide_"+name);
     
-    //Only select visible nodes
-    setSelectedNodes(lastDrawData.nodes);
-    setSelectedLinks(lastDrawData.links);
-    updateSelectionClass();
-}
-
-
-
-function restoreTo(backupPos){
-    if(_.isEmpty(backupData))
-        return;
-    globalNodes = [];
-    globalLinks = [];
-    globalNodeLinkMap = {};
-    pasteFrom(backupData[backupPos]);
-    updateUndoRedoMenu();
-    restart();
-}
-
-function backup(){
-    backupData = backupData.slice(0,currentBackupPos + 1);
-    backupData[currentBackupPos] = cloneNodeLinks(globalNodes,globalLinks);
-    backupData.push(null);
-    currentBackupPos = backupData.length - 1;
-    updateUndoRedoMenu();
-}
-
-
-function undo(){
-    if(currentBackupPos > 0)
-    {
-        if(backupData[currentBackupPos]==null)
-            backupData[currentBackupPos] = cloneNodeLinks(globalNodes,globalLinks);
-        currentBackupPos --;
-        restoreTo(currentBackupPos);
-    }
+    d3.select("#mainCanvas")
+        .classed("hide_"+name,!value);
     
-}
-
-function redo() {
-    if(currentBackupPos < backupData.length - 1)
-    {
-        currentBackupPos ++;
-        restoreTo(currentBackupPos);
-    }
-}
-
-
-function updateUndoRedoMenu () {
-    d3.select('#undoMenuItem').classed('disabled',currentBackupPos===0);
-    d3.select('#redoMenuItem').classed('disabled',currentBackupPos+1===backupData.length);
+    d3.select(button).classed("off",!value);
 }

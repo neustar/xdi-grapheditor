@@ -161,6 +161,7 @@ function hideAllWindows () {
     $(".window-item").removeClass("checked");
 }
 
+// Display the notification message at the top-center of screen
 function showMessage (text,duration) {
     if(_.isEmpty(text))
         return;

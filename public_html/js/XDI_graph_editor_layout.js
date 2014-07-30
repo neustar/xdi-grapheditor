@@ -111,8 +111,6 @@ GraphLayout.prototype.getSliderValue = function (id) {
 /// Force Layout
 ///
 
-
-
 function ForceLayout (){
     this.name = "Force";
     

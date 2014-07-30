@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-function initializeZoom () {    
+function initializeZoom () {
+    
+    //Create zoom behavior and bind to svg
     zoom = d3.behavior.zoom()
         .x(x)
         .y(y)
@@ -32,7 +34,7 @@ function initializeZoom () {
 
     zoom(svg);
 
-
+    //Disable D3 native zoom handler
     svg.on("mousedown.zoom", null);
     svg.on("mousemove.zoom", null);
     svg.on("dblclick.zoom", null);
@@ -41,6 +43,7 @@ function initializeZoom () {
     svg.on("MozMousePixelScroll.zoom", null);
 
 
+    //Initialize navigator
     navDrag = d3.behavior.drag()
         .on('drag',navDragged)
 
@@ -50,6 +53,7 @@ function initializeZoom () {
 
     updateNavSize();
 
+    //Trigger zoom event once on svg
     zoom.event(svg);
 }
 
@@ -74,8 +78,11 @@ function zoomEndEventHandler () {
 
 function zoomEventHandler(){
     var sourceEvent = d3.event.sourceEvent;
+
+    //Support zoom with two fingers on iPad
     if(isTouchScreen && sourceEvent instanceof TouchEvent)
     {       
+        //Revert zoom effect if single-touch 
         if(sourceEvent.touches.length < 2)
         {
             zoom.translate(lastTranslate);
@@ -119,6 +126,7 @@ function updatePanView(curMousePos){
     setScaleTranslation(null,[tx,ty]);
 }
 
+//Atomic operation for setting scale and translation
 function setScaleTranslation(newScale,newTranslation){
     if(newScale != null)
         zoom.scale(newScale);
@@ -133,6 +141,7 @@ function endPanView(){
     updateMode(Mode.VIEW);
 }
 
+//Interface for scaling
 function scaleView(center,newScale)
 {
     var scaleExtent = zoom.scaleExtent();
@@ -159,6 +168,8 @@ function scaleView(center,newScale)
     setScaleTranslation(s1,[tx1,ty1]);
 }
 
+
+//Update the rects in navigator
 function updateViewPortRect() 
 {
     if(!lastDrawData || _.isEmpty(lastDrawData.nodes))
@@ -226,7 +237,9 @@ function getScaleRatio(){
     return zoom.scale();
 }
 
-
+//Atomic operation for zoom with TRANSITION from one translation & scale to another.
+//from and to are 3-element arrays describing trasition & scale
+//[centerX, centerY, veiwportWidth]
 function zoomFromTo (from,to) {
     var center = [svgWidth/2, svgHeight/2]
     var i = d3.interpolateZoom(from,to)
@@ -246,6 +259,7 @@ function zoomFromTo (from,to) {
         });
 }
 
+//Interface for zooming from current traslation & scale to another with TRANSITION
 function zoomTo (to) {
     var scale = zoom.scale();
     var translate = zoom.translate();
@@ -260,6 +274,7 @@ function zoomTo (to) {
     zoomFromTo(res,to);
 }
 
+//Interface for zooming to put an element in the center of screen
 function zoomToElement(d,scale){
     scale = scale || 2;
     if(d.x!=null && d.y!=null)
@@ -274,6 +289,7 @@ function zoomToElement(d,scale){
     }
 }
 
+//Interface for zooming on element to a position 
 function zoomElementToPos (d,newPos,scale) {
     zoomTo([svgWidth/2 - newPos[0] + d.x, svgHeight/2 - newPos[1] + d.y, svgWidth/scale]);
 }
@@ -286,11 +302,13 @@ function zoomToFit () {
         zoomToElementCollection(lastDrawData.nodes);
 }
 
+//Zoom to fit seletion on screen
 function zoomToSelection () {
     if(selected_nodes)
         zoomToElementCollection(selected_nodes);
 }
 
+//Zoom to fit a collection of elements
 function zoomToElementCollection (collection) {
     var minX = d3.min(collection,function(d) { return d.x; });
     var minY = d3.min(collection,function(d) { return d.y; });
@@ -306,6 +324,7 @@ function zoomToActualSize(){
     zoomTo([svgWidth/2,svgHeight/2,svgWidth]);
 }
 
+//Interface for handling mouse wheel events
 function zoomByScaleDelta (delta,centerPos,withTransition) {
     var currentScale = zoom.scale();
         currentScale += delta;
