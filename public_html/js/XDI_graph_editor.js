@@ -341,10 +341,6 @@ function isGraphEmpty () {
     return _.isEmpty(d3.selectAll('.selectable').node());//.node() is necessary. .selectAll() produce an array with an empty array in it
 }
 
-function help() {
-    var helpWindow = window.open("help.html","Help","width=600,height=600");
-}
-
 function importXDI() {
     openImportDialog();
 }
