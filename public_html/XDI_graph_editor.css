@@ -833,18 +833,15 @@ body{
     stroke: rgba(23,178,119,1) !important; //Find a better way without !important
 }
 
-.link.relation {
+.link.relation, .link.relation.literal {
     stroke: #C02942;
     stroke-dasharray: 8, 2;
+    opacity: 0.5;
 }
 
 .hide_rel_link .link.relation{
   opacity:0;
   pointer-events:none;
-}
-
-.link.relation{
-  opacity: 0.5;
 }
 
 .link.relation:hover{

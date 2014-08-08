@@ -70,11 +70,11 @@ $(function() {
                 initializeGraphWithXDI(data);
         });
     } else {
-        initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
+        // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/");
     }
 
     //Only For Debug purpose
-    initializeGraphWithXDI(attributeSingletons);
+    initializeGraphWithXDI(simpleExample);
     
     // initializeGraphWithXDI("/$ref/=abc\n=abc/$isref/")
     // initializeGraphWithXDI("/$ref/=def\n=def/$isref/")
