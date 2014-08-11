@@ -25,14 +25,27 @@ THE SOFTWARE.
 <html>
 
 <head>
-    <title>Help</title>
+    <title>XDI Graph Editor Help</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="js/libs/xdi-js/css/style.css" TYPE="text/css" MEDIA="screen"> -->
     <link rel="stylesheet" href="js/libs/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
     <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="js/libs/jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
-    <!-- // <script type="text/javascript" src="js/libs/xdi-js/js/lodash.compat.min.js"></script> -->
+    
+    <style>
+        #tabs a{
+            outline: 0;
+        }
+
+        h2{
+            color: #444;
+        }
+
+        #accordion section a{
+            color: #118559;
+        }
+    </style>
+
     <script type="text/javascript">
     $(function() {
         
@@ -78,8 +91,8 @@ THE SOFTWARE.
                                 <li>Some things worth noting on the generated graph:
                                     <ul>
                                         <li>The node with white fill color is the common root.</li>
-                                        <li>The dashed red line is a relational statement. The grey ones are contextual statements.</li>
-                                        <li>Edges are labeled in lightgray while nodes are labeled in black.</li>
+                                        <li>The dashed red line is a relational statement. The gray ones are contextual statements.</li>
+                                        <li>Edges are labeled in light gray while nodes are labeled in black.</li>
                                     </ul>
                                 </li>
                                 <li><i>Note that you may enter many XDI single display line statements at once.</i>
@@ -134,37 +147,38 @@ THE SOFTWARE.
                 <div>
                     <h3 id="import-a-graph">Import a graph from XDI statements</h3>
                     <section>
-                        <p>To create a graph from XDI statements, click <b>File</b>, and then click <b>Import XDI...</b>.In the popup window, paste the XDI statements in the text input area.</p>
+                        <p>Click <b>File</b>, and then click <b>Import XDI...</b>. In the popup window, paste the XDI statements in the text input area.</p>
                         <p>There are three checkboxes:</p>
-                        <ol>
-                            <li><b>Delete Current Graph</b>: if checked, the current graph will be cleared before create the new graph.</li>
-                            <li><b>Join the current graph</b>: if checked, the statements being imported will be added to the current graph.</li>
-                            <li><b>Fold Root</b>: if checked, the root node in the graph being imported will be folded when put on the screen.</li>
-                        </ol>
-                        <p><i>Tip: This function will avoid overwhelming elements when importing large graphs. <b>Unfold Level 1</b> function can then be used to unfold only the direct descendant of nodes.</i>
+                        <ul>
+                            <li><b>Delete Current Graph</b>: if checked, the current graph will be cleared before the new graph is created.</li>
+                            <li><b>Combine with current graph</b>: if checked, the statements imported will be added to the current graph.</li>
+                            <li><b>Fold Root</b>: if checked, the <i>Common Root Node</i> in the graph imported will be folded when put on the screen.</li>
+                        </ul>
+                        <p><i>Tip: The <b>Fold Root</b> option helps avoid overwhelming elements when importing large graphs. <b>Unfold Level 1</b> function can then be used to unfold only the direct descendant of nodes.</i>
                         </p>
+                        <p>See: <a href="#unfold-level-1">Unfold only the direct descendant of a folded node</a></p>
                     </section>
                 </div>
                 <div>
                     <h3>Export a graph to XDI statements</h3>
                     <section>
-                        <p>To export the current graph into XDI statements, click <b>File</b> and then click <b>Export to XDI...</b>. A new window will pop up that contains the statements.</p>
-                        <p><i>Note: The Popup window may be block by the browser.</i>
+                        <p>Click <b>File</b> and then click <b>Export to XDI...</b>. A new window will pop up that contains the statements.</p>
+                        <p><i>Note: The popup window may be block by the browser.</i>
                         </p>
                     </section>
                 </div>
                 <div>
-                    <h3>Export a graph to image file</h3>
+                    <h3>Export a graph to a PNG image</h3>
                     <section>
-                        <p>To export the current graph as a PNG file, click <b>File</b> and then click <b>Export to PNG...</b>. A new window will popup that contains the PNG file as a screenshot of the current graph. The graph will be exported as displayed on the screen. Therefore, elements that have been folded or hidden will not be included.</p>
-                        <p><i>Note:  This function is only allowed in Chrome browser. </i>
-                        </p>
+                        <p>Click <b>File</b> and then click <b>Export to PNG...</b>. A new window will popup that contains a screenshot of the current graph as a PNG picture. The graph will be exported as displayed on the screen. Therefore, elements that have been folded or hidden will not be included.</p>
+                        <p><i>Note: This function is only supported in Chrome browser. </i></p>
                     </section>
                 </div>
                 <div>
                     <h3>Clear the current graph on screen</h3>
                     <section>
-                        <p>To clear the graph on screen, click <b>File</b> and then click <b>Clear Graph</b>. All the elements on screen will be completely deleted. This is an undoable operation.</p>
+                        <p>To clear the graph on screen, click <b>File</b> and then click <b>Clear Graph</b>. All the elements on screen will be completely deleted.</p>
+                        <p><i>Note: This operation can be undone.</i></p>
                     </section>
                 </div>
                 <div>
@@ -178,14 +192,14 @@ THE SOFTWARE.
                     <h3>Load a graph from browser storage</h3>
                     <section>
                         <p>Click <b>File</b> and then click <b>Load Graph</b>. A window will popup asking for the graph name to load. The names of currently stored graph will be listed in the window. Type the name to load and click <b>OK</b>.</p>
-                        <p><i>Note: The new graph will override the current graph on screen.</i>
-                        </p>
+                        <p><i>Note: The new graph will overwrite the current graph on screen.</i></p>
                     </section>
                 </div>
                 <div>
                     <h3>Clear all graph stored in browser storage</h3>
                     <section>
-                        <p>Click <b>File</b> and then click <b>Clear Storage</b>. A window will popup. Type <b>"YES"</b> and click <b>OK</b> to confirm clearing the storage.</p>
+                        <p>Click <b>File</b> and then click <b>Clear Storage</b>. A window will popup. Type <b>"YES"</b> and click <b>OK</b> to confirm and the storage will be cleared.</p>
+                        <p><i>Note: This operation <b>CANNOT</b> be undone. </i></p>
                     </section>
                 </div>
 
@@ -199,7 +213,7 @@ THE SOFTWARE.
                 <div>
                     <h3>Select multiple elements by clicking</h3>
                     <section>
-                        <p>Press and hold <b>Shift</b> and <b>Left Click</b> once on each element to select.</p>
+                        <p>Press and hold <b>Shift</b> key and <b>Left Click</b> once on each element to select.</p>
                         <p><i>Note: This function is not available on iPad.</i>
                         </p>
                     </section>
@@ -207,36 +221,37 @@ THE SOFTWARE.
                 <div>
                     <h3>Select multiple elements by dragging</h3>
                     <section>
-                        <p>Press and hold the <b>Mouse Left Button</b> at any empty space on screen. Then move the cursor and a rectangle will show up. Release the <b>Mouse Left Button</b> and element within the rectangle area will be selected.</p>
-                        <p>For iPad, <b>Tap and hold</b> with one finger at any empty space on screen. Then move finger and a rectangle will show up. <b>Release touch</b> and element within the rectangle area will be selected.</p>
+                        <p>Press and hold the <b>Left Mouse Button</b> at any empty space on screen. Then move the cursor and a rectangle will appear. Release the <b>Left Mouse Button</b> and element within the rectangle area will be selected.</p>
+                        <p>For iPad, <b>Tap and hold</b> with one finger at any empty space on screen. Then move finger and a rectangle will appear. <b>Release touch</b> and elements within the rectangle area will be selected.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Move elements</h3>
                     <section>
-                        <p>First select the elements to move and them press and hold the <b>Mouse Left Button</b> and <b>Drag</b>.</p>
+                        <p>First select the elements to move and them press and hold the <b>Left Mouse Button</b> and drag.</p>
                         <p>For iPad, <b>Tap and hold</b> with one finger on one of the selected elements and move finger.</p>
                         <p>If multiple elements are selected, they will be moved together.</p>
                     </section>
                 </div>
                 <div>
-                    <h3>Cut/Copy/Paste elements</h3>
+                    <h3>Cut/Copy/Paste/Duplicate elements</h3>
                     <section>
-                        <p>First select the elements to cut, copy or paste. Then click <b>Edit</b> and click the operation to perform.</p>
-                        <p>For the <b>Paste</b> operation, the new elements will be placed near the original elements.</p>
+                        <p>First select the elements. Then click <b>Edit</b> and click the operation to perform.</p>
+                        <p>For the <b>Paste</b> and <b>Duplicate</b> operation, the new elements will be placed near the original elements.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Rename elements / Change the label of elements</h3>
                     <section>
-                        <p>First select the elements to rename. Click <b>Edit</b> and then click <b>Rename Objects...</b>. A new window will popup with a text area to type the new names. The current label will be displayed in the text area.</p>
+                        <p>First select the elements to rename. Click <b>Edit</b> and then click <b>Rename Element...</b>. A new window will popup with a text area to type the new names. The current label will be displayed in the text area.</p>
                         <p>If multiple objects are selected, then multiple windows will popup for each element one by one.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Delete elements</h3>
                     <section>
-                        <p>First select the elements to delete. Click <b>Edit</b> and then click <b>Delete Object</b>. This is an undoable operation.</p>
+                        <p>First select the elements to delete. Click <b>Edit</b> and then click <b>Delete Element</b>.</p>
+                        <p><i>Note: This operation can be undone.</i></p>
                     </section>
                 </div>
                 <div>
@@ -250,7 +265,7 @@ THE SOFTWARE.
                     <h3>Undo/Redo operations</h3>
                     <section>
                         <p>Click <b>Edit</b> and then click <b>Undo</b> or <b>Redo</b>.</p>
-                        <p>All the past operations are recorded. The user can undo all the way to the first operation or redo to the last operation.</p>
+                        <p>All the past operations are recorded. You can undo all the way to the first operation or redo to the last operation.</p>
                     </section>
                 </div>
 
@@ -258,39 +273,38 @@ THE SOFTWARE.
                 <div>
                     <h3>Create a new node at the center of screen</h3>
                     <section>
-                        <p>Click <b>Node</b> and then <b>New Node...</b> or press <b>N</b> key on keyboard. A new window will popup with a text area asking for the label for the new node. Enter the label in the text area and click <b>OK</b>. The new node will appear at the center of the screen.</p>
+                        <p>Click <b>Node</b> and then <b>New Node...</b> or press <b>N</b> key. A new window will popup with a text area to enter the label for new node. Enter the label in the text area and click <b>OK</b>. The new node will appear at the center of the screen.</p>
                     </section>
                 </div>
                 <div>
-                    <h3>Create a new node at selected position on screen</h3>
+                    <h3>Create a new node at a specific position on screen</h3>
                     <section>
                         <p>Press and hold <b>Shift</b> key and click on the position to create node. A new window will popup with a text area asking for the label for the new node. Enter the label in the text area and click <b>OK</b>. The new node will appear at the clicked position.</p>
-                        <p>Note: The mouse must click on an empty space to perform the operation, rather than elements or windows.</p>
+                        <p>Note: The mouse must click on an empty space, rather than elements or windows, to perform the operation.</p>
                     </section>
                 </div>
                 <div>
-                    <h3>Fold the subtree of nodes</h3>
+                    <h3 id="fold-subtree">Fold the subtree of nodes</h3>
                     <section>
-                        <p>First select the nodes to fold, and click <b>Node</b> and then <b>Fold/Unfold</b>. Or <b>Double Click</b> on one of the selected nodes to fold the subtree of each selected node.</p>
-                        <p>This operation will hide the subtree of the node.</p>
-                        <p><i>Note:The stroke of a folded node will be red, indicating its subtree is hidden. If the nodes to fold don’t have subtree, then nothing will be changed on the graph.</i>
-                        </p>
+                        <p>First select the nodes to fold, and click <b>Node</b> and then <b>Fold/Unfold</b> or <b>Double Click</b> on one of the selected nodes.</p>
+                        <p>This operation will hide the subtree of each selected node.</p>
+                        <p><i>Note:The stroke of a folded node will be red, indicating its subtree is hidden. If the nodes to fold does not have subtree, then nothing will be changed on the graph.</i></p>
                     </section>
                 </div>
                 <div>
                     <h3>Unfold the entire subtree of folded nodes</h3>
                     <section>
-                        <p>First select the nodes to unfold, and click <b>Node</b> and then <b>Fold/Unfold</b>. Or <b>Double Click</b> on one of the selected nodes to unfold the subtree of each selected node.</p>
-                        <p>This is the opposite operation of <b>Fold</b> the subtree of nodes. It will display the hidden subtree of the node.</p>
+                        <p>First select the nodes to unfold, and click <b>Node</b> and then <b>Fold/Unfold</b> or <b>Double Click</b> on one of the selected nodes.</p>
+                        <p>This is the opposite operation to <a href="#fold-subtree">Fold the subtree of nodes</a>. It will display the hidden subtree of a folded node.</p>
                         <p><i>Note: If the unfolded subtree contains other folded nodes, those nodes will remain folded.</i></p>
                     </section>
                 </div>
                 <div>
-                    <h3>Unfold only the direct descendant of a folded node</h3>
+                    <h3 id="unfold-level-1">Unfold only the direct descendant of a folded node</h3>
                     <section>
-                        <p>Click <b>Node</b> and then <b>Unfold Level 1</b>. Or press and hold <b>Shift</b> key and <b>Double Click</b> on the nodes to unfold.</p>
+                        <p>Click <b>Node</b> and then <b>Unfold Level 1</b> or press and hold <b>Shift</b> key and <b>Double Click</b> on the nodes to unfold.</p>
                         <p>This operation will only display the direct descendants of the nodes to unfold. Those descendants will become folded with their subtree hidden.</p>
-                        <p><i>Tip: this operation can be used to explore large graph after Import a graph from XDI statements with Fold Root checked.</i></p>
+                        <p><i>Tip: this operation can be used to explore large graph after <a href="#import-a-graph">Import a graph from XDI statements</a> with <b>Fold Root</b> checked.</i></p>
                     </section>
                 </div>
                 <div>
@@ -301,27 +315,27 @@ THE SOFTWARE.
                     </section>
                 </div>
                 <div>
-                    <h3>Fix/Unfix the position of selected nodes under Force layout</h3>
+                    <h3 id="fix-specific-nodes">Fix/Unfix the position of specific nodes under Force layout</h3>
                     <section>
-                        <p>First select the nodes to fix and then click <b>Node</b> and then <b>Fix/Unfix</b> or press <b>F</b> key.</p>
-                        <p>The force directed layout constantly moving the nodes with force simulation. This operation will stop the layout from moving the fixed nodes as if they are pinned on the screen.</p>
-                        <p>This is a toggle operation. If a node is fixed, it will be unfixed and vice versa.</p>
+                        <p>First select the nodes to fix. Then click <b>Node</b> and click <b>Fix/Unfix</b> or press <b>F</b> key.</p>
+                        <p>The Force Layout constantly moves the nodes with force simulation. This operation will stop the layout from moving the fixed nodes as if they are pinned on the screen.</p>
+                        <p><i>Note: This is a toggle operation. If a node is already fixed, it will be unfixed and vice versa.</i></p>
                     </section>
                 </div>
                 <div>
-                    <h3>Set a node as a root node</h3>
+                    <h3>Set a node as a <i>Common Root Node</i></h3>
                     <section>
                         <p>First select the nodes to set and the click <b>Node</b> and then <b>Set as Root</b> or press <b>R</b> key.</p>
-                        <p>This operation will change the node type to <i>Common Root</i>. The syntax validator will check the syntax and report at the top left corner of screen.</p>
-                        <p>The shape of nodes will change indicating the change of node type. This is a toggle operation. If a node is a root node, it will be change back to context node and its type will be determined based on its name.</p>
+                        <p>This operation will change the node type to <i>Common Root</i>. The shape of nodes will change indicating the change of node type. The syntax validator will check the syntax and report at the top left corner of screen.</p>
+                        <p><i>Note: This is a toggle operation. If the node is already a <i>Common Root Node</i>, it will be changed back to context node and its type will be determined based on its name.</i></p>
                     </section>
                 </div>
                 <div>
-                    <h3>Set a node as a literal node</h3>
+                    <h3>Set a node as a <i>Literal Node</i></h3>
                     <section>
                         <p>First select the nodes to set and the click <b>Node</b> and then <b>Set as Literal</b> or press <b>L</b> key.</p>
-                        <p>This operation will change the node type to <i>Literal</i>. The syntax validator will check the syntax and report at the top left corner of screen.</p>
-                        <p>The shape of nodes will change indicating the change of node type. This is a toggle operation. If a node is a literal node, it will be change back to context node and its type will be determined based on its name.</p>
+                        <p>This operation will change the node type to <i>Literal</i>. The shape of nodes will change indicating the change of node type. The syntax validator will check the syntax and report at the top left corner of screen.</p>
+                        <p><i>Note: This is a toggle operation. If the node is already a <i>Literal Node</i>, it will be changed back to context node and its type will be determined based on its name.</i></p>
                     </section>
                 </div>
 
@@ -329,7 +343,7 @@ THE SOFTWARE.
                 <div>
                     <h3>Create a new link from one node to another</h3>
                     <section>
-                        <p>Click <b>Link</b> and then <b>New Link...</b> or press and hold <b>Shift</b> key. Then move cursor onto the source node, press and hold <b>Mouse Left Button</b>, move cursor to the target node and release the <b>Mouse Left Button</b>.</p>
+                        <p>Click <b>Link</b> and then <b>New Link...</b> or press and hold <b>Shift</b> key. Then move cursor onto the source node, press and hold <b>Left Mouse Button</b>, move cursor to the target node and release the <b>Left Mouse Button</b>.</p>
                         <p>If the target node is a <i>Literal Node</i> and the source node is not a value node, a value node will be created between the source and target nodes.</p>
                         <p>The syntax validator will check the syntax and report at the top left corner of screen.</p>
                     </section>
@@ -342,10 +356,11 @@ THE SOFTWARE.
                     </section>
                 </div>
                 <div>
-                    <h3>Set link as a relation link</h3>
+                    <h3>Set link as a <i>Relational Link</i></h3>
                     <section>
                         <p>First select the link to set and then click <b>Link</b> and then <b>Set as Relation</b> or press <b>R</b> key.</p>
                         <p>The syntax validator will check the syntax and report at the top left corner of screen.</p>
+                        <p><i>Note: This is a toggle operation. If the link is already a <i>Relational Link</i>, it will be changed back to Contextual Link.</i></p>
                     </section>
                 </div>
 
@@ -362,26 +377,26 @@ THE SOFTWARE.
                     <h3>Reset the nodes to default positions under current layout</h3>
                     <section>
                         <p>Click <b>View</b> and then <b>Reset Layout</b></p>
-                        <p>This operation will relayout the whole graph and move nodes back to the default position after layout.</p>
-                        <p><i>Tip: this is useful especially in tree layout, after dragging nodes to different nodes.</i></p>
+                        <p>This operation will re-layout the whole graph and move nodes back to the default position after layout.</p>
+                        <p><i>Tip: This is useful especially after dragging nodes around in <b>Tree Layout</b>.</i></p>
                     </section>
                 </div>
                 <div>
                     <h3>Change the properties of current layout</h3>
                     <section>
                         <p>The <b>Layout Control</b> panel is located as the top left corner of the screen. Drag the sliders to change the property values.</p>
-                        <p>For each layout, there are some properties that control its details:</p>
+                        <p>For each layout, there are some properties controlling its details:</p>
                         <ul>
                             <li>In Force Layout:
                                 <ul>
                                     <li><b>Link Distance</b>: The length of links between nodes.</li>
                                     <li><b>Link Strength</b>: The hardness of links, which act like springs. The more rigid, the harder to stretch or squeeze and vice versa.</li>
-                                    <li><b>Node Repulsion</b>:The force of nodes pushing against each other.</li>
+                                    <li><b>Node Repulsion</b>: The force of nodes pushing against each other.</li>
                                 </ul>
                             </li>
                             <li>In Tree Layout:
                                 <ul>
-                                    <li><b>Horizontal Margin</b>: the horizontal margin between different depths in the tree.</li>
+                                    <li><b>Horizontal Margin</b>: the horizontal margin between different levels in the tree.</li>
                                     <li><b>Vertical Margin</b>: the vertical margin between different branches in the tree.</li>
                                 </ul>
                             </li>
@@ -391,7 +406,7 @@ THE SOFTWARE.
                                 </ul>
                             </li>
                         </ul>
-                        <p><i>Tip: Node Size is useful to prevent nodes from overlapping each other.</i></p>
+                        <p><i>Tip: <b>Node Size</b> is useful to prevent nodes from overlapping each other.</i></p>
                     </section>
                 </div>
                 <div>
@@ -401,47 +416,53 @@ THE SOFTWARE.
                     </section>
                 </div>
                 <div>
-                    <h3>Fix the positions of all nodes under Force layout</h3>
+                    <h3>Fix the positions of all nodes under Force Layout</h3>
                     <section>
                         <p>Click <b>Fixed</b> button on the <b>Legend</b> located at the left-bottom corner of screen.</p>
-                        <p>The Force layout updates the nodes position with an global animation. This operation will stop all the nodes from moving</p>
+                        <p>The Force Layout constantly moves the nodes with force simulation. This operation will stop all the nodes from moving</p>
                     </section>
                 </div>
                 <div>
                     <h3>Unfix the positions of all nodes under Force layout</h3>
                     <section>
                         <p>Click <b>Moving</b> button on the <b>Legend</b> located at the left-bottom corner of screen.</p>
-                        <p>This operation will make the nodes start moving again after fix their position. Those nodes fixed with selection will remain fixed until they are selected and unfixed.</p>
+                        <p>This operation will make the nodes start moving again after fixing their position.</p>
+                        <p> Those nodes that are specifically selected and fixed will remain fixed until they are selected and unfixed.</p>
+                        <p>See: <a href="#fix-specific-nodes">Fix/Unfix the position of specific nodes under Force layout</a></p>
                     </section>
                 </div>
                 <h2>View Control</h2>
                 <div>
                     <h3>Zoom in and out</h3>
                     <section>
-                        <p>Press and hold <b>option</b> key on Mac and <b>alt</b> key on PC, and <b>scroll mouse wheel</b> to zoom in and out.</p>
-                        <p>To zoom in/out by step, click <b>View</b> and click <b>Zoom In</b> or <b>Zoom Out</b>. Or press <b>+</b> or <b>-</b> key for zooming it or out.</p>
-                        <p>The cursors will change to magnify glass icon to indicate the current graph. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner of screen.</p>
+                        <p>Press and hold <b>option</b> key on Mac and <b>alt</b> key on PC, and <b>Scroll Mouse Wheel</b> to zoom in and out.</p>
+                        <p>To zoom in/out by step, click <b>View</b> and click <b>Zoom In</b> or <b>Zoom Out</b> or press <b>+</b> or <b>-</b> key for zooming it or out.</p>
+                        <p>The cursors will change to magnify glass icon indicating the zooming operation. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner of screen.</p>
+                        <p>See <a href="#overview-with-navigator">Overview the graph with Navigator</a> and <a href="#pan-with-navigator">Quick panning with Navigator</a>.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Zoom and fit the whole graph to window size</h3>
                     <section>
-                        <p>Click <b>View</b> and then <b>Zoom to fit</b> or press <b>9</b> key on keyboard.</p>
+                        <p>Click <b>View</b> and then <b>Zoom to fit</b> or press <b>9</b> key.</p>
                         <p>The graph will be zoomed to fit into the screen with transition. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner of screen.</p>
+                        <p>See <a href="#overview-with-navigator">Overview the graph with Navigator</a> and <a href="#pan-with-navigator">Quick panning with Navigator</a>.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Zoom and fit part of graph to window size</h3>
                     <section>
                         <p>First select the elements, click <b>View</b> and then <b>Zoom to fit</b> or press <b>9</b> key.</p>
-                        <p>The graph will be zoomed to fit only the selected part into the screen with transition.</p>
+                        <p>The graph will be zoomed to fit only the selected part into the screen with transition. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner of screen.</p>
+                        <p>See <a href="#overview-with-navigator">Overview the graph with Navigator</a> and <a href="#pan-with-navigator">Quick panning with Navigator</a>.</p>
                     </section>
                 </div>
                 <div>
-                    <h3>Pan the viewport</h3>
+                    <h3 id="pan-the-viewport">Pan the viewport</h3>
                     <section>
-                        <p>Press and hold <b>option</b> key on Mac and <b>alt</b> key on PC, and <b>Drag</b> to pan the view.</p>
-                        <p>The cursor will become hand icon to indicate the panning operation. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner screen.</p>
+                        <p>Press and hold <b>option</b> key on Mac and <b>alt</b> key on PC, and drag to pan the view.</p>
+                        <p>The cursor will change to hand icon indicating the panning operation. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner screen.</p>
+                        <p>See <a href="#overview-with-navigator">Overview the graph with Navigator</a> and <a href="#pan-with-navigator">Quick panning with Navigator</a>.</p>
                     </section>
                 </div>
                 <div>
@@ -449,26 +470,28 @@ THE SOFTWARE.
                     <section>
                         <p>Click <b>View</b> and then <b>Actual Size</b> or press <b>0</b>.</p>
                         <p>The viewport will set back to zooming scale of 1 with transition. The boundaries of viewport and graph and the current scale are displayed in the <b>Navigator</b> at the bottom left corner screen.</p>
+                        <p>See <a href="#overview-with-navigator">Overview the graph with Navigator</a> and <a href="#pan-with-navigator">Quick panning with Navigator</a>.</p>
                     </section>
                 </div>
                 <div>
-                    <h3>Overview the graph with Navigator</h3>
+                    <h3 id="overview-with-navigator">Overview the graph with Navigator</h3>
                     <section>
-                        <p>In the navigator, the dark grey area indicates the boundary of graph, which is updated in real-time as the graph move. The grey rectangle is the boundary of viewport.</p>
+                        <p>In the navigator, the dark gray area indicates the boundary of graph, which is updated in real-time as the graph move. The gray rectangle is the boundary of viewport.</p>
                         <p>When the graph is smaller than the screen, the navigator will indicate the current position of graph on screen. When the graph is larger than the screen, the navigator will indicate the relative position of the current viewport to the whole graph.</p>
                     </section>
                 </div>
                 <div>
-                    <h3>Quick panning with Navigator</h3>
+                    <h3 id="pan-with-navigator">Quick panning with Navigator</h3>
                     <section>
                         <p>Move the cursor onto the navigator and drag to panning the graph.</p>
                         <p><i>Tip: this is a faster way of panning than panning in the graph.</i></p>
+                        <p>See: <a href="#pan-the-viewport">Pan the viewport</a>.</p> 
                     </section>
                 </div>
                 <div>
-                    <h3>Hide graph components</h3>
+                    <h3 id="hide-graph-components">Hide graph components</h3>
                     <section>
-                        <p>A legend is located at the bottom left of the screen. Click on an item to hide the corresponding graph components. The transparency of item indicates the visibility of graph component.</p>
+                        <p>A <b>Legend</b> is located at the bottom left of the screen. Click on an item to hide the corresponding graph components. The transparency of item indicates the visibility of graph component.</p>
                     </section>
                 </div>
 
@@ -477,21 +500,23 @@ THE SOFTWARE.
                     <h3>Enter search queries</h3>
                     <section>
                         <p>Click on the <b>Search Bar</b> on the top right corner and type the query. The <b>Search Bar</b> will expand into a panel and display the results.</p>
-                        <p>The results will be updated as the query is entered. The current search is a string-match search with all the labels in the graph including the ones hidden with legend.</p>
+                        <p>The results will be updated as the query is entered. The current search is a string-match search within all the labels in the graph including the ones hidden with legend.</p>
                         <p><i>Note: The labels in folded subtrees are not included.</i></p>
+                        <p>See: <a href="#fold-subtree">Fold the subtree of nodes</a>.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Browse search results</h3>
                     <section>
-                        <p>After The match nodes and links are displayed in two scrollable lists. The amount of matches is on the head of each list.</p>
-                        <p>The color-coding of items are the same as elements in the graph. The literal nodes are green and relations are red.</p>
+                        <p>The matched nodes and links are displayed in two scrollable lists. The amount of matches is on the head of each list.</p>
+                        <p>The color-coding of items are the same as elements in the graph. The <i>Literal Node</i> is green and <i>Relational Link</i> is red.</p>
                     </section>
                 </div>
                 <div>
                     <h3>Browse matched elements in the graph</h3>
                     <section>
                         <p>The matched elements in the graph are highlighted with light blue. Their labels are displayed even if they are set to hidden in the <b>Legend</b>.</p>
+                        <p>See: <a href="hide-graph-components">Hide graph components</a>.</p>
                     </section>
                 </div>
                 <div>
@@ -503,7 +528,7 @@ THE SOFTWARE.
                 <div>
                     <h3>Close Search Panel</h3>
                     <section>
-                        <p>Click <b>Done</b> next to the <b>Search Bar</b> to close the <b>Search Panel</b>. The search text area and the lists will be cleared.</p>
+                        <p>Click <b>Done</b> next to the search bar to close the <b>Search Panel</b>. The search text area and the lists will be cleared.</p>
                     </section>
                 </div>
 
@@ -530,8 +555,8 @@ THE SOFTWARE.
                         <p>This is a summarize of the modifier shortcuts described above. The XDI Graph Editor has three interaction modes and the user can press and hold modifier keys to switch modes.</p>
                         <ol>
                             <li><b>Browse Mode</b>: drag, select and perform operations on elements in this mode. This is the default mode without any modifier keys held.</li>
-                            <li><b>Viewport Change Mode</b>: Any viewport changes are performed in this mode. Current viewport operations are panning and zooming. Press and hold <b>option</b> key on Mac and <b>alt</b> key on PC to enter this mode.</li>
-                            <li><b>Edit mode</b>: Add elements to the graph. Current adding operations includes creating new nodes and new lines. Press and hold <b>Shift</b> key to enter this mode.</li>
+                            <li><b>Viewport Mode</b>: Any viewport changes are performed in this mode. Current viewport operations are panning and zooming. Press and hold <b>option</b> key on Mac and <b>alt</b> key on PC to enter this mode.</li>
+                            <li><b>Edit Mode</b>: Any adding operations are performed in this mode. Current adding operations are creating new nodes and new links. Press and hold <b>Shift</b> key to enter this mode.</li>
                         </ol>
                     </section>
                 </div>
