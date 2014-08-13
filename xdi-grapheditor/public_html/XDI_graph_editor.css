@@ -34,7 +34,8 @@ html{
 
 }
 body{
-  font-family: "Helvetica Neue","Helvetica";
+  /*font-family: "Open Sans",sans-serif;*/
+  font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
   height:100%;
   width:98%;
   margin:0% 1%;
@@ -63,6 +64,7 @@ body{
   
   box-shadow:0px 0px 30px 3px rgba(0,0,0,0.3);
 
+   -moz-user-select: none;
   -webkit-user-select:none;
 }
 #mainCanvas {    
@@ -119,7 +121,8 @@ body{
 }
 
 .menu li{
-  -webkit-transition:background 0.2s;
+  -moz-transition:background 0.2s, opacity 0.2s;
+  -webkit-transition:background 0.2s, opacity 0.2s;
 }
 
 .menu span {
@@ -129,7 +132,8 @@ body{
   border-radius: 0px;
   
   font-size: 1em;
-  font-family: "Helvetica Neue";
+  /*font-family: "Open Sans",sans-serif;*/
+  font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
    font-weight:200;
   
   letter-spacing:1px;
@@ -159,13 +163,17 @@ body{
 }
     
 .sub-menu {
-  opacity: 0;
-  pointer-events:none;
   position: absolute; 
   top: 100%;
-  -webkit-transition: opacity 0.5s;
-  background: rgba(17,83,56,0.7);
   padding: 0.3em 0;
+  
+  background: rgba(17,83,56,0.7);
+  opacity: 0;
+
+  pointer-events:none;
+
+  -moz-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
 }
 
 
@@ -197,8 +205,24 @@ body{
 .menu-item span {
   text-align:left;
   display:inline-block;
-} 
-.menu-item span:first-of-type{
+}
+
+.menu-item span.check{
+  position:absolute;
+  left:0%;
+  padding:0 0.4em;
+  visibility: hidden;
+  pointer-events:none;
+}
+
+.menu-item.checked span.check{
+  position:absolute;
+  left:0%;
+  padding:0 0.4em;
+  visibility: visible;
+}
+
+.menu-item span{
   min-width:9em;
 }
 .menu-item span.shortcut{
@@ -222,8 +246,8 @@ body{
 
 .legendContainer{
   position: absolute;
-  bottom: 2%;
-  left: 1%;
+  bottom: 1em;
+  left: 1em;
 }
 
 .legend{
@@ -241,6 +265,7 @@ body{
   font-weight:200;
   letter-spacing:1px;
 
+  -moz-transition:background 0.2s,opacity 0.2s;
   -webkit-transition:background 0.2s,opacity 0.2s;
 }
 
@@ -270,12 +295,14 @@ body{
    border: 1px solid rgba(100,100,100,0.3);
    
    font-size: 1em;
-   font-family: "Helvetica Neue";
+   /*font-family: "Open Sans",sans-serif;*/
+   font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
    font-weight:200;
    letter-spacing:1px;
    
    cursor: pointer;
 
+   -moz-transition:background 0.2s, opacity 0.2s;
    -webkit-transition:background 0.2s, opacity 0.2s;
 }
 
@@ -304,7 +331,7 @@ body{
 
 /********* Search *********/
 
-.searchContainer{
+.searchContainer.window{
   position: absolute;
   top: 0%;
   right: 0%;
@@ -321,10 +348,11 @@ body{
   
   text-align:left;
   
-  -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s;
+  -moz-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s,opacity 0.5s;
+  -webkit-transition:height 0.5s, right 0.5s, top 0.5s,background 0.5s,opacity 0.5s;
 }
 
-.searchContainer.hidden{
+.searchContainer.folded{
   right: -5%;
   top: -1%;
   height:35px;
@@ -335,10 +363,11 @@ body{
   padding:0em 0.5em;
   height:85%;
 
+  -moz-transition:opacity 0.5s;
   -webkit-transition:opacity 0.5s;
 }
 
-.searchContainer.hidden .searchResult{
+.searchContainer.folded .searchResult{
   opacity: 0;
   pointer-events:none;
 }
@@ -388,6 +417,7 @@ body{
 
   cursor: pointer;
 
+  -moz-transition: background 0.2s;
   -webkit-transition: background 0.2s;
 }
 
@@ -409,8 +439,10 @@ body{
 }
 
 #searchText{
+  -moz-appearance:none;
   -webkit-appearance:none;
-  font-family: "Helvetica Neue";
+  /*font-family: "Open Sans",sans-serif;*/
+  font-family: "Helvetica Neue","Helvetica","Open Sans",sans-serif;
   font-size: 14px;
   font-weight:200;
   letter-spacing:1px;
@@ -449,10 +481,11 @@ body{
   font-size: 14px;
   cursor:pointer;
 
+  -moz-transition:background 0.2s, opacity 0.5s;
   -webkit-transition:background 0.2s, opacity 0.5s;
 }
 
-.searchContainer.hidden .searchDoneButton{
+.searchContainer.folded .searchDoneButton{
   opacity: 0;
   pointer-events:none;
 }
@@ -466,6 +499,8 @@ body{
 .searchDoneButton:focus{
   outline: 0px;
 }
+
+/********* Status *********/
 
 #statusIndicator{
     stroke-width: 0px;
@@ -495,13 +530,40 @@ body{
     text-transform: capitalize;
 }
 
-#navSVG{
-  display: block;
+#modeMessage{
+  position:absolute;
+  top:0px;
+  left:109px;
+  
+  padding:0.3em 0.1em;
+  min-width: 4em;
+
+
+  color: #333;
+  background:rgba(100,100,100,0.2);
+  
+  font-size:1em;
+  font-weight: 200;
+  text-transform: capitalize;
+  text-align: center;
+  
+  cursor: pointer;
+
+  border: 1px solid rgba(100,100,100,0.3);
+  border-top:0px;
+  
+  -webkit-transition: background 0.3s;
+}
+
+/********* Navigator *********/
+
+#navigator{
   position: absolute;
   right: 0%;
   bottom: 0%;
+}
+#navSVG{
   background: rgba(200,200,200,0.5);
-
   cursor: -webkit-grab;
 }
 
@@ -527,6 +589,119 @@ body{
   stroke-width:1;
 }
 
+/********* Layout Control *********/
+
+.layoutControl{
+  position:absolute;
+  top:3em;
+  left:1em;
+  
+  min-width:9em;
+  padding:0 0.5em;
+  
+  background: rgba(100,100,100,0.3);
+  border: 1px solid rgba(100,100,100,0.3);
+  
+}
+
+.layoutControl section{
+  clear:both;
+  margin:1em 0 2em 0; 
+  
+  font-weight:200;
+}
+
+.layoutControl p{
+  margin:1em 0 0.2em 0;
+  font-size:1em;
+  
+}
+.layoutControl input{
+  display:block;
+  width:100%;
+  
+  -webkit-appearance:none;
+  height:5px;
+  margin:8px 0;
+  
+  background:rgba(255,255,255,0.8);
+  
+  border-radius:5px;
+  border: 1px solid gray;
+  
+/*   -webkit-transition:background 0.3s; */
+}
+
+.layoutControl input::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  height:12px;
+  width:12px;
+  background:rgba(220,220,220,1);
+  border:1px solid gray;
+  border-radius:10px;
+}
+
+.layoutControl input::-webkit-slider-thumb:hover{
+  border-color:rgba(103,145,122,1);
+  border-width:2px;
+}
+
+
+.layoutControl input:focus {
+  outline: 0px;
+}
+
+.layoutControl span{
+  font-size:0.8em;
+
+}
+
+.layoutControl span:first-of-type{
+  float:left;
+}
+
+.layoutControl span:last-of-type{
+  float:right;
+}
+
+.window{
+  opacity: 1;
+  pointer-events: auto;
+  
+  -webkit-transition: opacity 0.5s;
+}
+
+.window.hidden{
+  opacity: 0;
+  pointer-events: none; 
+}
+
+/********* Message *********/
+
+#message{
+  position:absolute;
+  top:0;
+  left:0;
+
+  width:100%;
+  
+  text-align: center;
+  pointer-events:none;
+}
+
+#messageContent{
+  display:inline-block;
+  
+  margin:0 auto;
+  padding:0.5em;
+ 
+  background:rgba(0,0,0,0.6);
+  color:rgba(220,220,220,1);
+  
+  font-size:1em;
+}
+
+
 /****************** Inside SVG ******************/
 
 
@@ -536,6 +711,8 @@ body{
     stroke: rgba(50,50,50,1);
     stroke-width: 3px;
     cursor: pointer;
+    
+    -moz-transition:fill 0.2s,stroke 0.2s,opacity 0.2s;
     -webkit-transition:fill 0.2s,stroke 0.2s,opacity 0.2s;
 }
 
@@ -572,7 +749,7 @@ body{
 
 
 .node.fixed {
-  fill:rgba(0,0,0,1);
+  /*fill:rgba(0,0,0,1);*/
 }
 
 
@@ -610,8 +787,11 @@ body{
   fill: #000;
   stroke-width: 0px;
   opacity: 1;
-  -webkit-transition:opacity 0.2s,font-size 0.2s;
+  
   pointer-events:none;
+  
+  -moz-transition:opacity 0.2s,font-size 0.2s;
+  -webkit-transition:opacity 0.2s,font-size 0.2s;
 }
 
 .node:hover text {
@@ -628,6 +808,8 @@ body{
     stroke-width: 4px;
     fill:none;
     cursor: default;
+    
+    -moz-transition:stroke 0.2s,opacity 0.2s;
     -webkit-transition:stroke 0.2s,opacity 0.2s;
 }
 
@@ -637,6 +819,7 @@ body{
 }
 
 .link path{
+  -moz-transition:opacity 0.2s;
   -webkit-transition:opacity 0.2s;
 }
 
@@ -650,18 +833,15 @@ body{
     stroke: rgba(23,178,119,1) !important; //Find a better way without !important
 }
 
-.link.relation {
+.link.relation, .link.relation.literal {
     stroke: #C02942;
     stroke-dasharray: 8, 2;
+    opacity: 0.5;
 }
 
 .hide_rel_link .link.relation{
   opacity:0;
   pointer-events:none;
-}
-
-.link.relation{
-  opacity: 0.5;
 }
 
 .link.relation:hover{
@@ -707,6 +887,8 @@ body{
     pointer-events:none;
 
     opacity: 1;
+    
+    -moz-transition:opacity 0.2s, font-size 0.2s; 
     -webkit-transition:opacity 0.2s, font-size 0.2s; 
     
 }

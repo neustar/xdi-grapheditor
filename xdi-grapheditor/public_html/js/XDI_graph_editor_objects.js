@@ -24,49 +24,47 @@ THE SOFTWARE.
 
 
 function XDIElement () {
-	this.id = -1;
-	this.isAdded = false;
-	this.isSelected = false;
-	this.name = "";
-	this.shortName = "";
+    this.id = -1;
+    this.isAdded = false;
+    this.isSelected = false;
 }
 
-function XDINode (id, name, shortName, type, graphId) {
-	this.id = id;
-	this.name = name;
-	this.shortName = shortName;
-	this.type = type;
-	// this.isRoot = false;
-	this.parents = [];
-	this.children = [];
-	this.graphId = graphId;
+function XDINode (id, fullName, shortName, type, graphId) {
+    this.id = id;
+    this.fullName = fullName;
+    this.shortName = shortName;
+    this.type = type;
+    // this.isRoot = false;
+    this.parents = [];
+    this.children = [];
+    this.graphId = graphId;
 
-	this.isRoot = function(){return this.type === xdi.constants.nodetypes.ROOT;};
-	this.isCommonRoot = function() { return this.name.length === 0; };
-	this.isLiteral = function(){return this.type === xdi.constants.nodetypes.LITERAL;};
-	this.clone = function(){
-		return new XDINode(this.id,this.name,this.type,this.graphId);
-	}
+    this.isRoot = function(){return this.type === xdi.constants.nodetypes.ROOT;};
+    this.isCommonRoot = function() { return this.fullName.length === 0; };
+    this.isLiteral = function(){return this.type === xdi.constants.nodetypes.LITERAL;};
+    this.isValue = function(){return this.type === xdi.constants.nodetypes.VALUE;};
+    this.clone = function(){
+        return new XDINode(this.id,this.fullName,this.type,this.graphId);
+    }
 }
 XDINode.prototype = new XDIElement();
 
-function XDILink (id,name,shortName, left, right, source, target)
+
+function XDILink (id,shortName, left, right, source, target)
 {
-	this.id = id;
-	this.name = name;
-	this.shortName = shortName;
-	this.left = left;
-	this.right = right;
-	this.source = source;
-	this.target = target;
-	this.isRelation = false;
-	this.clone = function() { 
-		return new XDILink(this.id, this.name,this.shortName, this.left, this.right, this.source, this.target); 
-	}
+    this.id = id;
+    this.shortName = shortName;
+    this.left = left;
+    this.right = right;
+    this.source = source;
+    this.target = target;
+    this.isRelation = false;
+    this.clone = function() { 
+        return new XDILink(this.id, this.shortName, this.left, this.right, this.source, this.target); 
+    }
+    this.isLiteral = function(){return this.target && this.target.type === xdi.constants.nodetypes.LITERAL;};
 }
 XDILink.prototype = new XDIElement();
-
-
 
 
 

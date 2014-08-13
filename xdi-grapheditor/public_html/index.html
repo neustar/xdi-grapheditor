@@ -22,10 +22,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-
-<html>
+<html lang='en'>
     <head>
         <meta charset="utf-8">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <title>XDI Graph Editor</title>
         <link rel="stylesheet" href="XDI_graph_editor.css"/>
         <link rel="stylesheet" href="js/libs/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css"/>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -34,10 +38,9 @@ THE SOFTWARE.
         <script type="text/javascript" src="js/libs/xdi-js/xdi.js"></script>
         <script type="text/javascript" src="js/libs/underscore/underscore-min.js"></script>
         <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-
-        <title>XDI Graph Editor</title>
     </head>
     <body>
+        <div id="log" style="position: absolute; bottom:100px; right:0; z-index:99; overflow:auto; pointer-events:none;"></div>
         <div class="menuContainer">
         <ul class="menu">
                 <li class="menu-header"><span>File</span>
@@ -45,7 +48,7 @@ THE SOFTWARE.
                         <li class="menu-item" onclick="importXDI()"><span>Import XDI...</span></li>
                         <li class="menu-item need-content" onclick="exportGraph()"><span>Export to XDI...</span></li>
                         <li class="menu-item need-content" onclick="exportToPNG()"><span>Export to PNG...</span></li>
-                        <li class="menu-item need-content" onclick="clearGraph()"><span>Clear Graph</span></li>
+                        <li class="menu-item need-content" onclick="clearGraphCommand()"><span>Clear Graph</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item need-content" onclick="saveGraph()"><span>Store Graph</span></li>
                         <li class="menu-item" onclick="loadGraph()"><span>Load Graph</span></li>
@@ -54,35 +57,44 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Edit</span>
                     <ul class="sub-menu">
-                        <li class="menu-item" id="undoMenuItem" onclick="undo()"><span>Undo</span></li>
-                        <li class="menu-item" id="redoMenuItem" onclick="redo()"><span>Redo</span></li>
+                        <li class="menu-item" id="undoMenuItem" onclick="undo()"><span>Undo</span><span class="shortcut">Z</span></li>
+                        <li class="menu-item" id="redoMenuItem" onclick="redo()"><span>Redo</span><span class="shortcut">⇧Z</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item selection need-node" onclick="cutSelection()"><span>Cut</span></li>
-                        <li class="menu-item selection need-node" onclick="copySelection()"><span>Copy</span></li>
-                        <li class="menu-item selection" id="pasteCommand" onclick="pasteToGraph()"><span>Paste</span></li>
-                        <li class="menu-item selection need-node" onclick="duplicateSelection()"><span>Duplicate</span></li>
+                        <li class="menu-item selection need-node" onclick="cutSelection()"><span>Cut</span><span class="shortcut">X</span></li>
+                        <li class="menu-item selection need-node" onclick="copySelection()"><span>Copy</span><span class="shortcut">C</span></li>
+                        <li class="menu-item selection" id="pasteCommand" onclick="pasteToGraph()"><span>Paste</span><span class="shortcut">V</span></li>
+                        <li class="menu-item selection need-node" onclick="duplicateSelection()"><span>Duplicate</span><span class="shortcut">D</span></li>
                         <li class="section-line"></li>
-                        <li class="menu-item need-content" onclick="selectAll()"><span>Select All</span></li>
+                        <li class="menu-item need-content" onclick="selectAll()"><span>Select All</span><span class="shortcut">A</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item selection" onclick="openCopyDialog()"><span>Copy Label...</span></li>
-                        <li class="menu-item selection" onclick="deleteCommand()"><span>Delete Object</span><span class="shortcut">⌫</span></li>
-                        <li class="menu-item selection" onclick="editNameCommand()"><span>Rename Object...</span><span class="shortcut">↵</span></li>
+                        <li class="menu-item selection" onclick="deleteCommand()"><span>Delete Element</span><span class="shortcut">⌫</span></li>
+                        <li class="menu-item selection" onclick="editNameCommand()"><span>Rename Element...</span><span class="shortcut">↵</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>View</span>
                     <ul class="sub-menu">
-                        <li class="menu-item need-content" onclick="resetZoom()"><span>Actual Size</span></li>
-                        <li class="menu-item need-content" onclick="zoomToFit()"><span>Zoom to Fit</span></li>
+                        <li class="menu-item need-content" id="forceLayoutCommand" onclick="changeLayoutCommand(Layouts.Force)"><span class="check">✓</span><span>Force Layout</span></li>
+                        <li class="menu-item need-content" id="treeLayoutCommand" onclick="changeLayoutCommand(Layouts.Tree)"><span class="check">✓</span><span>Tree Layout</span></li>
+                        <li class="menu-item need-content" onclick="resetLayoutCommand()"><span>Reset Layout</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item need-content" onclick="zoomToActualSize()"><span>Actual Size</span><span class="shortcut">0</span></li>
+                        <li class="menu-item need-content" onclick="zoomToFit()"><span>Zoom to Fit</span><span class="shortcut">9</span></li>
+                        <li class="menu-item need-content" onclick="zoomInCommand()"><span>Zoom In</span><span class="shortcut">+</span></li>
+                        <li class="menu-item need-content" onclick="zoomOutCommand()"><span>Zoom Out</span><span class="shortcut">−</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item need-content" onclick="rotateLeftCommand()"><span>Rotate Left</span></li>
+                        <li class="menu-item need-content" onclick="rotateRightCommand()"><span>Rotate Right</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Node</span>
                     <ul class="sub-menu">
-                        <li class="menu-item" onclick="createNodeByClick()"><span>New Node...</span></li>
+                        <li class="menu-item" onclick="createNodeByClick()"><span>New Node...</span><span class="shortcut">N</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item selection need-node" onclick="fixNodeCommand()"><span>Fix/Unfix</span><span class="shortcut">F</span></li>
                         <li class="menu-item selection need-node" onclick="foldNodeCommand(false)"><span>Fold/Unfold</span></li>
                         <li class="menu-item selection need-node" onclick="foldNodeCommand(true)"><span>Unfold Level 1</span></li>
-                        <li class="menu-item selection need-node" onclick="expandAllNodes()"><span>Unfold All</span></li>
+                        <li class="menu-item need-content" onclick="expandAllNodes()"><span>Unfold All</span></li>
                         <li class="section-line"></li>
                         <li class="menu-item selection need-node" onclick="setRootNodeCommand()"><span>Set as Root</span><span class="shortcut">R</span></li>
                         <li class="menu-item selection need-node" onclick="setLiteralNodeCommand()"><span>Set as Literal</span><span class="shortcut">L</span></li>
@@ -90,15 +102,30 @@ THE SOFTWARE.
                 </li>
                 <li class="menu-header"><span>Link</span>
                     <ul class="sub-menu">
+                    <li class="menu-item" onclick="createNewLinkCommand()"><span>New Link...</span></li>
                         <li class="menu-item selection need-link" onclick="invertLinkCommand()"><span>Invert Direction</span><span class="shortcut">L</span></li>
                         <li class="menu-item selection need-link" onclick="setRelationCommand()"><span>Set as Relation</span><span class="shortcut">R</span></li>
-                        <li class="menu-item selection need-link" onclick="setDoubleArrowCommand()"><span>Double Direction</span><span class="shortcut">B</span></li>
+                        <!-- <li class="menu-item selection need-link" onclick="setDoubleArrowCommand()"><span>Double Direction</span><span class="shortcut">B</span></li> -->
                         
+                    </ul>
+                </li>
+                <li class="menu-header"><span>Window</span>
+                    <ul class="sub-menu">
+                        <li class="menu-item" onclick="showAllWindows()"><span>Show All</span></li>
+                        <li class="menu-item" onclick="hideAllWindows()"><span>Hide All</span></li>
+                        <li class="section-line"></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#layout-control',this)"><span class="check">✓</span><span>Layout Control</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#legend',this)"><span class="check">✓</span><span>Legend</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#navigator',this)"><span class="check">✓</span><span>Navigator</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#search',this)"><span class="check">✓</span><span>Search</span></li>
+                        <li class="menu-item checked window-item" onclick="toggleWindowVisibility('#instruction',this)"><span class="check">✓</span><span>Instruction</span></li>
                     </ul>
                 </li>
                 <li class="menu-header"><span>Help</span>
                     <ul class="sub-menu">
-                        <li class="menu-item" onclick="help()"><span>Manual & Tutorial</span></li>
+                        <li class="menu-item"><a href="about.html" target="_blank"><span>About XDI Graph Editor</span></a></li>
+                        <!-- <li class="menu-item"><a href="javascript:window.open('about.html','About XDI Graph Editor','width=800,height=550')" target="_blank"><span>About XDI Graph Editor</span></a></li> -->
+                        <li class="menu-item"><a href="help.html" target="_blank"><span>XDI Graph Editor Help</span></a></li>
                     </ul>
                 </li>
             </ul>
@@ -133,18 +160,21 @@ THE SOFTWARE.
                 <g id="nodeCanvas"></g>
                 <g id="status">
                     <rect id="statusIndicator" class="ok browse" width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
-                    <text id="modeMessage" class="statusText" x="110" y="20">Browse</text>
+                    <!-- <text id="modeMessage" class="statusText" x="110" y="20">Browse</text> -->
                     <text id="statusMessage" class="statusText" x="30" y="20">OK</text>
                 </g>
             </svg>
-            <svg id="navSVG">
-                <g>
-                    <rect id="svgRect" width="0" height="0"></rect>
-                    <rect id="viewRect" width="0" height="0"></rect>
-                </g>
-            </svg>
-            <div id="zoomText">1.0x</div>
-            <div class="legendContainer">
+            <div id="modeMessage" onclick="toggleMode()">Browse</div>
+            <div id="navigator" class="window">
+                <svg id="navSVG">
+                    <g>
+                        <rect id="svgRect" width="0" height="0"></rect>
+                        <rect id="viewRect" width="0" height="0"></rect>
+                    </g>
+                </svg>
+                <div id="zoomText">1.0x</div>
+            </div>
+            <div id="legend" class="legendContainer window">
                     <div id="freezeButtonsContainer">
                         <button id="unfreezeButton" class="toggleButton" onclick="toggleFreeze(false)">Moving</button>
                         <button id="freezeButton" class="toggleButton off" onclick="toggleFreeze(true)">Fixed</button>
@@ -158,23 +188,46 @@ THE SOFTWARE.
                     <div class="legend" name="rel_label" onclick="toggleVisibility(this)">Relationship Label</div>
             </div>
             
-            <div class="searchContainer hidden">
+            <div id="search" class="window searchContainer folded">
                 <div class="searchControlContainer">
                     <input type="search" placeholder="Search" results="10" autocomplete="on" onkeyup="searchTextChanged();" id="searchText" >
                     <button class="searchDoneButton" onclick="searchDone();">Done</button>
                 </div>
                 <div class="searchResult" id="searchResult"></div>
             </div>
-            
+
+            <div id="layout-control" class="window layoutControl">
+          <!--       <section>
+                    <p>Link Distance</p>
+                    <input type="range" id="linkDistance" onchange="updateLayoutParameterCommand()">
+                    <span>Short</span>
+                    <span>Long</span>
+                </section>
+                <section>
+                    <p>Link Strength</p>
+                    <input type="range" id="linkStrength" onchange="updateLayoutParameterCommand()">
+                    <span>Flexible</span>
+                    <span>Rigid</span>
+                </section>
+                <section>
+                    <p>Node Repulsion</p>
+                    <input type="range" id="nodeRepulsion" onchange="updateLayoutParameterCommand()">
+                    <span>Less</span>
+                    <span>More</span>
+                </section> -->
+            </div>
+            <div id="message" style="display:none">
+                <p id="messageContent">Message</p>
+            </div>
         </div>
-        <div class="instruction">
-            <b>Del/Backspace</b>: Remove a node or link. 
+        <div id="instruction" class="instruction window">
+            <!-- <b>Del/Backspace</b>: Remove a node or link.  -->
             <b>Hold option/alt</b>: Drag to pan; Scroll mouse wheel to scale.
-            <b>R</b>: Set node as Root; Set link as Relationship.  
-            <b>B</b>: Set link as double direction.
-            <b>L</b>: Invert link; Set node as Literal.
-            <b>Enter</b>: Rename a node or link. 
-            <b>F</b>: Fix or Unfix a node.
+            <!-- <b>R</b>: Set node as Root; Set link as Relationship.   -->
+            <!-- <b>B</b>: Set link as double direction. -->
+            <!-- <b>L</b>: Invert link; Set node as Literal. -->
+            <!-- <b>Enter</b>: Rename a node or link.  -->
+            <!-- <b>F</b>: Fix or Unfix a node. -->
             <b>Double Click on node</b>: Expand/Fold a node's subtree.
             <b>Shift+Click on background</b>: Creat a node.
             <b>Shift+Double Click on node</b>: Expand direct descendants only.
@@ -205,7 +258,7 @@ THE SOFTWARE.
           <p>The labels of the seletced nodes and links are listed below:</p>
           <textarea id="labelTextArea" cols="77" rows="6" readonly="true">aeou</textarea>
         </div>
-
+        
         <script src="js/data.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_global.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_jqueryui.js"></script>
@@ -222,9 +275,12 @@ THE SOFTWARE.
         <script type="text/javascript" src="js/XDI_graph_editor_dragselect.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_clipboard.js"></script>
         <script type="text/javascript" src="js/XDI_graph_editor_screenshot.js"></script>
+        <script type="text/javascript" src="js/XDI_graph_editor_settings_data.js"></script>
         <script>
             var inputurl = /[&?]input=([^&]+)/.exec(location.search);
             inputurl = inputurl ? inputurl[1].replace(/"/g, '&quot;') : '';
         </script>
     </body>
 </html>
+
+

@@ -29,7 +29,7 @@ function resetMouseVars() {
 }
 
 function mousemoveOnSVG() {
-    var pos = d3.mouse(svg.node()); //use svg[0][0] to get the HTML element svg, instead of the d3 element of svg.
+    var pos = d3.mouse(svg.node()); 
     curMousePos = {x:pos[0],y:pos[1]};
     
     if(isDraggingLine)
@@ -38,7 +38,31 @@ function mousemoveOnSVG() {
         updatePanView([curMousePos.x,curMousePos.y]);
 }
 
+function touchmoveOnSVG(){
+    if(isDraggingLine && !_.isEmpty(d3.event.touches))
+    {
+        var pos = d3.touches(svg.node())[0]; 
+        curMousePos = {x:pos[0],y:pos[1]};
+        updateDragLine();
+    }
+}
+
+function touchendOnSVG () {
+    if(isDraggingLine && !_.isEmpty(d3.event.changedTouches))
+    {
+        var touch = d3.event.changedTouches[0];
+        var targetElement = document.elementFromPoint(touch.clientX,touch.clientY);
+        if(targetElement.tagName == "path")
+            mouseupOnNodeHandler.call(targetElement,d3.select(targetElement.parentNode).datum());
+        else
+            mouseupOnSVG();
+    }
+}
+
+
 function mousedownOnSVG() {
+    // console.log("mousedownOnNodeHandler");
+    // d3.event.stopPropagation();
     if(!d3.event.button === 0 ) //Only react to left click
         return;
 
@@ -53,14 +77,8 @@ function mousedownOnSVG() {
         return;
     }
 
-    if(d3.event.srcElement === svg.node())
-    {
-        if(d3.event.shiftKey)
-        {
-            createNodeByClick();
-            setDragSelectAbility(true); //The window will not trigger shift key up events to enable drag select
-        }
-    }
+    if(d3.event.srcElement === svg.node() && currentMode === Mode.EDIT)
+        createNodeByClick();
 }
 
 
@@ -78,17 +96,18 @@ function mouseupOnSVG() {
 function mousewheelOnSVG () {  
     if(d3.event===null || !d3.event.altKey)
         return;
-    var currentScale = zoom.scale();
+    
+    var mousePos = d3.mouse(svg.node());
+    
+    var delta = 0;
     
     if(d3.event.wheelDelta > 0)
-        currentScale += MOUSE_WHEEL_SCALE_DELTA;
+        delta = MOUSE_WHEEL_SCALE_DELTA;
     else if (d3.event.wheelDelta < 0)
-        currentScale -= MOUSE_WHEEL_SCALE_DELTA;
-    
-    mousePos = d3.mouse(svg.node());
-    scaleView(mousePos,currentScale);
-}
+        delta = -MOUSE_WHEEL_SCALE_DELTA;
 
+    zoomByScaleDelta(delta,mousePos);
+}
 
 
 function keydownOnSVG() {
@@ -98,9 +117,10 @@ function keydownOnSVG() {
     
     if(d3.event.srcElement === d3.select("#searchText").node())
         return;
-    
-    lastKeyDown = d3.event.keyCode;
 
+    lastKeyDown = d3.event.keyCode;
+    // console.log(lastKeyDown)
+    // console.log(d3.mouse(svg.node()))
     switch (d3.event.keyCode) {
         case 8: // backspace
         case 46: // delete
@@ -110,17 +130,15 @@ function keydownOnSVG() {
             
         case 16://shift
             updateMode(Mode.EDIT);
-            setDragSelectAbility(false);
             break;
             
         case 18://opt/alt
             updateMode(Mode.VIEW);
-            setDragSelectAbility(false);
             break;
 
-        case 66: // B
-            setDoubleArrowCommand();
-            break;
+        // case 66: // B
+        //     setDoubleArrowCommand();
+        //     break;
             
         case 82: // R
             setRelationCommand();
@@ -139,6 +157,44 @@ function keydownOnSVG() {
         case 70: // F
             fixNodeCommand();
             break;
+
+        case 65: //A
+            selectAll();
+            break;
+        case 90: //Z
+            if(d3.event.shiftKey)
+                redo();
+            else
+                undo();
+            break;
+        case 88: //X
+            cutSelection();
+            break;
+        case 67: //C
+            copySelection();
+            break;
+        case 86: //V
+            pasteToGraph();
+            break;    
+        case 68: //D
+            duplicateSelection();
+            break;
+        case 78: //N
+            createNodeByClick();
+            break;
+        case 57: //9
+            zoomToFit();
+            break;
+        case 48: //0
+            zoomToActualSize();
+            break;
+        case 187: //+
+            zoomInCommand();
+            break;
+        case 189: //-
+            zoomOutCommand();
+            break;
+
     }
 }
 
@@ -147,20 +203,22 @@ function keyupOnSVG() {
     // shift
     switch(d3.event.keyCode){
         case 16:
-            startDrag();
+            bindDragToNodes();
             updateMode(Mode.BROWSE);
-            setDragSelectAbility(true);
+            // setDragSelectAbility(true);
             break;
         case 18://opt/alt
-            setDragSelectAbility(true);
+            // setDragSelectAbility(true);
             updateMode(Mode.BROWSE);
             break;
     }
 }
 
 function mousedownOnNodeHandler(d){
+    // console.log("mousedownOnNodeHandler");
     if (d3.event.altKey)
         return;
+
     mousedown_node = d;
     
     if(!d3.event.shiftKey&&!d.isSelected) //If shift not press and the nodes is not part of the selection
@@ -169,8 +227,16 @@ function mousedownOnNodeHandler(d){
 
     updateSelectionClass();
 
-    if(d3.event.shiftKey)
+    if(currentMode == Mode.EDIT)
+    // if(d3.event.shiftKey||isCreatingDragLine)
+    {
+        if(isTouchScreen && d3.event instanceof TouchEvent)
+        {
+            var pos = d3.touches(svg.node())[0]; 
+            curMousePos = {x:pos[0],y:pos[1]};
+        }
         startDragLine();
+    }
     
 }
 
@@ -212,7 +278,7 @@ function mouseleaveOnLinkHandler (d) {
 }
 
 function mouseenterOnNodeHandler (d) {
-    showShortName(this);   
+    showFullName(this);   
 }
 
 function mouseleaveOnNodeHandler (d) {
@@ -220,7 +286,7 @@ function mouseleaveOnNodeHandler (d) {
 }
 
 function dblclickOnNodeHandler(d){
-    toggleFoldNode(d,d3.event.shiftKey);   
+    foldNodeCommand(d3.event.shiftKey);   
 }
 
 
@@ -238,7 +304,14 @@ function mousedownOnLinkHandler(d) {
 function windowResizeHandler () {
     svgHeight = d3.select('#mainCanvas').node().offsetHeight;
     svgWidth = d3.select('#mainCanvas').node().offsetWidth;
+    if(svgHeight == undefined || svgWidth == undefined) //This happens in Firefox
+    {
+        svgHeight = d3.select('#drawing').node().offsetHeight;
+        svgWidth = d3.select('#drawing').node().offsetWidth;
+    }
+
+    if(currentLayout)
+        currentLayout.setLayoutSize(svgWidth, svgHeight);
     
-    force.size([svgWidth, svgHeight]);
     updateViewPortRect();
 }

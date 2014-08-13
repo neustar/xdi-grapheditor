@@ -23,120 +23,117 @@ THE SOFTWARE.
 */
 
 //Atomic operation for search by string in a set
-
 function searchElement (targetString,elementSet) {
-	var res;
-	res = elementSet.filter(function (d) {
-			return d.shortName.indexOf(targetString) > -1;
-		}
-	)
-	return res;
+    var res;
+    res = elementSet.filter(function (d) {
+            return d.shortName.indexOf(targetString) > -1;
+        }
+    )
+    return res;
 }
 
 //Search both nodes and links from a last draw data
 function searchAllByString (targetString) {
-	var resData = {};
-	resData.nodes = searchElement(targetString,lastDrawData.nodes);
-	resData.links = searchElement(targetString,lastDrawData.links);
-	return resData;
+    var resData = {};
+    resData.nodes = searchElement(targetString,lastDrawData.nodes);
+    resData.links = searchElement(targetString,lastDrawData.links);
+    return resData;
 }
 
 function searchOperation (targetString) {
-	updateSearchResult(searchAllByString(targetString));
+    updateSearchResult(searchAllByString(targetString));
 }
 
 function clearSearchList () {
-	d3.select("#searchResult")
-		.selectAll("*").remove();
-	
-	d3.selectAll(".node")
-		.classed("matched", false);
+    d3.select("#searchResult")
+        .selectAll("*").remove();
+    
+    d3.selectAll(".node")
+        .classed("matched", false);
 
-	d3.selectAll(".link")
-		.classed("matched",false);
+    d3.selectAll(".link")
+        .classed("matched",false);
 }
 
 function updateSearchResult (resultData) {
-	var list = d3.select("#searchResult");
+    var list = d3.select("#searchResult");
 
-	clearSearchList();
+    clearSearchList();
 
-	d3.selectAll(".node")
-		.data(resultData.nodes, function(d) {return d.id;})
-		.classed("matched",true);
+    d3.selectAll(".node")
+        .data(resultData.nodes, function(d) {return d.id;})
+        .classed("matched",true);
 
-	d3.selectAll(".link")
-		.data(resultData.links, function(d) {return d.id;})
-		.classed("matched",true);	
+    d3.selectAll(".link")
+        .data(resultData.links, function(d) {return d.id;})
+        .classed("matched",true);   
 
-	updateSublist(list,"Nodes",resultData.nodes);
-	updateSublist(list,"Links",resultData.links);
+    updateSublist(list,"Nodes",resultData.nodes);
+    updateSublist(list,"Links",resultData.links);
 }
 
 function updateSublist (outerlist,title,data) {
-	var header = outerlist.append("section")
-	.attr('class', "searchHeader");
-	
-	header.append('p')
-		.attr('class', 'title')
-		.text(title);
+    var header = outerlist.append("section")
+    .attr('class', "searchHeader");
+    
+    header.append('p')
+        .attr('class', 'title')
+        .text(title);
 
-	header.append('p')
-		.attr('class', 'itemcount')
-		.text(data.length + " matches");
+    header.append('p')
+        .attr('class', 'itemcount')
+        .text(data.length + " matches");
 
-	var list = outerlist.append("ul")
-		.attr('class', "searchSubList")
-	
-	list.selectAll(".searchItem")
-		.data(data)
-		.enter()
-		.append("li")
-		.attr('class', 'searchItem')
-		.on('click',function(d) { return zoomToElement(d); })
-		.text(function(d) { return d.shortName; })
-		.classed('relation', function(d) {return d.isRelation === true;})
-	    .classed('literal', function(d) {
-	    	return d.type === xdi.constants.nodetypes.LITERAL||(d.target != null && d.target.type === xdi.constants.nodetypes.LITERAL);
-	    });
-}
-
-
-
-function searchTextChanged () {
-	searchStart();
-
-	var query = d3.select("#searchText").node().value;
-	if (query == lastQuery || query == null)
-		return;
-
-	if(query.length == 0)
-	{
-		clearSearchList();
-		lastQuery = null;
-		return;
-	}
-
-	lastQuery = query;
-
-	searchOperation(query);
-}
-
-function searchDone () {
-	d3.select(".searchContainer")	
-		.classed("hidden", true);
-
-	d3.select('#searchText').node().value = "";
-	lastQuery = null;
-	clearSearchList();
+    var list = outerlist.append("ul")
+        .attr('class', "searchSubList")
+    
+    list.selectAll(".searchItem")
+        .data(data)
+        .enter()
+        .append("li")
+        .attr('class', 'searchItem')
+        .on('click',function(d) { return zoomToElement(d); })
+        .text(function(d) { return d.shortName;})
+        .classed('relation', function(d) {return d.isRelation;})
+        .classed('literal', function(d) {
+            return d.type === xdi.constants.nodetypes.LITERAL||(d.target != null && d.target.type === xdi.constants.nodetypes.LITERAL);
+        });
 }
 
 function searchStart () {
-	d3.select(".searchContainer")	
-		.classed("hidden", false);
-
-	// clearAllSelection();
+    d3.select(".searchContainer")   
+        .classed("folded", false);
 }
+
+function searchTextChanged () {
+    searchStart();
+
+    var query = d3.select("#searchText").node().value;
+    if (query == lastQuery || query == null)
+        return;
+
+    if(query.length == 0)
+    {
+        clearSearchList();
+        lastQuery = null;
+        return;
+    }
+
+    lastQuery = query;
+
+    searchOperation(query);
+}
+
+function searchDone () {
+    d3.select(".searchContainer")   
+        .classed("folded", true);
+
+    d3.select('#searchText').node().value = "";
+    lastQuery = null;
+    clearSearchList();
+}
+
+
 
 
 

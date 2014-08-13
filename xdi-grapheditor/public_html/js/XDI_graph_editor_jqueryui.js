@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 function initializeDialogs () {
-	//Define the dialog for Import XDI
+    //Define the dialog for Import XDI
     $('#import-dialog').dialog({
         autoOpen: false,
         height: 600,
@@ -48,58 +48,58 @@ function initializeDialogs () {
     });
 
     $( "#error-dialog" ).dialog({
-      resizable: false,
-      autoOpen: false,
-      height:340,
-      width:600,
-      modal: true,
-      buttons: {
-        // "Go to XDI Converter": function() {
-        //   $( this ).dialog( "close" );
-        //   window.open('http://xdi2.projectdanube.org/XDIConverter', '_blank');
-        //   isDialogVisible = false;
-        // },
-        Done: function() {
-          $( this ).dialog( "close" );
-          isDialogVisible = false;
+        resizable: false,
+        autoOpen: false,
+        height:340,
+        width:600,
+        modal: true,
+        buttons: {
+            // "Go to XDI Converter": function() {
+            //   $( this ).dialog( "close" );
+            //   window.open('http://xdi2.projectdanube.org/XDIConverter', '_blank');
+            //   isDialogVisible = false;
+            // },
+            Done: function() {
+                $( this ).dialog( "close" );
+                isDialogVisible = false;
+            }
         }
-      }
     });
 
     $("#copy-dialog" ).dialog({
-      autoOpen: false,
-      resizable: false,
-      height:340,
-      width:600,
-      modal: true,
-      buttons: {
-        "Done": function() {
-          $( this ).dialog( "close" );
+        autoOpen: false,
+        resizable: false,
+        height:340,
+        width:600,
+        modal: true,
+        buttons: {
+            "Done": function() {
+                $( this ).dialog( "close" );
+            }
         }
-      }
     });
 }
 
 function openImportDialog () {
-	isDialogVisible = true;
-    $('#import-dialog').dialog("open");
+    isDialogVisible = true;
+        $('#import-dialog').dialog("open");
 }
 
 function openErrorDialog (content, linenum) {
-	isDialogVisible = true;
-  $('#error-dialog #error-line-num').text(linenum+1);
-  $('#error-dialog #error-line-content').text(content);
-  $('#error-dialog').dialog("open");	
+    isDialogVisible = true;
+    $('#error-dialog #error-line-num').text(linenum+1);
+    $('#error-dialog #error-line-content').text(content);
+    $('#error-dialog').dialog("open");  
 }
 
 function openCopyDialog () {
-  var labels = [];
-  d3.selectAll('.selected text')
-    .each(function() { labels.push(this.textContent);});
-  
-  $('#labelTextArea').text(labels.join('\n'));
-  
-  $('#copy-dialog').dialog('open');
+    var labels = [];
+    d3.selectAll('.selected text')
+        .each(function() { labels.push(this.textContent);});
+    
+    $('#labelTextArea').text(labels.join('\n'));
+    
+    $('#copy-dialog').dialog('open');
 }
 
 function initializeMenu(){
@@ -108,20 +108,67 @@ function initializeMenu(){
     var item = $('.menu-item');
 
     header.click(function(e) { 
-      menu.toggleClass('active'); 
+        e.stopPropagation();
+        menu.toggleClass('active'); 
     })
+
     header.mouseenter(function() { header.removeClass('active'); $(this).addClass('active'); })
+    header.on('touchend',function(e) { 
+        e.stopPropagation();
+        var hadClass = $(this).hasClass('active');
+        header.removeClass('active'); 
+        $(this).toggleClass('active',!hadClass);
+        menu.addClass('active');
+    });
+
+    header.on('touchend',function(e) { 
+        e.stopPropagation(); 
+        e.preventDefault();
+    })
 
     item.click(function(e) { 
-      e.stopPropagation();
-      menu.removeClass('active'); 
-      header.removeClass('active'); 
+        e.stopPropagation();
+        menu.removeClass('active'); 
+        header.removeClass('active'); 
     });
-    $('body').click(function(e) { 
-      if(menu.has(e.toElement).length==0)
-      {
-        menu.removeClass('active');
-        header.removeClass('active');
-      }
+
+    item.each(function (index,element) {
+        $(element).on('touchend',element.onclick);
     })
+
+    $('body').mousedown(function(e) { 
+        if(menu.has(e.toElement).length==0)
+        {
+            menu.removeClass('active');
+            header.removeClass('active');
+        }
+    })
+}
+
+function toggleWindowVisibility (id,menuItem) {
+    $(id+".window").toggleClass("hidden");
+    var isHidden = $(id+".window").hasClass("hidden");
+    $(menuItem).toggleClass("checked",!isHidden);
+}
+
+function showAllWindows () {
+    $(".window").removeClass("hidden");
+    $(".window-item").addClass("checked");
+}
+
+function hideAllWindows () {
+    $(".window").addClass("hidden");
+    $(".window-item").removeClass("checked");
+}
+
+// Display the notification message at the top-center of screen
+function showMessage (text,duration) {
+    if(_.isEmpty(text))
+        return;
+    duration = duration || 1000;
+    var message = $("#message");
+    message.find('p').text(text);
+    message.fadeIn(300)
+        .delay(duration)
+        .fadeOut(1000);
 }
