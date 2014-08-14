@@ -184,6 +184,7 @@ function updateNodeElement () {
     //// Adjust Classes    
     nodeGs
         .attr("class", function(d) { return "node selectable " + d.type;})
+        .classed("common-root", function(d) { return d.isCommonRoot(); })
         .classed("selected", function(d) { return (d.isSelected); })
         .classed("folded",function(d){return d.isFolded;})
         .classed("fixed",function(d){return d._fixed;}); //_fixed is set when a node is fixed by user.
