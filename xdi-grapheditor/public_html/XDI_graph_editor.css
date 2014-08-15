@@ -728,6 +728,9 @@ body{
 .node.root {
   fill:#eee;
 }
+.node.common-root {
+  stroke:#a28f69;
+}
 
 .node.literal {
   fill:#eee;

@@ -194,7 +194,16 @@ function addStatement(statement, willJoinGraph) {
     //The xdi library returns only string for a literal
     if(!(object instanceof xdi.Segment))
     {
-        var s = "\""+object+"\"";
+        //For normal string and null values, JSON cannot parse them and throw exceptions
+        //If it is a string, add quotes, otherwise, convert the null value to string
+        var s = "";
+        try{
+            s = JSON.parse(object).toString(); 
+        }
+        catch(e){
+            s = object ? "\""+object+"\"" : String(object);
+        }
+
         object = {_string:s,_subsegments:[{_string: s}]};
     }
 

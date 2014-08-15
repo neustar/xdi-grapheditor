@@ -46,8 +46,6 @@ function hasSelections (selectionSet) {
 }
 
 
-
-
 function setSelectedNodes (nodeSet) {
     selected_nodes = nodeSet;
     selected_nodes.forEach(function(d) { return d.isSelected = true; });
