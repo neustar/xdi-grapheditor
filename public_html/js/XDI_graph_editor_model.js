@@ -243,7 +243,7 @@ function addSegment (fullName,segment,targetGraphId) {
     if(!_.isEmpty(segment._subsegments))
         shortName = _.last(segment._subsegments)._string;
     
-    return addNode(fullName,shortName,lastGraphId);    
+    return addNode(fullName, shortName, lastGraphId);    
 }
 
 //Atomic operation for add a node
@@ -251,7 +251,7 @@ function addNode(fullName, shortName, graphId, isCloning){
     if (shortName == null)
         shortName = fullName;
     var nodeType = xdi.util.getNodeType(shortName);
-    var newNode = new XDINode(++lastNodeId,fullName,shortName,nodeType, graphId);
+    var newNode = new XDINode(++lastNodeId, fullName, shortName, nodeType, graphId);
     
     if(!isCloning)
         globalNodes.push(newNode);
@@ -264,7 +264,7 @@ function addLink(sourceNode,targetNode,shortName,isLeft,isRight,isRelation,isClo
     if(!isCloning && findLink(sourceNode,targetNode))//if link exists, then don't add a new one.
         return;
 
-    var newlink = new XDILink(++lastLinkId,shortName,isLeft, isRight, sourceNode, targetNode);
+    var newlink = new XDILink(++lastLinkId, shortName, isLeft, isRight, sourceNode, targetNode);
     if (isRelation)
         newlink.isRelation = true;
     

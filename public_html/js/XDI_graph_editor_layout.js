@@ -178,7 +178,7 @@ ForceLayout.prototype.updateElementPos = function() {
     var linkPath = svg.selectAll(".link path");
     linkPath.attr('d', currentLayout.getLinkPathData)
     .each(function  (d) {
-        d.textPoint = this.getPointAtLength(this.getTotalLength()/2);
+        d.textPoint = this.getPointAtLength(3*this.getTotalLength()/4);
     });
 
     svg.selectAll(".link text")
