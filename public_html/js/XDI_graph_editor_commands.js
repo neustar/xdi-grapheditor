@@ -493,27 +493,6 @@ function updateMenuItemAbility () {
 // Legend
 //
 
-function setNodeLabelsVisibility(newValue){
-    d3.select('#nodeCanvas').classed("hide_text",newValue);
-}
-
-function setLinkLabelsVisibility(newValue){
-    d3.select('#linkCanvas').classed("hide_text",newValue);   
-}
-
-function toggleNodeLabelsVisibility(){
-    var value = d3.select('#nodeCanvas').classed("hide_text");
-    setNodeLabelsVisibility(!value)
-
-    d3.select('#toggleNodeButton').classed("off",!value);
-}
-function toggleLinkLabelsVisibility(){
-    var value = d3.select('#linkCanvas').classed("hide_text");
-    setLinkLabelsVisibility(!value)
-
-    d3.select('#toggleLinkButton').classed("off",!value);
-}
-
 function toggleVisibility (button) {
     var name = d3.select(button).attr("name");
 
