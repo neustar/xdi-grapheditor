@@ -749,13 +749,13 @@ body{
   fill:#eee;
 }
 
-
-
 .node.fixed {
   /*fill:rgba(0,0,0,1);*/
 }
 
-
+.hide_literal_label .node.literal text{
+  opacity: 0;
+}
 
 .hide_literal .node.literal{
   opacity: 0;
@@ -771,15 +771,15 @@ body{
   stroke: rgba(23,178,119,1);//#3B8686;
 }
 
-.node.matched{
-  
+.node.matched{  
   stroke:rgba(64,192,203,1);//rgba(78,205,196,1);
 }
 
-.hide_node_label .node text{
-  opacity: 0;
-  /*visibility: hidden;*/
-}
+.hide_node_label .node.entity text {opacity: 0;}
+.hide_node_label .node.root text {opacity: 0;}
+.hide_node_label .node.attribute text {opacity: 0;}
+.hide_node_label .node.value text {opacity: 0;}
+
 
 .node.matched text{
   opacity: 1;

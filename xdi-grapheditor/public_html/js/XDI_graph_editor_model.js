@@ -183,7 +183,7 @@ function getCommonRoots (nodeSet) {
     return nodeSet.filter(function(d) { return d.isCommonRoot(); });
 }
 
-//Analyse one line of XDI statements, create or found subject node, object node and add link to them
+//Analyse one line of XDI statements, create or find subject & object nodes and add link to them
 function addStatement(statement, willJoinGraph) {
     var targetGraphId = willJoinGraph? null:lastGraphId;
     var subject = statement.subject();
@@ -194,8 +194,8 @@ function addStatement(statement, willJoinGraph) {
     //The xdi library returns only string for a literal
     if(!(object instanceof xdi.Segment))
     {
-        //For normal string and null values, JSON cannot parse them and throw exceptions
-        //If it is a string, add quotes, otherwise, convert the null value to string
+        // For normal string and null values, JSON cannot parse them and throw exceptions
+        // If it is a string, add quotes, otherwise, convert the null value to string
         var s = "";
         try{
             s = JSON.parse(object).toString(); 
@@ -203,7 +203,6 @@ function addStatement(statement, willJoinGraph) {
         catch(e){
             s = object ? "\""+object+"\"" : String(object);
         }
-
         object = {_string:s,_subsegments:[{_string: s}]};
     }
 
@@ -216,8 +215,13 @@ function addStatement(statement, willJoinGraph) {
 
     if(isRelation)
         fullName = object._string;
-    else 
-        fullName = subject._string+predicate._string+object._string;
+    else {
+        if (predicate._string === '&') {
+            fullName = subject._string + '/' + predicate._string + '/' + object._string;
+        } else {
+            fullName = subject._string + predicate._string + object._string;
+        }
+    }
     var objectNode = addSegment(fullName, object,targetGraphId);
 
 
@@ -290,7 +294,7 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
         link = linkToInnerNode;
-        targetNode.fullName = innerNode.fullName + "&" + targetNode.shortName;
+        targetNode.fullName = innerNode.fullName + "/&/" + targetNode.shortName;
     }
     else {
         var linkName = targetNode.shortName;
@@ -394,7 +398,7 @@ function checkLinkValidity(linkToCheck){
         statement = subject + "/" + predicate + "/" + object;
     } else {
         if (linkToCheck.target.type === xdi.constants.nodetypes.LITERAL) {
-            statement = subject + "/" + '&' + "/" + object;
+            statement = subject + "/&/" + object;
         } else
             // a contextual statement
             statement = subject + "//" + object;
