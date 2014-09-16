@@ -84,11 +84,10 @@ function isRootToCheck(d)
 function getDrawData2(root){
    return {nodes:globalNodes,links:globalLinks,map:globalNodeLinkMap};
 }
+
 function getDrawData(root){
     if (globalNodes == null || globalNodes.length === 0)
         return {nodes:[],links:[]};
-
-    console.log("getDrawData");
 
     var rootsToCheck = [];
 
@@ -243,15 +242,15 @@ function addSegment (fullName,segment,targetGraphId) {
     if(!_.isEmpty(segment._subsegments))
         shortName = _.last(segment._subsegments)._string;
     
-    return addNode(fullName,shortName,lastGraphId);    
+    return addNode(fullName, shortName, lastGraphId);    
 }
 
 //Atomic operation for add a node
 function addNode(fullName, shortName, graphId, isCloning){
     if (shortName == null)
         shortName = fullName;
-    var nodeType = xdi.util.getNodeType(shortName);
-    var newNode = new XDINode(++lastNodeId,fullName,shortName,nodeType, graphId);
+    var nodeType = getNodeType(shortName);
+    var newNode = new XDINode(++lastNodeId, fullName, shortName, nodeType, graphId);
     
     if(!isCloning)
         globalNodes.push(newNode);
@@ -264,7 +263,7 @@ function addLink(sourceNode,targetNode,shortName,isLeft,isRight,isRelation,isClo
     if(!isCloning && findLink(sourceNode,targetNode))//if link exists, then don't add a new one.
         return;
 
-    var newlink = new XDILink(++lastLinkId,shortName,isLeft, isRight, sourceNode, targetNode);
+    var newlink = new XDILink(++lastLinkId, shortName, isLeft, isRight, sourceNode, targetNode);
     if (isRelation)
         newlink.isRelation = true;
     
@@ -469,7 +468,7 @@ function setNodeIsRoot(nodeToSet,newValue){
     }
     else if (nodeToSet.type === xdi.constants.nodetypes.ROOT)
     {
-        nodeToSet.type = xdi.util.getNodeType(nodeToSet.fullName);
+        nodeToSet.type = getNodeType(nodeToSet.fullName);
         // nodeToSet.type = nodeToSet._type;
         // nodeToSet._type = null;
     }
@@ -479,7 +478,7 @@ function setNodeIsLiteral (nodeToSet,newValue) {
     if(newValue)
         nodeToSet.type = xdi.constants.nodetypes.LITERAL;
     else
-        nodeToSet.type = xdi.util.getNodeType(nodeToSet.fullName);
+        nodeToSet.type = getNodeType(nodeToSet.fullName);
 }
 
 function setLinkLabel(linkToSet,newValue){
@@ -647,3 +646,28 @@ function DeleteStoredGraphs() {
     } else
         return;
 }
+
+
+//
+// Temporary function while the XDI.js library gets fixed
+//
+
+function getNodeType(nodelabel) {
+    if ((nodelabel === "") || (nodelabel.match(/^\(.*\)$/) != null))
+        return xdi.constants.nodetypes.ROOT;
+    try {
+        JSON.parse(nodelabel);
+        return xdi.constants.nodetypes.LITERAL;
+    } catch(e) {}
+
+    if(nodelabel.slice(-1) === "&")
+        return xdi.constants.nodetypes.VALUE;
+
+    if(nodelabel.match(/^\[?<.*>\]?$/) != null)
+        return xdi.constants.nodetypes.ATTRIBUTE;
+
+    return xdi.constants.nodetypes.ENTITY;
+}
+
+
+
