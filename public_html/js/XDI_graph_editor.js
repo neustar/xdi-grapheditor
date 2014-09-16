@@ -313,10 +313,10 @@ function exportGraph() {
     var graphstring = "";
     var xdigraph = graphToString();
     $.each(xdigraph, function(i,d) {
-        isImplied(d);
+        //isImplied(d);
         if (i > 0)
             graphstring += '<br>';
-        graphstring +=d;
+        graphstring += _.escape(d);
     });
     
     var statementsWindow = window.open("","XDI_Statements","width=600,height=400");
