@@ -96,7 +96,7 @@ function updateSublist (outerlist,title,data) {
         .text(function(d) { return d.shortName;})
         .classed('relation', function(d) {return d.isRelation;})
         .classed('literal', function(d) {
-            return d.type === xdi.constants.nodetypes.LITERAL||(d.target != null && d.target.type === xdi.constants.nodetypes.LITERAL);
+            return d.type === xdi.constants.arctypes.LITERAL||(d.target != null && d.target.type === xdi.constants.arctypes.LITERAL);
         });
 }
 
