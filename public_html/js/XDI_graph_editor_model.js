@@ -249,7 +249,7 @@ function addSegment (fullName,segment,targetGraphId) {
 function addNode(fullName, shortName, graphId, isCloning){
     if (shortName == null)
         shortName = fullName;
-    var nodeType = getNodeType(shortName);
+    var nodeType = xdi.util.arcType(shortName);
     var newNode = new XDINode(++lastNodeId, fullName, shortName, nodeType, graphId);
     
     if(!isCloning)
@@ -288,7 +288,7 @@ function addLinkBetweenNodes(sourceNode,targetNode,isLeft,isRight){
         return link;
     }
 
-    if (targetNode.type === xdi.constants.nodetypes.LITERAL){
+    if (targetNode.type === xdi.constants.arctypes.LITERAL){
         var innerNode = addNode(sourceNode.fullName + "&", "&", Math.max(sourceNode.graphId,targetNode.graphId));
         var linkToInnerNode = addLink(sourceNode,innerNode,"&",false,true,false);
         var linkToTargetNode = addLink(innerNode,targetNode,"&",false,true,false);
@@ -396,13 +396,13 @@ function checkLinkValidity(linkToCheck){
         // a relational statement
         statement = subject + "/" + predicate + "/" + object;
     } else {
-        if (linkToCheck.target.type === xdi.constants.nodetypes.LITERAL) {
+        if (linkToCheck.target.type === xdi.constants.arctypes.LITERAL) {
             statement = subject + "/&/" + object;
         } else
             // a contextual statement
             statement = subject + "//" + object;
     }
-    var lit = linkToCheck.target.type === xdi.constants.nodetypes.LITERAL;
+    var lit = linkToCheck.target.type === xdi.constants.arctypes.LITERAL;
     var validateMessage = validateXDI(statement, linkToCheck.isRelation, lit);
     if (validateMessage === "") {
         updateSyntaxStatus("Syntax OK",true);
@@ -464,11 +464,11 @@ function setNodeIsRoot(nodeToSet,newValue){
     if(newValue)
     {   
         // nodeToSet._type = nodeToSet.type;
-        nodeToSet.type = xdi.constants.nodetypes.ROOT;
+        nodeToSet.type = xdi.constants.arctypes.ROOT;
     }
-    else if (nodeToSet.type === xdi.constants.nodetypes.ROOT)
+    else if (nodeToSet.type === xdi.constants.arctypes.ROOT)
     {
-        nodeToSet.type = getNodeType(nodeToSet.fullName);
+        nodeToSet.type = xdi.util.arcType(nodeToSet.fullName);
         // nodeToSet.type = nodeToSet._type;
         // nodeToSet._type = null;
     }
@@ -476,9 +476,9 @@ function setNodeIsRoot(nodeToSet,newValue){
 
 function setNodeIsLiteral (nodeToSet,newValue) {
     if(newValue)
-        nodeToSet.type = xdi.constants.nodetypes.LITERAL;
+        nodeToSet.type = xdi.constants.arctypes.LITERAL;
     else
-        nodeToSet.type = getNodeType(nodeToSet.fullName);
+        nodeToSet.type = xdi.util.arcType(nodeToSet.fullName);
 }
 
 function setLinkLabel(linkToSet,newValue){
@@ -646,28 +646,3 @@ function DeleteStoredGraphs() {
     } else
         return;
 }
-
-
-//
-// Temporary function while the XDI.js library gets fixed
-//
-
-function getNodeType(nodelabel) {
-    if ((nodelabel === "") || (nodelabel.match(/^\(.*\)$/) != null))
-        return xdi.constants.nodetypes.ROOT;
-    try {
-        JSON.parse(nodelabel);
-        return xdi.constants.nodetypes.LITERAL;
-    } catch(e) {}
-
-    if(nodelabel.slice(-1) === "&")
-        return xdi.constants.nodetypes.VALUE;
-
-    if(nodelabel.match(/^\[?<.*>\]?$/) != null)
-        return xdi.constants.nodetypes.ATTRIBUTE;
-
-    return xdi.constants.nodetypes.ENTITY;
-}
-
-
-

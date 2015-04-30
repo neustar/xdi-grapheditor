@@ -440,7 +440,7 @@ TreeLayout.prototype.recurse = function (node) {
         }
     });
 
-    if(!(node.type === xdi.constants.nodetypes.VALUE&&node._children.length == 1))
+    if(!(node.type === xdi.constants.arctypes.LITERAL&&node._children.length == 1))
         node.children.splice(1,0,{id:-1,isForLayout:true,parent:node});
 
     node.children.forEach(function(d) { this.recurse(d); },this);
