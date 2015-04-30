@@ -1,10 +1,37 @@
-(function (global) {
+(function (global, module, define, XHR, xdipost) {
 
 	//
-	// VERSION: 0.4-SNAPSHOT
+	// VERSION: 0.5-SNAPSHOT
 	//
 
 	'use strict';
+
+	/* 
+	 * xdipost
+	 */
+
+	if (xdipost && typeof xdipost !== 'undefined') {
+		
+	} else {
+		
+		xdipost = function(endpoint, requestbody, success, error) {
+
+			var request = new XHR();
+			request.open('POST', endpoint, true);
+			request.setRequestHeader('Content-Type', 'text/xdi');
+			request.setRequestHeader('Accept', 'text/xdi');
+			request.onreadystatechange = function() {
+				if (request.readyState === 4) {
+					if (request.status === 200) {
+						success(request.responseText);
+					} else {
+						error(request.stats + " / " + request.statusText);
+					}
+				}
+			};
+			request.send(requestbody);
+		};
+	}
 
 	/*
 	 * Statement, Segment, Subsegment, Xref classes
@@ -50,7 +77,7 @@
 
 	Statement.prototype.isContextNodeStatement = function() {
 
-		return this.predicate().string() === xdi.constants.xri_context;
+		return this.predicate().string() === xdi.constants.string_context;
 	};
 
 	Statement.prototype.isRelationStatement = function() {
@@ -86,28 +113,43 @@
 
 		return this._subsegments;
 	};
+	
+	Segment.prototype.length = function() {
+	
+		return this._subsegments.length;
+	};
 
-	function Subsegment(string, cs, classxs, attributexs, literal, xref) {
+	function Subsegment(string, cs, variable, definition, collection, attribute, immutable, relative, literal, xref) {
 
-		if (! (this instanceof Subsegment)) return new Subsegment(string, cs, classxs, attributexs, literal, xref);
+		if (! (this instanceof Subsegment)) return new Subsegment(string, cs, variable, definition, collection, attribute, immutable, relative, literal, xref);
 
 		this._string = string;
 		this._cs = cs;
-		this._classxs = classxs;
-		this._attributexs = attributexs;
+		this._variable = variable;
+		this._definition = definition;
+		this._collection = collection;
+		this._attribute = attribute;
+		this._immutable = immutable;
+		this._relative = relative;
 		this._literal = literal;
 		this._xref = xref;
 
 		if (this._string === null) {
 
 			this._string = '';
+			if (this._variable) this._string += xdi.constants.xs_variable.charAt(0);
+			if (this._definition) this._string += xdi.constants.xs_definition.charAt(0);
+			if (this._collection) this._string += xdi.constants.xs_collection.charAt(0);
+			if (this._attribute) this._string += xdi.constants.xs_attribute.charAt(0);
 			if (this._cs !== null) this._string += this._cs;
-			if (this._classxs) this._string += xdi.constants.xs_class.charAt(0);
-			if (this._attributexs) this._string += xdi.constants.xs_attribute.charAt(0);
+			if (this._immutable !== null) this._string += this._immutable;
+			if (this._relative !== null) this._string += this._relative;
 			if (this._literal !== null) this._string += this._literal;
 			if (this._xref !== null) this._string += this._xref._string;
-			if (this._attributexs) this._string += xdi.constants.xs_attribute.charAt(1);
-			if (this._classxs) this._string += xdi.constants.xs_class.charAt(1);
+			if (this._attribute) this._string += xdi.constants.xs_attribute.charAt(1);
+			if (this._collection) this._string += xdi.constants.xs_collection.charAt(1);
+			if (this._definition) this._string += xdi.constants.xs_definition.charAt(1);
+			if (this._variable) this._string += xdi.constants.xs_variable.charAt(1);
 		}
 	}
 
@@ -121,14 +163,34 @@
 		return this._cs;
 	};
 
-	Subsegment.prototype.classxs = function() {
+	Subsegment.prototype.variable = function() {
 
-		return this._classxs;
+		return this._variable;
 	};
 
-	Subsegment.prototype.attributexs = function() {
+	Subsegment.prototype.definition = function() {
 
-		return this._attributexs;
+		return this._definition;
+	};
+
+	Subsegment.prototype.collection = function() {
+
+		return this._collection;
+	};
+
+	Subsegment.prototype.attribute = function() {
+
+		return this._attribute;
+	};
+
+	Subsegment.prototype.immutable = function() {
+
+		return this._immutable;
+	};
+
+	Subsegment.prototype.relative = function() {
+
+		return this._relative;
 	};
 
 	Subsegment.prototype.literal = function() {
@@ -257,16 +319,16 @@
 
 				var index = subject.string() + '/';
 	
-				if (typeof object[index] === 'undefined') object[index] = new Array();
+				if (typeof object[index] === 'undefined') object[index] = [];
 				object[index].push(contexts[i].arc().string());
 
 				if (contexts[i].arc()._xref !== null && contexts[i].arc()._xref._partialsubject !== null) {
 				
 					var innerindex = contexts[i].arc()._xref._partialsubject.string() + '/' + contexts[i].arc()._xref._partialpredicate.string();
 
-					var innerobject = new Object();
+					var innerobject = {};
 		
-					if (typeof object[innerindex] === 'undefined') object[innerindex] = new Array();
+					if (typeof object[innerindex] === 'undefined') object[innerindex] = [];
 					object[innerindex].push(innerobject);
 	
 					process(contexts[i], innerobject, inner+1);
@@ -280,7 +342,7 @@
 	
 				var index = subject.string() + '/' + relations[i].arc().string();
 	
-				if (typeof object[index] === 'undefined') object[index] = new Array();
+				if (typeof object[index] === 'undefined') object[index] = [];
 				object[index].push(relations[i].target().string());
 			}
 	
@@ -292,7 +354,7 @@
 			}
 		};
 
-		var object = new Object();
+		var object = {};
 
 		process(this._root, object, 0);
 		
@@ -524,6 +586,46 @@
 
 		return this._literal;
 	};
+	
+	Context.prototype.entities = function() {
+		
+		var entities = [];
+		
+		for (var i in this._contexts) {
+			
+			if (xdi.util.arcType(this._contexts[i]) === xdi.constants.arctypes.ENTITY) {
+				
+				var deepentities = this._contexts[i].attributes();
+				
+				if (deepentities.length > 0)
+					entities = entities.concat(deepentities);
+				else
+					entities.push(this._contexts[i]);
+			}
+		}
+		
+		return entities;
+	};
+	
+	Context.prototype.attributes = function() {
+		
+		var attributes = [];
+		
+		for (var i in this._contexts) {
+			
+			if (xdi.util.arcType(this._contexts[i]) === xdi.constants.arctypes.ATTRIBUTE) {
+				
+				var deepattributes = this._contexts[i].attributes();
+				
+				if (deepattributes.length > 0)
+					attributes = attributes.concat(deepattributes);
+				else
+					attributes.push(this._contexts[i]);
+			}
+		}
+		
+		return attributes;
+	};
 
 	function Relation(graph, parent, arc, target) {
 
@@ -621,7 +723,7 @@
 
 		if (typeof sender === 'undefined') sender = xdi.constants.xri_anon;
 
-		var context = this._graph.root().context(sender, true).context('[' + xdi.constants.xri_msg + ']', true).context('!:uuid:' + xdi.util.guid(), true);
+		var context = this._graph.root().context(sender, true).context('[' + xdi.constants.xri_msg + ']', true).context('*!:uuid:' + xdi.util.guid(), true);
 		var message = new Message(context, this);
 
 		this._messages.push(message);
@@ -682,6 +784,36 @@
 		return this;
 	};
 
+	Message.prototype.messageParameter = function(parameter, value) {
+
+		if (typeof value === 'undefined') {
+
+			var context = this._context.context(parameter);
+			var literal = context === null ? null : context.literal();
+
+			return literal === null ? null : literal.data();
+		}
+
+		this._context.context(parameter, true).literal(value);
+
+		return this;
+	};
+
+	Message.prototype.operationParameter = function(operation, parameter, value) {
+
+		if (typeof value === 'undefined') {
+
+			var context = this._context.context(operation + parameter);
+			var literal = context === null ? null : context.literal();
+
+			return literal === null ? null : literal.data();
+		}
+
+		this._context.context(operation + parameter, true).literal(value);
+
+		return this;
+	};
+
 	Message.prototype.secretToken = function(secretToken) {
 
 		if (typeof secretToken === 'undefined') {
@@ -734,52 +866,36 @@
 
 		if (typeof endpoint === 'undefined') throw 'No endpoint given.';
 
-		var request = new XMLHttpRequest();
-		request.open('POST', endpoint, true);
-		request.setRequestHeader('Content-Type', 'text/xdi');
-		request.setRequestHeader('Accept', 'text/xdi');
+		xdipost(
+			endpoint, 
+			xdi.io.write(this.messageEnvelope().graph()),
+	        function(responsebody) {
 
-		request.onreadystatechange = function() {
+				var responsegraph;
 
-			if (request.readyState === 4) {
-
-				if (request.status === 200) {
-
-					var response;
-
-					try {
-
-						response = xdi.io.read(request.responseText);
-					} catch (ex) {
-
-						var errorText = 'Received invalid response from server: ' + ex;
-
-						if (typeof error === 'function') error(errorText);
-						return;
-					}
-
-					if (response.root().context(xdi.constants.xri_error) !== null) {
-
-						var errorText = 'Received error from server: ' + response.root().context(xdi.constants.xri_error).context(xdi.constants.xri_value).literal().data();
-
-						if (typeof error === 'function') error(errorText);
-						return;
-					} else {
-
-						if (typeof success === 'function') success(response);
-						return;
-					}
-				} else {
-
-					var errorText = 'Received error while sending: ' + request.statusText;
-
+				try {
+					responsegraph = xdi.io.read(responsebody);
+				} catch (ex) {
+					var errorText = 'Received invalid response from server: ' + ex;
 					if (typeof error === 'function') error(errorText);
 					return;
 				}
-			}
-		};
 
-		request.send(xdi.io.write(this.messageEnvelope().graph()));
+				if (responsegraph.root().context(xdi.constants.xri_error) !== null) {
+					var errorText = 'Received error from server: ' + responsegraph.root().context(xdi.constants.xri_error).literal().data();
+					if (typeof error === 'function') error(errorText);
+					return;
+				} else {
+					if (typeof success === 'function') success(responsegraph);
+					return;
+				}
+	        },
+	        function(responseerror) {
+
+				var errorText = 'Received error while sending: ' + responseerror;
+				if (typeof error === 'function') error(errorText);
+				return;
+	        });
 	};
 
 	/*
@@ -828,41 +944,41 @@
 
 				cs_authority_personal: '=',
 				cs_authority_legal: '+',
-				cs_authority_general: '*',
-				cs_class_unreserved: '#',
 				cs_class_reserved: '$',
-				cs_value: '&',
-				cs_member_unordered: '!',
-				cs_member_ordered: '@',
-				cs_array: [ '=', '+', '*', '#', '$', '&', '!', '@' ],
+				cs_class_unreserved: '#',
+				cs_instance_ordered: '@',
+				cs_instance_unordered: '*',
+				cs_literal: '&',
+				cs_array: [ '=', '+', '$', '#', '@', '*', '&' ],
+				s_immutable: '!',
+				s_relative: '_',
 				xs_root: '()',
 				xs_variable: '{}',
-				xs_class: '[]',
+				xs_definition: '||',
+				xs_collection: '[]',
 				xs_attribute: '<>',
 				xri_root: '',
-				xri_context: '',
-				xri_value: '&',
+				string_context: '',
 				xri_literal: '&',
-				xri_variable: '{}',
+				xri_common_variable: '{}',
+				xri_common_definition: '||',
 				xri_anon: '$anon',
 				xri_public: '$public',
 				xri_msg: '$msg',
 				xri_is_context: '$is()',
 				xri_ref: '$ref',
 				xri_rep: '$rep',
-				xri_secret_token: '<$secret><$token>&',
+				xri_secret_token: '<$secret><$token>',
 				xri_do: '$do',
 				xri_uri: '<$uri>',
 				xri_xdi_uri: '<$xdi><$uri>',
 				xri_error: '<$false>',
-				uri_default_discovery_endpoint: 'https://xdidiscoveryservice.xdi.net/',
-				nodetypes: {
-					LITERAL: "literal",
-					CONTEXT: "context",
-					ROOT:"root",
-					ENTITY:"entity",
-					ATTRIBUTE:"attribute",
-					VALUE:"value"
+				uri_default_discovery_endpoint: 'https://discovery.xdi2.org/neustar-discovery-service-prod',
+				arctypes: {
+					ROOT: 'root',
+					ENTITY: 'entity',
+					ATTRIBUTE: 'attribute',
+					LITERAL: 'literal'
 				}
 			},
 
@@ -928,7 +1044,15 @@
 
 							xdiEndpointContext = xdiEndpointContext.dereference();
 
-							var xdiEndpoint = xdiEndpointContext.context(xdi.constants.xri_value).literal().data();
+							if (xdiEndpointContext.literal() === null) {
+
+								var errorText = 'Could not find XDI endpoint literal in discovery result.';
+
+								if (typeof error === 'function') error(errorText);
+								return;
+							}
+
+							var xdiEndpoint = xdiEndpointContext.literal().data();
 
 							if (serviceTypes.length === 0) {
 
@@ -957,7 +1081,7 @@
 											if (serviceEndpointContext === null) continue;
 				
 											serviceEndpointContext = serviceEndpointContext.dereference();
-											var serviceEndpoint = serviceEndpointContext.context(xdi.constants.xri_value).literal().data();
+											var serviceEndpoint = serviceEndpointContext.literal().data();
 
 											services[serviceTypes[i]] = serviceEndpoint;
 										}
@@ -1017,18 +1141,26 @@
 					return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 				},
 
-				getNodeType: function(nodelabel) {
+				arcType: function(object) {
 
-					if ((nodelabel === "") || (nodelabel.match(/^\(.*\)$/) != null))
-						return xdi.constants.nodetypes.ROOT;
-					else if (nodelabel.match(/^".*"$/) != null)
-						return xdi.constants.nodetypes.LITERAL;
-					else if (nodelabel.slice(-1) === "&")
-						return xdi.constants.nodetypes.VALUE;
-					else if (nodelabel.match(/^<.*>$/) != null)
-						return xdi.constants.nodetypes.ATTRIBUTE;
+					var arcString;
+
+					if (object instanceof Context)
+						arcString = object.arc().string();
+					else if (object instanceof Subsegment)
+						arcString = object.string();
+					else arcString = object;
+
+					try { JSON.parse(arcString); return xdi.constants.arctypes.LITERAL; } catch(e) {}
+
+					if ((arcString === "") || (arcString.match(/^\(.*\)$/) !== null))
+						return xdi.constants.arctypes.ROOT;
+					else if (arcString === "&")
+						return xdi.constants.arctypes.LITERAL;
+					else if (arcString.match(/^<.*>$/) !== null)
+						return xdi.constants.arctypes.ATTRIBUTE;
 					else
-						return xdi.constants.nodetypes.ENTITY;
+						return xdi.constants.arctypes.ENTITY;
 				}
 			},
 
@@ -1075,7 +1207,7 @@
 					var subject = xdi.parser.parseSegment(string.substring(0, split0));
 					var predicate = xdi.parser.parseSegment(string.substring(split0 + 1, split0 + split1 + 1));
 
-					if (xdi.constants.cs_value === predicate.string()) {
+					if (xdi.constants.cs_literal === predicate.string()) {
 
 						var object = JSON.parse(string.substring(split0 + split1 + 2));
 
@@ -1097,17 +1229,21 @@
 
 					var start = 0, pos = 0;
 					var pair = null;
-					var pairs = new Array();
-					var subsegments = new Array();
+					var pairs = [];
+					var subsegments = [];
 
 					while (pos < string.length) {
 
 						// parse beginning of subsegment
 
-						if (pos < string.length && (pair = xdi.parser.cla(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
-						if (pos < string.length && (pair = xdi.parser.att(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
+						if (pos < string.length && (pair = xdi.parser.xsvariable(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
+						if (pos < string.length && (pair = xdi.parser.xsdefinition(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
+						if (pos < string.length && (pair = xdi.parser.xscollection(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
+						if (pos < string.length && (pair = xdi.parser.xsattribute(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
 						if (pos < string.length && xdi.parser.cs(string.charAt(pos)) !== null) pos++;
-						if (pos < string.length && (pair = xdi.parser.xs(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
+						if (pos < string.length && xdi.parser.immutable(string.charAt(pos))) pos++;
+						if (pos < string.length && xdi.parser.relative(string.charAt(pos))) pos++;
+						if (pos < string.length && (pair = xdi.parser.xsxref(string.charAt(pos))) !== null) { pairs.push(pair); pos++; }
 
 						// parse to the end of the subsegment
 
@@ -1119,34 +1255,40 @@
 
 								// reached beginning of the next subsegment
 
-								if (xdi.parser.cla(string.charAt(pos)) !== null) break;
-								if (xdi.parser.att(string.charAt(pos)) !== null) break;
+								if (xdi.parser.xsvariable(string.charAt(pos)) !== null) break;
+								if (xdi.parser.xsdefinition(string.charAt(pos)) !== null) break;
+								if (xdi.parser.xscollection(string.charAt(pos)) !== null) break;
+								if (xdi.parser.xsattribute(string.charAt(pos)) !== null) break;
 								if (xdi.parser.cs(string.charAt(pos)) !== null) break;
-								if (xdi.parser.xs(string.charAt(pos)) !== null) break;
+								if (xdi.parser.immutable(string.charAt(pos))) break;
+								// intentionally don't check for relative here, since it's a valid character
+								if (xdi.parser.xsxref(string.charAt(pos)) !== null) break;
 							}
 
 							// at least one pair still open?
 
 							if (pairs.length > 0) {
 
-								// new pair being opened?
-
-								pair = xdi.parser.cla(string.charAt(pos));
-								if (pair === null) pair = xdi.parser.att(string.charAt(pos));
-								if (pair === null) pair = xdi.parser.xs(string.charAt(pos));
-
-								if (pair !== null) {
-
-									pairs.push(pair);
-									pos++;
-									continue;
-								}
-
 								// pair being closed?
 
 								if (string.charAt(pos) === pairs[pairs.length - 1].charAt(1)) {
 
 									pairs.pop();
+									pos++;
+									continue;
+								}
+
+								// new pair being opened?
+
+								pair = xdi.parser.xsvariable(string.charAt(pos));
+								if (pair === null) pair = xdi.parser.xsdefinition(string.charAt(pos));
+								if (pair === null) pair = xdi.parser.xscollection(string.charAt(pos));
+								if (pair === null) pair = xdi.parser.xsattribute(string.charAt(pos));
+								if (pair === null) pair = xdi.parser.xsxref(string.charAt(pos));
+
+								if (pair !== null) {
+
+									pairs.push(pair);
 									pos++;
 									continue;
 								}
@@ -1169,25 +1311,47 @@
 
 					var pos = 0, len = string.length;
 					var cs = null;
-					var cla = null;
-					var att = null;
+					var variable = null;
+					var definition = null;
+					var collection = null;
+					var attribute = null;
+					var immutable = false;
+					var relative = false;
 					var literal = null;
 					var xref = null;
 
-					// extract class pair
+					// extract variable pair
 
-					if (pos < len && (cla = xdi.parser.cla(string.charAt(pos))) !== null) {
+					if (pos < len && (variable = xdi.parser.xsvariable(string.charAt(pos))) !== null) {
 
-						if (string.charAt(len - 1) !== cla.charAt(1)) throw 'Invalid subsegment: ' + string + ' (invalid closing "' + cla.charAt(1) + '" character for class at position ' + pos + ')';
+						if (string.charAt(len - 1) !== variable.charAt(1)) throw 'Invalid subsegment: ' + string + ' (invalid closing "' + variable.charAt(1) + '" character for variable at position ' + pos + ')';
+
+						pos++; len--;
+					}
+
+					// extract definition pair
+
+					if (pos < len && (definition = xdi.parser.xsdefinition(string.charAt(pos))) !== null) {
+
+						if (string.charAt(len - 1) !== definition.charAt(1)) throw 'Invalid subsegment: ' + string + ' (invalid closing "' + definition.charAt(1) + '" character for definition at position ' + pos + ')';
+
+						pos++; len--;
+					}
+
+					// extract collection pair
+
+					if (pos < len && (collection = xdi.parser.xscollection(string.charAt(pos))) !== null) {
+
+						if (string.charAt(len - 1) !== collection.charAt(1)) throw 'Invalid subsegment: ' + string + ' (invalid closing "' + collection.charAt(1) + '" character for collection at position ' + pos + ')';
 
 						pos++; len--;
 					}
 
 					// extract attribute pair
 
-					if (pos < len && (att = xdi.parser.att(string.charAt(pos))) !== null) {
+					if (pos < len && (attribute = xdi.parser.xsattribute(string.charAt(pos))) !== null) {
 
-						if (string.charAt(len - 1) !== att.charAt(1)) throw 'Invalid subsegment: ' + string + ' (invalid closing "' + att.charAt(1) + '" character for attribute at position ' + pos + ')';
+						if (string.charAt(len - 1) !== attribute.charAt(1)) throw 'Invalid subsegment: ' + string + ' (invalid closing "' + attribute.charAt(1) + '" character for attribute at position ' + pos + ')';
 
 						pos++; len--;
 					}
@@ -1199,11 +1363,25 @@
 						pos++;
 					}
 
+					// extract immutable
+
+					if (pos < len && (immutable = xdi.parser.immutable(string.charAt(pos)))) {
+
+						pos++;
+					}
+
+					// extract relative
+
+					if (pos < len && (relative = xdi.parser.relative(string.charAt(pos)))) {
+
+						pos++;
+					}
+
 					// parse the rest, either xref or literal
 
 					if (pos < len) {
 
-						if (xdi.parser.xs(string.charAt(pos)) !== null) {
+						if (xdi.parser.xsxref(string.charAt(pos)) !== null) {
 
 							xref = xdi.parser.parseXref(string.substring(pos, len));
 						} else {
@@ -1215,12 +1393,12 @@
 
 					// done
 
-					return new Subsegment(string, cs, cla !== null, att !== null, literal, xref);
+					return new Subsegment(string, cs, variable !== null, definition !== null, collection !== null, attribute !== null, immutable, relative, literal, xref);
 				},
 
 				parseXref: function(string) {
 
-					var xs = xdi.parser.xs(string.charAt(0));
+					var xs = xdi.parser.xsxref(string.charAt(0));
 					if (xs === null) throw 'Invalid cross reference: ' + string + ' (no opening delimiter)';
 					if (string.charAt(string.length - 1) !== xs.charAt(1)) throw 'Invalid cross reference: ' + string + ' (invalid closing "' + xs.charAt(1) + '" delimiter)';
 					if (string.length === 2) return new Xref(string, xs, null, null, null, null, null);
@@ -1244,12 +1422,13 @@
 
 						if (segments === 2) {
 
+							temp = " " + temp + " ";
 							var parts = temp.split('/');
-							var split0 = parts[0].length;
+							var split0 = parts[0].length - 1;
 
 							partialsubject = xdi.parser.parseSegment(value.substring(0, split0));
 							partialpredicate = xdi.parser.parseSegment(value.substring(split0 + 1));
-						} else if (xdi.parser.cs(value.charAt(0)) !== null || xdi.parser.cla(value.charAt(0)) || xdi.parser.att(value.charAt(0)) || xdi.parser.xs(value.charAt(0))) {
+						} else if (value.length === 0 || xdi.parser.cs(value.charAt(0)) !== null || xdi.parser.xsvariable(value.charAt(0)) || xdi.parser.xsdefinition(value.charAt(0)) || xdi.parser.xscollection(value.charAt(0)) || xdi.parser.xsattribute(value.charAt(0)) || xdi.parser.xsxref(value.charAt(0))) {
 
 							segment = xdi.parser.parseSegment(value);
 						} else {
@@ -1270,32 +1449,55 @@
 					return null;
 				},
 
-				cla: function(char) {
+				xsvariable: function(char) {
 
-					if (xdi.constants.xs_class.charAt(0) === char) return xdi.constants.xs_class;
+					if (xdi.constants.xs_variable.charAt(0) === char) return xdi.constants.xs_variable;
 
 					return null;
 				},
 
-				att: function(char) {
+				xsdefinition: function(char) {
+
+					if (xdi.constants.xs_definition.charAt(0) === char) return xdi.constants.xs_definition;
+
+					return null;
+				},
+
+				xscollection: function(char) {
+
+					if (xdi.constants.xs_collection.charAt(0) === char) return xdi.constants.xs_collection;
+
+					return null;
+				},
+
+				xsattribute: function(char) {
 
 					if (xdi.constants.xs_attribute.charAt(0) === char) return xdi.constants.xs_attribute;
 
 					return null;
 				},
 
-				xs: function(char) {
+				immutable: function(char) {
+
+					return xdi.constants.s_immutable === char;
+				},
+
+				relative: function(char) {
+
+					return xdi.constants.s_relative === char;
+				},
+
+				xsxref: function(char) {
 
 					if (xdi.constants.xs_root.charAt(0) === char) return xdi.constants.xs_root;
-					if (xdi.constants.xs_variable.charAt(0) === char) return xdi.constants.xs_variable;
 
 					return null;
 				},
 
 				stripXs: function(string) {
 
+					string = xdi.parser.stripPattern(string, /\|[^\|]*\|/);
 					string = xdi.parser.stripPattern(string, /\([^\(\)]*\)/);
-					string = xdi.parser.stripPattern(string, /\{[^\{\}]*\}/);
 					string = xdi.parser.stripPattern(string, /\"[^\"]*\"/);
 
 					return string;
@@ -1326,19 +1528,25 @@
 					var indexColon = string.indexOf(':');
 					var indexAuthorityPersonal = string.indexOf(xdi.constants.cs_authority_personal);
 					var indexAuthorityLegal = string.indexOf(xdi.constants.cs_authority_legal);
-					var indexAuthorityGeneral = string.indexOf(xdi.constants.cs_authority_general);
-					var indexClassUnreserved = string.indexOf(xdi.constants.cs_class_unreserved);
 					var indexClassReserved = string.indexOf(xdi.constants.cs_class_reserved);
-					var indexMemberUnordered = string.indexOf(xdi.constants.cs_member_unordered);
+					var indexClassUnreserved = string.indexOf(xdi.constants.cs_class_unreserved);
+					var indexMemberOrdered = string.indexOf(xdi.constants.cs_instance_ordered);
+					var indexMemberUnordered = string.indexOf(xdi.constants.cs_instance_unordered);
+					var indexLiteral = string.indexOf(xdi.constants.cs_literal);
+					var indexImmutable = string.indexOf(xdi.constants.s_immutable);
+					var indexRelative = string.indexOf(xdi.constants.s_relative);
 
 					if (indexColon === -1) return false;
 
 					if (indexAuthorityPersonal !== -1 && indexAuthorityPersonal < indexColon) return false;
 					if (indexAuthorityLegal !== -1 && indexAuthorityLegal < indexColon) return false;
-					if (indexAuthorityGeneral !== -1 && indexAuthorityGeneral < indexColon) return false;
-					if (indexClassUnreserved !== -1 && indexClassUnreserved < indexColon) return false;
 					if (indexClassReserved !== -1 && indexClassReserved < indexColon) return false;
+					if (indexClassUnreserved !== -1 && indexClassUnreserved < indexColon) return false;
+					if (indexMemberOrdered !== -1 && indexMemberOrdered < indexColon) return false;
 					if (indexMemberUnordered !== -1 && indexMemberUnordered < indexColon) return false;
+					if (indexLiteral !== -1 && indexLiteral < indexColon) return false;
+					if (indexImmutable !== -1 && indexImmutable < indexColon) return false;
+					if (indexRelative !== -1 && indexRelative < indexColon) return false;
 
 					return true;
 				},
@@ -1388,9 +1596,31 @@
 	xdi.Discovery = Discovery;
 
 	/*
-	 * Assign global 'xdi' object
+	 * module definitions
 	 */
 
-	global.xdi = xdi;
-
-})(typeof window === 'undefined' ? this : window);
+	// Node.js
+	if (module && typeof module !== 'undefined' && module.exports) {
+		module.exports = xdi;
+	}
+	// AMD / RequireJS
+	else if (define && typeof define !== 'undefined' && define.amd) {
+		define([], function () {
+			return xdi;
+		});
+	}
+	// included directly via <script> tag
+	else if (global && typeof global !== 'undefined') {
+		global.xdi = xdi;
+	}
+	// perhaps included via eval()
+	else {
+		return xdi;
+	}
+})(
+	typeof window === "undefined" ? global : window,
+	typeof module === "undefined" ? undefined : module,
+	typeof define === "undefined" ? undefined : define,
+	typeof XMLHttpRequest === "undefined" && module ? require("xmlhttprequest").XMLHttpRequest : XMLHttpRequest,
+	typeof xdipost === "undefined" ? undefined : xdipost
+);

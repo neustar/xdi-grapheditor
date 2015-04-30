@@ -39,10 +39,9 @@ function XDINode (id, fullName, shortName, type, graphId) {
     this.children = [];
     this.graphId = graphId;
 
-    this.isRoot = function(){return this.type === xdi.constants.nodetypes.ROOT;};
+    this.isRoot = function(){return this.type === xdi.constants.arctypes.ROOT;};
     this.isCommonRoot = function() { return this.fullName.length === 0; };
-    this.isLiteral = function(){return this.type === xdi.constants.nodetypes.LITERAL;};
-    this.isValue = function(){return this.type === xdi.constants.nodetypes.VALUE;};
+    this.isLiteral = function(){return this.type === xdi.constants.arctypes.LITERAL;};
     this.clone = function(){
         return new XDINode(this.id,this.fullName,this.type,this.graphId);
     }
@@ -62,7 +61,7 @@ function XDILink (id,shortName, left, right, source, target)
     this.clone = function() { 
         return new XDILink(this.id, this.shortName, this.left, this.right, this.source, this.target); 
     }
-    this.isLiteral = function(){return this.target && this.target.type === xdi.constants.nodetypes.LITERAL;};
+    this.isLiteral = function(){return this.target && this.target.type === xdi.constants.arctypes.LITERAL;};
 }
 XDILink.prototype = new XDIElement();
 
